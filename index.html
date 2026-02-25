@@ -4,77 +4,65 @@
   <title>VikingCloud - Compliance Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* 🎨 THEME REPOSITORY */
+    /* 🎨 COMPREHENSIVE THEME REPOSITORY */
     :root { 
         --bg: #0a192f; --text: #c5a059; --accent: #d4af37; 
         --card: rgba(10, 25, 47, 0.85); --glow: rgba(197, 160, 89, 0.3);
         --bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2072');
+        --logo-filter: invert(74%) sepia(35%) saturate(544%) hue-rotate(3deg) brightness(92%) contrast(89%);
     }
     
     .theme-forest { 
         --bg: #0b1a0e; --text: #708238; --accent: #bab86c; 
         --card: rgba(11, 26, 14, 0.85); --glow: rgba(112, 130, 56, 0.4);
         --bg-img: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=2071');
+        --logo-filter: invert(50%) sepia(15%) saturate(1000%) hue-rotate(35deg) brightness(90%) contrast(80%);
     }
 
     .theme-cream { 
         --bg: #d2b48c; --text: #3d2b1f; --accent: #8b4513; 
         --card: rgba(210, 180, 140, 0.9); --glow: rgba(61, 43, 31, 0.15);
         --bg-img: url('https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4?auto=format&fit=crop&q=80&w=2070');
+        --logo-filter: invert(20%) sepia(20%) saturate(1000%) hue-rotate(350deg) brightness(80%) contrast(100%);
     }
 
-    /* New Ocean Theme - Deep Teal & Aqua */
     .theme-ocean {
-        --bg: #002b36; /* Deep Midnight Teal */
-        --text: #93a1a1; /* Soft Seafoam Grey */
-        --accent: #2aa198; /* Bright Cyan/Teal */
-        --card: rgba(0, 43, 54, 0.85);
-        --glow: rgba(42, 161, 152, 0.4);
+        --bg: #002b36; --text: #93a1a1; --accent: #2aa198; 
+        --card: rgba(0, 43, 54, 0.85); --glow: rgba(42, 161, 152, 0.4);
         --bg-img: url('https://images.unsplash.com/photo-1518467166778-b88f373ffec7?auto=format&fit=crop&q=80&w=2070');
+        --logo-filter: invert(55%) sepia(40%) saturate(600%) hue-rotate(125deg) brightness(90%) contrast(95%);
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; transition: all 0.5s ease; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; transition: all 0.4s ease; }
     body { background-color: var(--bg); color: var(--text); min-height: 100vh; position: relative; overflow-x: hidden; }
 
-    .bg-layer {
-        position: fixed; inset: 0;
-        background-image: var(--bg-img);
-        background-size: cover; background-position: center;
-        opacity: 0.2; z-index: -1;
-    }
-
+    .bg-layer { position: fixed; inset: 0; background-image: var(--bg-img); background-size: cover; background-position: center; opacity: 0.15; z-index: -1; }
     .hidden { display: none !important; }
 
-    /* LAYOUT */
+    /* TOPBAR WITH LOGO */
     .topbar { 
-        position: fixed; top: 0; width: 100%; padding: 20px 40px; 
+        position: fixed; top: 0; width: 100%; padding: 15px 40px; 
         display: flex; justify-content: space-between; align-items: center; 
         z-index: 100; background: var(--bg); border-bottom: 1px solid var(--text);
-    }
-
-    .feed-grid { 
-        display: grid; grid-template-columns: repeat(5, 1fr); 
-        gap: 20px; padding: 120px 40px 40px; 
-    }
-
-    .sticky-note { 
-        background: var(--card); height: 240px; padding: 20px; border-radius: 12px;
-        border: 1px solid var(--text); cursor: pointer; display: flex; 
-        flex-direction: column; justify-content: space-between;
         backdrop-filter: blur(10px);
     }
-    .sticky-note:hover { 
-        transform: scale(1.02) translateY(-5px); 
-        box-shadow: 0 10px 30px var(--glow);
-        background: var(--bg);
-        border-color: var(--accent);
+    .brand-box { display: flex; align-items: center; gap: 12px; }
+    .logo-img { height: 45px; filter: var(--logo-filter); }
+
+    /* GRID & CARDS */
+    .feed-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 120px 40px 40px; }
+    .sticky-note { 
+        background: var(--card); height: 250px; padding: 20px; border-radius: 12px;
+        border: 1px solid var(--text); cursor: pointer; display: flex; 
+        flex-direction: column; justify-content: space-between;
+        backdrop-filter: blur(8px);
     }
+    .sticky-note:hover { transform: scale(1.02) translateY(-5px); box-shadow: 0 10px 30px var(--glow); background: var(--bg); border-color: var(--accent); }
 
+    /* UTILS */
     .btn { padding: 10px 20px; border-radius: 6px; border: 1px solid var(--text); font-weight: bold; cursor: pointer; background: transparent; color: inherit; }
-    .btn-create { background: var(--accent); color: #fff; border: none; }
-    
+    .btn-create { background: var(--accent); color: white; border: none; }
     select { background: var(--bg); color: var(--text); border: 1px solid var(--text); padding: 8px 15px; border-radius: 20px; cursor: pointer; outline: none; }
-
     .full-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; padding: 60px; display: none; overflow-y: auto; }
     .active { display: block !important; }
   </style>
@@ -85,17 +73,21 @@
     <div id="splash" style="position:fixed; inset:0; background:#000; z-index:5000; display:none; justify-content:center; align-items:center; font-size:2.5em; color:var(--accent); font-weight: bold;"></div>
 
     <div id="loginPage" style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-        <h1 style="margin-bottom:10px; font-size: 3.5em; letter-spacing: 2px;">VikingCloud</h1>
-        <p style="margin-bottom:40px; opacity: 0.7; letter-spacing: 4px; font-size: 0.8em; text-transform: uppercase;">Compliance Knowledge Hub</p>
+        <img src="https://i.ibb.co/Lz0mSWS/image-f8875d.png" class="logo-img" style="height: 80px; margin-bottom: 20px;">
+        <h1 style="margin-bottom:5px; font-size: 3em; letter-spacing: 2px;">VikingCloud</h1>
+        <p style="margin-bottom:40px; opacity: 0.6; letter-spacing: 4px; font-size: 0.75em; text-transform: uppercase;">Compliance Knowledge Hub</p>
         <div style="display:flex; gap:30px;">
-            <div style="background: var(--card); border:1px solid var(--text); padding:50px 70px; border-radius:20px; cursor:pointer;" onclick="startEditorLogin()"><h2>EDITOR</h2></div>
-            <div style="background: var(--card); border:1px solid var(--text); padding:50px 70px; border-radius:20px; cursor:pointer;" onclick="startViewerLogin()"><h2>VIEWER</h2></div>
+            <div style="background: var(--card); border:1px solid var(--text); padding:40px 60px; border-radius:15px; cursor:pointer; text-align: center;" onclick="startEditorLogin()"><h2>EDITOR</h2></div>
+            <div style="background: var(--card); border:1px solid var(--text); padding:40px 60px; border-radius:15px; cursor:pointer; text-align: center;" onclick="startViewerLogin()"><h2>VIEWER</h2></div>
         </div>
     </div>
 
     <div id="mainDashboard" class="hidden">
         <div class="topbar">
-            <div id="welcomeMsg" style="font-weight:bold; letter-spacing: 1px;">VikingCloud Hub</div>
+            <div class="brand-box">
+                <img src="https://i.ibb.co/Lz0mSWS/image-f8875d.png" class="logo-img">
+                <div id="welcomeMsg" style="font-weight:bold; font-size: 1.2em;">Hub</div>
+            </div>
             <div>
                 <select id="themePicker" onchange="setTheme(this.value)">
                     <option value="default">🌌 Dark Navy</option>
@@ -104,8 +96,8 @@
                     <option value="ocean">🌊 Deep Ocean</option>
                 </select>
                 <button id="addEditorBtn" class="btn hidden" onclick="addNewEditor()" style="margin-left: 10px;">+ Add Editor</button>
-                <button id="createTrigger" class="btn btn-create hidden" onclick="openEditor()">+ Create Note</button>
-                <button class="btn" onclick="location.reload()" style="border:none; opacity: 0.6;">Logout</button>
+                <button id="createTrigger" class="btn btn-create hidden" onclick="openEditor()" style="margin-left: 5px;">+ Create Note</button>
+                <button class="btn" onclick="location.reload()" style="border:none; opacity: 0.5; margin-left: 10px;">Logout</button>
             </div>
         </div>
         <div id="feed" class="feed-grid"></div>
@@ -115,20 +107,18 @@
         <div style="max-width:800px; margin:auto;">
             <h1 id="editorHeading" style="margin-bottom:30px;">New Update</h1>
             <input type="hidden" id="editId">
-            <input type="text" id="postTitle" placeholder="Update Title..." style="width:100%; padding:20px; margin-bottom:20px; background:var(--card); color:inherit; border:1px solid var(--text); font-size: 1.2em;">
-            <textarea id="postContent" rows="15" placeholder="Compliance details..." style="width:100%; padding:20px; margin-bottom:20px; background:var(--card); color:inherit; border:1px solid var(--text); font-size: 1.1em;"></textarea>
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-create" onclick="saveNote()">Publish Update</button>
-                <button class="btn" onclick="closeNoteEditor()">Cancel</button>
-            </div>
+            <input type="text" id="postTitle" placeholder="Title..." style="width:100%; padding:15px; margin-bottom:15px; background:var(--card); color:inherit; border:1px solid var(--text); font-size: 1.2em;">
+            <textarea id="postContent" rows="15" placeholder="Details..." style="width:100%; padding:15px; margin-bottom:15px; background:var(--card); color:inherit; border:1px solid var(--text); font-size: 1.1em;"></textarea>
+            <button class="btn btn-create" onclick="saveNote()">Publish</button>
+            <button class="btn" onclick="closeNoteEditor()">Cancel</button>
         </div>
     </div>
 
     <div id="fullView" class="full-overlay">
         <button class="btn" onclick="closeFullView()">← Back</button>
         <div style="max-width:900px; margin: 40px auto;">
-            <h1 id="viewTitle" style="font-size:3.5em; color:var(--accent); margin-bottom:30px;"></h1>
-            <p id="viewBody" style="white-space:pre-wrap; line-height:1.8; font-size:1.3em;"></p>
+            <h1 id="viewTitle" style="font-size:3em; color:var(--accent); margin-bottom:20px;"></h1>
+            <p id="viewBody" style="white-space:pre-wrap; line-height:1.7; font-size:1.2em;"></p>
         </div>
     </div>
 
@@ -141,30 +131,30 @@
         let editorName = '';
 
         async function startEditorLogin() {
-            const pass = prompt("Enter Editor Password:");
+            const pass = prompt("Password:");
             if (pass === "viking2026") {
-                const nameInput = prompt("Verify Your Name:");
-                if(!nameInput) return;
-                const { data } = await client.from('authorized_editors').select('*').ilike('name', nameInput).single();
+                const nInput = prompt("Your Name:");
+                if(!nInput) return;
+                const { data } = await client.from('authorized_editors').select('*').ilike('name', nInput).single();
                 if (data) {
                     editorName = data.name; role = 'editor';
-                    showSplash(`Welcome, Editor ${editorName}`);
-                } else { alert("Access Denied: Name not found in authorized list."); }
-            } else { alert("Incorrect Password."); }
+                    showSplash(`Welcome, ${editorName}`);
+                } else { alert("User not authorized."); }
+            } else { alert("Wrong Password."); }
         }
 
         function startViewerLogin() { role = 'viewer'; enterDashboard(); }
         function showSplash(msg) {
             const s = document.getElementById('splash');
             s.innerText = msg; s.style.display = 'flex';
-            setTimeout(() => { s.style.display = 'none'; enterDashboard(); }, 2000);
+            setTimeout(() => { s.style.display = 'none'; enterDashboard(); }, 1800);
         }
 
         function enterDashboard() {
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('mainDashboard').classList.remove('hidden');
             if (role === 'editor') {
-                document.getElementById('welcomeMsg').innerText = `Hello, ${editorName}`;
+                document.getElementById('welcomeMsg').innerText = `Editor: ${editorName}`;
                 document.getElementById('createTrigger').classList.remove('hidden');
                 document.getElementById('addEditorBtn').classList.remove('hidden');
             }
@@ -179,18 +169,18 @@
                 const card = document.createElement('div');
                 card.className = 'sticky-note';
                 card.onclick = () => viewNote(note);
-                let tools = role === 'editor' ? `<div style="margin-top:10px; opacity: 0.6;">
+                let tools = role === 'editor' ? `<div style="margin-top:10px; opacity: 0.5;">
                     <span style="font-size:11px; text-decoration:underline; cursor:pointer;" onclick="event.stopPropagation(); openEditNote(${JSON.stringify(note).replace(/"/g, '&quot;')})">Edit</span>
                     <span style="font-size:11px; text-decoration:underline; margin-left:10px; color:red; cursor:pointer;" onclick="event.stopPropagation(); deleteNote(${note.id})">Del</span>
                 </div>` : '';
-                card.innerHTML = `<div><h3>${note.title}</h3><p style="font-size:0.9em; opacity:0.8; overflow:hidden; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical;">${note.content}</p></div>${tools}`;
+                card.innerHTML = `<div><h3 style="color:var(--accent); margin-bottom:8px;">${note.title}</h3><p style="font-size:0.9em; opacity:0.8; overflow:hidden; display:-webkit-box; -webkit-line-clamp:6; -webkit-box-orient:vertical;">${note.content}</p></div>${tools}`;
                 feed.appendChild(card);
             });
         }
 
         async function addNewEditor() {
-            const n = prompt("Enter name of new Editor:");
-            if(n) { await client.from('authorized_editors').insert([{ name: n }]); alert(n + " added."); }
+            const n = prompt("New Editor Name:");
+            if(n) { await client.from('authorized_editors').insert([{ name: n }]); alert(n + " authorized."); }
         }
 
         async function saveNote() {
