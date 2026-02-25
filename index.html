@@ -1,139 +1,161 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Compliance Hub</title>
+  <title>VikingCloud Compliance Hub</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root { 
+        --viking-navy: #1a3668; 
+        --viking-bg: #121212; 
+        --notepad: rgba(42, 42, 42, 0.9); 
+        --viking-accent: #f39c12; 
+    }
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--viking-bg); color: #fff; min-height: 100vh; }
+    
+    .bg-overlay { 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: url('https://i.postimg.cc/9Fm8n6yG/cloud-bg.png') no-repeat center center; 
+        background-size: cover; opacity: 0.10; z-index: -1; 
+    }
+
+    .header { background: var(--viking-navy); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; position: sticky; top: 0; z-index: 50; }
+    .header img { max-height: 40px; margin: 0 auto; }
+    .container { width: 95%; max-width: 1400px; margin: 20px auto; }
+
+    button { cursor: pointer; border-radius: 4px; border: none; font-weight: bold; padding: 10px 20px; transition: 0.2s; }
+    .logout-btn { background: #d93025; color: white; position: absolute; right: 20px; }
+    .delete-btn { background: #e74c3c; color: white; font-size: 0.7em; padding: 5px 10px; margin-top: 10px; }
+    .edit-btn { background: #f1c40f; color: #000; font-size: 0.7em; padding: 5px 10px; margin-right: 5px; }
+
+    .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .notepad { 
+        background: var(--notepad); padding: 20px; height: 300px; border-radius: 8px; 
+        border: 1px solid #444; cursor: pointer; display: flex; flex-direction: column; 
+    }
+    .notepad:hover { border-color: var(--viking-accent); transform: translateY(-3px); }
+    .notepad h3 { color: var(--viking-accent); margin: 0 0 10px 0; }
+    .notepad p { font-size: 0.95em; color: #ccc; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; flex-grow: 1; line-height: 1.5; }
+    .post-date { font-size: 0.75em; color: #666; margin-top: 10px; }
+
+    .viewing-mode { display: none; background: #1a1a1a; padding: 50px; border-radius: 12px; border: 1px solid var(--viking-accent); min-height: 70vh; }
+    .viewing-mode.active { display: block; }
+
+    .login-card { max-width: 400px; margin: 100px auto; background: rgba(30, 30, 30, 0.95); padding: 40px; border-radius: 12px; border: 1px solid #444; text-align: center; }
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 100; }
+    .modal-content { background: #222; padding: 30px; border-radius: 10px; width: 600px; border: 1px solid #444; }
+
+    input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #333; color: white; border: 1px solid #555; border-radius: 4px; box-sizing: border-box; }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
+<div class="bg-overlay"></div>
 
-<h1>Compliance Hub</h1>
-
-<!-- 🔐 LOGIN SECTION -->
-<div id="auth-section">
-  <h3>Login</h3>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <button onclick="logout()">Logout</button>
-  <p id="auth-message"></p>
+<div class="header">
+    <img src="https://i.postimg.cc/HxfNf9K6/viking-logo.png">
+    <button id="logoutNav" class="logout-btn hidden" onclick="location.reload()">Logout</button>
 </div>
 
-<hr>
+<div class="container">
+    <div id="loginSection" class="login-card">
+        <h2>VikingCloud Compliance</h2>
+        <button style="width:100%; background:var(--viking-navy); color:white; margin-bottom:10px;" onclick="showEditorLogin()">Editor Access</button>
+        <button style="width:100%; background:#333; color:#ccc;" onclick="enterAsViewer()">Viewer Access</button>
+    </div>
 
-<!-- ✍️ EDITOR SECTION -->
-<div id="editor-section" style="display:none;">
-  <h3>Create Post</h3>
-  <input type="text" id="title" placeholder="Title"><br><br>
-  <textarea id="content" placeholder="Content"></textarea><br><br>
-  <button onclick="createPost()">Publish</button>
+    <div id="editorPassSection" class="login-card hidden">
+        <h3>Editor Login</h3>
+        <input type="email" id="editorId" placeholder="ID">
+        <input type="password" id="editorPass" placeholder="Password">
+        <button style="width:100%; background:var(--viking-navy); color:white;" onclick="verifyEditor()">Sign In</button>
+    </div>
+
+    <div id="mainDashboard" class="hidden">
+        <button id="pubBtn" class="hidden" style="background:var(--viking-navy); color:white; margin-bottom:20px;" onclick="openModal()">+ Publish New Update</button>
+        <div id="feed" class="feed-grid"></div>
+    </div>
+
+    <div id="viewArea" class="viewing-mode">
+        <button style="background:var(--viking-navy); color:white; margin-bottom:20px;" onclick="closeViewingMode()">← Back to Updates</button>
+        <h1 id="vTitle"></h1>
+        <small id="vDate" style="color:#777"></small>
+        <hr style="border:0; border-top:1px solid #444; margin:20px 0;">
+        <p id="vContent" style="white-space: pre-wrap; line-height: 1.8; font-size: 1.1em;"></p>
+    </div>
 </div>
 
-<hr>
-
-<h2>Posts</h2>
-<div id="posts"></div>
-
-<!-- ✅ SUPABASE CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalHeader">New Update</h3>
+        <input type="hidden" id="editId">
+        <input type="text" id="postTitle" placeholder="Title">
+        <textarea id="postContent" rows="10" placeholder="Full Details..."></textarea>
+        <button style="background:#28a745; color:white; width:100%;" onclick="savePost()">Save & Publish</button>
+        <button style="background:none; color:gray; width:100%; margin-top:10px;" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
 
 <script>
-  const { createClient } = window.supabase;
+    const supabaseUrl = "https://rspfzjybkicxgvcfqdzh.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-  // 🔥🔥 REPLACE THESE 2 VALUES ONLY 🔥🔥
-  const supabaseUrl = "https://rspfzjybkicxgvcfqdzh.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
-  // 🔥🔥 DO NOT TOUCH ANYTHING ELSE 🔥🔥
+    let isEditor = false;
 
-  const client = createClient(supabaseUrl, supabaseKey);
-
-  async function checkUser() {
-    const { data: { user } } = await client.auth.getUser();
-
-    if (user) {
-      document.getElementById("editor-section").style.display = "block";
-      document.getElementById("auth-message").innerText =
-        "Logged in as " + user.email;
-    }
-  }
-
-  async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    const { error } = await client.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) {
-      document.getElementById("auth-message").innerText = error.message;
-    } else {
-      document.getElementById("auth-message").innerText = "Login successful";
-      checkUser();
-    }
-  }
-
-  async function logout() {
-    await client.auth.signOut();
-    location.reload();
-  }
-
-  async function createPost() {
-    const title = document.getElementById("title").value;
-    const content = document.getElementById("content").value;
-
-    const { error } = await client
-      .from("posts")
-      .insert([{ title, content }]);
-
-    if (error) {
-      alert(error.message);
-    } else {
-      alert("Post created successfully!");
-      document.getElementById("title").value = "";
-      document.getElementById("content").value = "";
-      loadPosts();
-    }
-  }
-
-  async function deletePost(id) {
-    const { error } = await client
-      .from("posts")
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      alert(error.message);
-    } else {
-      loadPosts();
-    }
-  }
-
-  async function loadPosts() {
-    const { data, error } = await client
-      .from("posts")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error(error);
-      return;
+    async function loadPosts() {
+        const { data } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false });
+        const feed = document.getElementById('feed');
+        feed.innerHTML = '';
+        if (data) {
+            data.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'notepad';
+                card.onclick = () => expandNote(post);
+                card.innerHTML = `<h3>${post.title}</h3><p>${post.content}</p>`;
+                feed.appendChild(card);
+            });
+        }
     }
 
-    const container = document.getElementById("posts");
-    container.innerHTML = "";
+    function showEditorLogin() {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('editorPassSection').classList.remove('hidden');
+    }
 
-    data.forEach(post => {
-      container.innerHTML += `
-        <h3>${post.title}</h3>
-        <p>${post.content}</p>
-        <button onclick="deletePost(${post.id})">Delete</button>
-        <hr/>
-      `;
-    });
-  }
+    function verifyEditor() {
+        const id = document.getElementById('editorId').value;
+        const pass = document.getElementById('editorPass').value;
+        if(id && id === pass) {
+            isEditor = true;
+            document.getElementById('editorPassSection').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            document.getElementById('pubBtn').classList.remove('hidden');
+            document.getElementById('logoutNav').classList.remove('hidden');
+            loadPosts();
+        } else { alert("ID and Password must match"); }
+    }
 
-  checkUser();
-  loadPosts();
+    function enterAsViewer() {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('mainDashboard').classList.remove('hidden');
+        document.getElementById('logoutNav').classList.remove('hidden');
+        loadPosts();
+    }
+
+    function expandNote(post) {
+        document.getElementById('mainDashboard').classList.add('hidden');
+        document.getElementById('vTitle').innerText = post.title;
+        document.getElementById('vDate').innerText = new Date(post.created_at).toLocaleString();
+        document.getElementById('vContent').innerText = post.content;
+        document.getElementById('viewArea').classList.add('active');
+    }
+
+    function closeViewingMode() {
+        document.getElementById('viewArea').classList.remove('active');
+        document.getElementById('mainDashboard').classList.remove('hidden');
+    }
+
+    loadPosts();
 </script>
 
 </body>
