@@ -17,14 +17,14 @@
         --bg-img: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=2071');
     }
 
-    /* Sweet Creamery - Lowered Exposure Version */
+    /* Beige Theme - Muted and Earthy */
     .theme-cream { 
-        --bg: #dccab0; /* Muted from #fff5e1 (-1.5 exposure feel) */
-        --text: #7a5a4a; /* Darkened for better contrast on muted bg */
-        --accent: #96634d; 
-        --card: rgba(220, 202, 176, 0.9); 
-        --glow: rgba(122, 90, 74, 0.2);
-        --bg-img: url('https://images.unsplash.com/photo-1516550893923-42d28e5677af?auto=format&fit=crop&q=80&w=2072');
+        --bg: #d2b48c; /* Classic Tan/Beige */
+        --text: #3d2b1f; /* Deep Earth Brown for readability */
+        --accent: #8b4513; /* Saddle Brown accent */
+        --card: rgba(210, 180, 140, 0.9); 
+        --glow: rgba(61, 43, 31, 0.15);
+        --bg-img: url('https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4?auto=format&fit=crop&q=80&w=2070');
     }
 
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; transition: all 0.5s ease; }
@@ -35,7 +35,7 @@
         position: fixed; inset: 0;
         background-image: var(--bg-img);
         background-size: cover; background-position: center;
-        opacity: 0.2; z-index: -1;
+        opacity: 0.15; z-index: -1;
     }
 
     .hidden { display: none !important; }
@@ -66,7 +66,7 @@
 
     /* BUTTONS & INPUTS */
     .btn { padding: 10px 20px; border-radius: 6px; border: 1px solid var(--text); font-weight: bold; cursor: pointer; background: transparent; color: inherit; }
-    .btn-create { background: var(--accent); color: var(--bg); border: none; }
+    .btn-create { background: var(--accent); color: #fff; border: none; }
     
     select { background: var(--bg); color: var(--text); border: 1px solid var(--text); padding: 8px 15px; border-radius: 20px; cursor: pointer; outline: none; }
 
@@ -100,7 +100,7 @@
                 <select onchange="setTheme(this.value)">
                     <option value="default">🌌 Dark Navy</option>
                     <option value="forest">🌲 Forest</option>
-                    <option value="cream">🍦 Sweet Creamery</option>
+                    <option value="cream">📜 Muted Beige</option>
                 </select>
                 <button id="addEditorBtn" class="btn hidden" onclick="addNewEditor()" style="margin-left: 10px;">+ Add Editor</button>
                 <button id="createTrigger" class="btn btn-create hidden" onclick="openEditor()">+ Create Note</button>
@@ -145,7 +145,6 @@
                 const nameInput = prompt("Verify Name:");
                 if(!nameInput) return;
                 
-                // CASE-INSENSITIVE SEARCH
                 const { data, error } = await client.from('authorized_editors')
                     .select('*')
                     .ilike('name', nameInput) 
