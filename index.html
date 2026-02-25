@@ -3,160 +3,127 @@
 <head>
   <title>VikingCloud Compliance Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    :root { 
-        --viking-navy: #1a3668; 
-        --viking-bg: #121212; 
-        --notepad: rgba(42, 42, 42, 0.9); 
-        --viking-accent: #f39c12; 
-    }
-    body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--viking-bg); color: #fff; min-height: 100vh; }
-    
-    .bg-overlay { 
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-        background: url('https://i.postimg.cc/9Fm8n6yG/cloud-bg.png') no-repeat center center; 
-        background-size: cover; opacity: 0.10; z-index: -1; 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
     }
 
-    .header { background: var(--viking-navy); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; position: sticky; top: 0; z-index: 50; }
-    .header img { max-height: 40px; margin: 0 auto; }
-    .container { width: 95%; max-width: 1400px; margin: 20px auto; }
-
-    button { cursor: pointer; border-radius: 4px; border: none; font-weight: bold; padding: 10px 20px; transition: 0.2s; }
-    .logout-btn { background: #d93025; color: white; position: absolute; right: 20px; }
-    .delete-btn { background: #e74c3c; color: white; font-size: 0.7em; padding: 5px 10px; margin-top: 10px; }
-    .edit-btn { background: #f1c40f; color: #000; font-size: 0.7em; padding: 5px 10px; margin-right: 5px; }
-
-    .feed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-    .notepad { 
-        background: var(--notepad); padding: 20px; height: 300px; border-radius: 8px; 
-        border: 1px solid #444; cursor: pointer; display: flex; flex-direction: column; 
+    body {
+      height: 100vh;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      transition: 0.4s ease;
     }
-    .notepad:hover { border-color: var(--viking-accent); transform: translateY(-3px); }
-    .notepad h3 { color: var(--viking-accent); margin: 0 0 10px 0; }
-    .notepad p { font-size: 0.95em; color: #ccc; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; flex-grow: 1; line-height: 1.5; }
-    .post-date { font-size: 0.75em; color: #666; margin-top: 10px; }
 
-    .viewing-mode { display: none; background: #1a1a1a; padding: 50px; border-radius: 12px; border: 1px solid var(--viking-accent); min-height: 70vh; }
-    .viewing-mode.active { display: block; }
+    /* Top Bar */
+    .topbar {
+      position: absolute;
+      top: 25px;
+      left: 40px;
+      right: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-    .login-card { max-width: 400px; margin: 100px auto; background: rgba(30, 30, 30, 0.95); padding: 40px; border-radius: 12px; border: 1px solid #444; text-align: center; }
-    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 100; }
-    .modal-content { background: #222; padding: 30px; border-radius: 10px; width: 600px; border: 1px solid #444; }
+    .title {
+      font-size: 22px;
+      font-weight: 500;
+      opacity: 0.9;
+    }
 
-    input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #333; color: white; border: 1px solid #555; border-radius: 4px; box-sizing: border-box; }
-    .hidden { display: none; }
+    .search-container {
+      position: absolute;
+      top: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .search-container input {
+      width: 320px;
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      background: rgba(0,0,0,0.35);
+      color: white;
+      backdrop-filter: blur(6px);
+    }
+
+    .theme-select {
+      padding: 8px 15px;
+      border-radius: 20px;
+      border: none;
+      background: rgba(0,0,0,0.4);
+      color: white;
+      cursor: pointer;
+    }
+
+    .center-message {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      opacity: 0.7;
+    }
+
   </style>
 </head>
-<body>
-<div class="bg-overlay"></div>
 
-<div class="header">
-    <img src="https://i.postimg.cc/HxfNf9K6/viking-logo.png">
-    <button id="logoutNav" class="logout-btn hidden" onclick="location.reload()">Logout</button>
-</div>
+<body id="body">
 
-<div class="container">
-    <div id="loginSection" class="login-card">
-        <h2>VikingCloud Compliance</h2>
-        <button style="width:100%; background:var(--viking-navy); color:white; margin-bottom:10px;" onclick="showEditorLogin()">Editor Access</button>
-        <button style="width:100%; background:#333; color:#ccc;" onclick="enterAsViewer()">Viewer Access</button>
-    </div>
+  <div class="topbar">
+    <div class="title">All Notes</div>
+    <select class="theme-select" onchange="changeTheme(this.value)">
+      <option value="forest">Forest</option>
+      <option value="dark">Dark</option>
+      <option value="cream">Cream</option>
+    </select>
+  </div>
 
-    <div id="editorPassSection" class="login-card hidden">
-        <h3>Editor Login</h3>
-        <input type="email" id="editorId" placeholder="ID">
-        <input type="password" id="editorPass" placeholder="Password">
-        <button style="width:100%; background:var(--viking-navy); color:white;" onclick="verifyEditor()">Sign In</button>
-    </div>
+  <div class="search-container">
+    <input type="text" placeholder="🔎  Search notes...">
+  </div>
 
-    <div id="mainDashboard" class="hidden">
-        <button id="pubBtn" class="hidden" style="background:var(--viking-navy); color:white; margin-bottom:20px;" onclick="openModal()">+ Publish New Update</button>
-        <div id="feed" class="feed-grid"></div>
-    </div>
+  <div class="center-message">
+    No notes yet. Create one!
+  </div>
 
-    <div id="viewArea" class="viewing-mode">
-        <button style="background:var(--viking-navy); color:white; margin-bottom:20px;" onclick="closeViewingMode()">← Back to Updates</button>
-        <h1 id="vTitle"></h1>
-        <small id="vDate" style="color:#777"></small>
-        <hr style="border:0; border-top:1px solid #444; margin:20px 0;">
-        <p id="vContent" style="white-space: pre-wrap; line-height: 1.8; font-size: 1.1em;"></p>
-    </div>
-</div>
-
-<div id="modal" class="modal">
-    <div class="modal-content">
-        <h3 id="modalHeader">New Update</h3>
-        <input type="hidden" id="editId">
-        <input type="text" id="postTitle" placeholder="Title">
-        <textarea id="postContent" rows="10" placeholder="Full Details..."></textarea>
-        <button style="background:#28a745; color:white; width:100%;" onclick="savePost()">Save & Publish</button>
-        <button style="background:none; color:gray; width:100%; margin-top:10px;" onclick="closeModal()">Cancel</button>
-    </div>
-</div>
-
-<script>
+  <script>
     const supabaseUrl = "https://rspfzjybkicxgvcfqdzh.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-    let isEditor = false;
+    function changeTheme(theme) {
+      const body = document.getElementById("body");
 
-    async function loadPosts() {
-        const { data } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false });
-        const feed = document.getElementById('feed');
-        feed.innerHTML = '';
-        if (data) {
-            data.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'notepad';
-                card.onclick = () => expandNote(post);
-                card.innerHTML = `<h3>${post.title}</h3><p>${post.content}</p>`;
-                feed.appendChild(card);
-            });
-        }
+      if (theme === "forest") {
+        body.style.backgroundImage = "url('https://images.unsplash.com/photo-1501785888041-af3ef285b470')";
+        body.style.color = "white";
+      }
+
+      if (theme === "dark") {
+        body.style.backgroundImage = "url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee')";
+        body.style.color = "white";
+      }
+
+      if (theme === "cream") {
+        body.style.backgroundImage = "none";
+        body.style.backgroundColor = "#f5efe6";
+        body.style.color = "#333";
+      }
     }
 
-    function showEditorLogin() {
-        document.getElementById('loginSection').classList.add('hidden');
-        document.getElementById('editorPassSection').classList.remove('hidden');
-    }
-
-    function verifyEditor() {
-        const id = document.getElementById('editorId').value;
-        const pass = document.getElementById('editorPass').value;
-        if(id && id === pass) {
-            isEditor = true;
-            document.getElementById('editorPassSection').classList.add('hidden');
-            document.getElementById('mainDashboard').classList.remove('hidden');
-            document.getElementById('pubBtn').classList.remove('hidden');
-            document.getElementById('logoutNav').classList.remove('hidden');
-            loadPosts();
-        } else { alert("ID and Password must match"); }
-    }
-
-    function enterAsViewer() {
-        document.getElementById('loginSection').classList.add('hidden');
-        document.getElementById('mainDashboard').classList.remove('hidden');
-        document.getElementById('logoutNav').classList.remove('hidden');
-        loadPosts();
-    }
-
-    function expandNote(post) {
-        document.getElementById('mainDashboard').classList.add('hidden');
-        document.getElementById('vTitle').innerText = post.title;
-        document.getElementById('vDate').innerText = new Date(post.created_at).toLocaleString();
-        document.getElementById('vContent').innerText = post.content;
-        document.getElementById('viewArea').classList.add('active');
-    }
-
-    function closeViewingMode() {
-        document.getElementById('viewArea').classList.remove('active');
-        document.getElementById('mainDashboard').classList.remove('hidden');
-    }
-
-    loadPosts();
-</script>
+    changeTheme("forest"); // default theme
+  </script>
 
 </body>
 </html>
