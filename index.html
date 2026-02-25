@@ -4,7 +4,7 @@
   <title>VikingCloud - Compliance Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* 🎨 REFINED VISUAL THEMES */
+    /* 🎨 THEME REPOSITORY */
     :root { 
         --bg: #0a192f; --text: #c5a059; --accent: #d4af37; 
         --card: rgba(10, 25, 47, 0.85); --glow: rgba(197, 160, 89, 0.3);
@@ -17,30 +17,35 @@
         --bg-img: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=2071');
     }
 
-    /* Beige Theme - Muted and Earthy */
     .theme-cream { 
-        --bg: #d2b48c; /* Classic Tan/Beige */
-        --text: #3d2b1f; /* Deep Earth Brown for readability */
-        --accent: #8b4513; /* Saddle Brown accent */
-        --card: rgba(210, 180, 140, 0.9); 
-        --glow: rgba(61, 43, 31, 0.15);
+        --bg: #d2b48c; --text: #3d2b1f; --accent: #8b4513; 
+        --card: rgba(210, 180, 140, 0.9); --glow: rgba(61, 43, 31, 0.15);
         --bg-img: url('https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4?auto=format&fit=crop&q=80&w=2070');
     }
 
+    /* New Ocean Theme - Deep Teal & Aqua */
+    .theme-ocean {
+        --bg: #002b36; /* Deep Midnight Teal */
+        --text: #93a1a1; /* Soft Seafoam Grey */
+        --accent: #2aa198; /* Bright Cyan/Teal */
+        --card: rgba(0, 43, 54, 0.85);
+        --glow: rgba(42, 161, 152, 0.4);
+        --bg-img: url('https://images.unsplash.com/photo-1518467166778-b88f373ffec7?auto=format&fit=crop&q=80&w=2070');
+    }
+
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; transition: all 0.5s ease; }
-    
-    body { background-color: var(--bg); color: var(--text); min-height: 100vh; position: relative; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; position: relative; overflow-x: hidden; }
 
     .bg-layer {
         position: fixed; inset: 0;
         background-image: var(--bg-img);
         background-size: cover; background-position: center;
-        opacity: 0.15; z-index: -1;
+        opacity: 0.2; z-index: -1;
     }
 
     .hidden { display: none !important; }
 
-    /* LAYOUT COMPONENTS */
+    /* LAYOUT */
     .topbar { 
         position: fixed; top: 0; width: 100%; padding: 20px 40px; 
         display: flex; justify-content: space-between; align-items: center; 
@@ -56,21 +61,20 @@
         background: var(--card); height: 240px; padding: 20px; border-radius: 12px;
         border: 1px solid var(--text); cursor: pointer; display: flex; 
         flex-direction: column; justify-content: space-between;
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(10px);
     }
     .sticky-note:hover { 
         transform: scale(1.02) translateY(-5px); 
         box-shadow: 0 10px 30px var(--glow);
         background: var(--bg);
+        border-color: var(--accent);
     }
 
-    /* BUTTONS & INPUTS */
     .btn { padding: 10px 20px; border-radius: 6px; border: 1px solid var(--text); font-weight: bold; cursor: pointer; background: transparent; color: inherit; }
     .btn-create { background: var(--accent); color: #fff; border: none; }
     
     select { background: var(--bg); color: var(--text); border: 1px solid var(--text); padding: 8px 15px; border-radius: 20px; cursor: pointer; outline: none; }
 
-    /* OVERLAYS */
     .full-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; padding: 60px; display: none; overflow-y: auto; }
     .active { display: block !important; }
   </style>
@@ -78,29 +82,26 @@
 <body>
 
     <div class="bg-layer"></div>
-    <div id="splash" style="position:fixed; inset:0; background:#000; z-index:5000; display:none; justify-content:center; align-items:center; font-size:2.5em; color:var(--accent);"></div>
+    <div id="splash" style="position:fixed; inset:0; background:#000; z-index:5000; display:none; justify-content:center; align-items:center; font-size:2.5em; color:var(--accent); font-weight: bold;"></div>
 
     <div id="loginPage" style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
         <h1 style="margin-bottom:10px; font-size: 3.5em; letter-spacing: 2px;">VikingCloud</h1>
         <p style="margin-bottom:40px; opacity: 0.7; letter-spacing: 4px; font-size: 0.8em; text-transform: uppercase;">Compliance Knowledge Hub</p>
         <div style="display:flex; gap:30px;">
-            <div style="background: var(--card); border:1px solid var(--text); padding:50px 70px; border-radius:20px; cursor:pointer; text-align: center;" onclick="startEditorLogin()">
-                <h2 style="font-size: 1.5em;">EDITOR</h2>
-            </div>
-            <div style="background: var(--card); border:1px solid var(--text); padding:50px 70px; border-radius:20px; cursor:pointer; text-align: center;" onclick="startViewerLogin()">
-                <h2 style="font-size: 1.5em;">VIEWER</h2>
-            </div>
+            <div style="background: var(--card); border:1px solid var(--text); padding:50px 70px; border-radius:20px; cursor:pointer;" onclick="startEditorLogin()"><h2>EDITOR</h2></div>
+            <div style="background: var(--card); border:1px solid var(--text); padding:50px 70px; border-radius:20px; cursor:pointer;" onclick="startViewerLogin()"><h2>VIEWER</h2></div>
         </div>
     </div>
 
     <div id="mainDashboard" class="hidden">
         <div class="topbar">
-            <div id="welcomeMsg" style="font-weight:bold; font-size: 1.1em; letter-spacing: 1px;">VikingCloud Hub</div>
+            <div id="welcomeMsg" style="font-weight:bold; letter-spacing: 1px;">VikingCloud Hub</div>
             <div>
-                <select onchange="setTheme(this.value)">
+                <select id="themePicker" onchange="setTheme(this.value)">
                     <option value="default">🌌 Dark Navy</option>
                     <option value="forest">🌲 Forest</option>
                     <option value="cream">📜 Muted Beige</option>
+                    <option value="ocean">🌊 Deep Ocean</option>
                 </select>
                 <button id="addEditorBtn" class="btn hidden" onclick="addNewEditor()" style="margin-left: 10px;">+ Add Editor</button>
                 <button id="createTrigger" class="btn btn-create hidden" onclick="openEditor()">+ Create Note</button>
@@ -124,7 +125,7 @@
     </div>
 
     <div id="fullView" class="full-overlay">
-        <button class="btn" onclick="closeFullView()">← Back to Dashboard</button>
+        <button class="btn" onclick="closeFullView()">← Back</button>
         <div style="max-width:900px; margin: 40px auto;">
             <h1 id="viewTitle" style="font-size:3.5em; color:var(--accent); margin-bottom:30px;"></h1>
             <p id="viewBody" style="white-space:pre-wrap; line-height:1.8; font-size:1.3em;"></p>
@@ -142,23 +143,17 @@
         async function startEditorLogin() {
             const pass = prompt("Enter Editor Password:");
             if (pass === "viking2026") {
-                const nameInput = prompt("Verify Name:");
+                const nameInput = prompt("Verify Your Name:");
                 if(!nameInput) return;
-                
-                const { data, error } = await client.from('authorized_editors')
-                    .select('*')
-                    .ilike('name', nameInput) 
-                    .single();
-
+                const { data } = await client.from('authorized_editors').select('*').ilike('name', nameInput).single();
                 if (data) {
                     editorName = data.name; role = 'editor';
                     showSplash(`Welcome, Editor ${editorName}`);
-                } else { alert("User not found in authorized database."); }
+                } else { alert("Access Denied: Name not found in authorized list."); }
             } else { alert("Incorrect Password."); }
         }
 
         function startViewerLogin() { role = 'viewer'; enterDashboard(); }
-
         function showSplash(msg) {
             const s = document.getElementById('splash');
             s.innerText = msg; s.style.display = 'flex';
@@ -184,9 +179,9 @@
                 const card = document.createElement('div');
                 card.className = 'sticky-note';
                 card.onclick = () => viewNote(note);
-                let tools = role === 'editor' ? `<div style="margin-top:10px; display:flex; gap:10px;">
+                let tools = role === 'editor' ? `<div style="margin-top:10px; opacity: 0.6;">
                     <span style="font-size:11px; text-decoration:underline; cursor:pointer;" onclick="event.stopPropagation(); openEditNote(${JSON.stringify(note).replace(/"/g, '&quot;')})">Edit</span>
-                    <span style="font-size:11px; text-decoration:underline; color:rgba(255,0,0,0.6); cursor:pointer;" onclick="event.stopPropagation(); deleteNote(${note.id})">Delete</span>
+                    <span style="font-size:11px; text-decoration:underline; margin-left:10px; color:red; cursor:pointer;" onclick="event.stopPropagation(); deleteNote(${note.id})">Del</span>
                 </div>` : '';
                 card.innerHTML = `<div><h3>${note.title}</h3><p style="font-size:0.9em; opacity:0.8; overflow:hidden; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical;">${note.content}</p></div>${tools}`;
                 feed.appendChild(card);
@@ -194,34 +189,26 @@
         }
 
         async function addNewEditor() {
-            const newName = prompt("Name of new Editor to add:");
-            if (newName) {
-                const { error } = await client.from('authorized_editors').insert([{ name: newName }]);
-                if(!error) alert(newName + " has been authorized.");
-                else alert("Error: " + error.message);
-            }
+            const n = prompt("Enter name of new Editor:");
+            if(n) { await client.from('authorized_editors').insert([{ name: n }]); alert(n + " added."); }
         }
 
         async function saveNote() {
-            const title = document.getElementById('postTitle').value;
-            const content = document.getElementById('postContent').value;
+            const t = document.getElementById('postTitle').value;
+            const c = document.getElementById('postContent').value;
             const id = document.getElementById('editId').value;
-            if(!title || !content) return alert("Please fill in both title and content.");
-            
-            let res;
-            if(id) res = await client.from('posts').update({ title, content }).eq('id', id);
-            else res = await client.from('posts').insert([{ title, content }]);
-            
-            if(!res.error) { closeNoteEditor(); loadNotes(); }
-            else alert("Error saving: " + res.error.message);
+            if(!t || !c) return;
+            if(id) await client.from('posts').update({ title:t, content:c }).eq('id', id);
+            else await client.from('posts').insert([{ title:t, content:c }]);
+            closeNoteEditor(); loadNotes();
         }
 
-        async function deleteNote(id) { if(confirm("Delete this update permanently?")) { await client.from('posts').delete().eq('id', id); loadNotes(); } }
+        async function deleteNote(id) { if(confirm("Delete?")) { await client.from('posts').delete().eq('id', id); loadNotes(); } }
         function viewNote(note) { document.getElementById('viewTitle').innerText = note.title; document.getElementById('viewBody').innerText = note.content; document.getElementById('fullView').classList.add('active'); }
         function openEditNote(note) { document.getElementById('editorHeading').innerText = "Edit Note"; document.getElementById('editId').value = note.id; document.getElementById('postTitle').value = note.title; document.getElementById('postContent').value = note.content; document.getElementById('noteEditor').classList.add('active'); }
         function closeFullView() { document.getElementById('fullView').classList.remove('active'); }
         function openEditor() { document.getElementById('editorHeading').innerText = "New Update"; document.getElementById('noteEditor').classList.add('active'); }
-        function closeNoteEditor() { document.getElementById('noteEditor').classList.remove('active'); document.getElementById('editId').value = ''; document.getElementById('postTitle').value = ''; document.getElementById('postContent').value = ''; }
+        function closeNoteEditor() { document.getElementById('noteEditor').classList.remove('active'); document.getElementById('editId').value = ''; }
         function setTheme(t) { document.body.className = (t === 'default' ? '' : 'theme-' + t); }
     </script>
 </body>
