@@ -3,170 +3,129 @@
 <head>
   <title>VikingCloud Compliance Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:Segoe UI; }
-
-    body {
-      height:100vh;
-      overflow-x:hidden;
-      position:relative;
-      color:white;
-    }
-
-    .hidden { display:none; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+    body { height:100vh; overflow-x:hidden; background:#111; color:white; }
+    .hidden { display:none !important; }
 
     /* 15% Background */
     .bg-image {
-      position:fixed;
-      inset:0;
+      position:fixed; inset:0;
       background:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');
-      background-size:cover;
-      background-position:center;
-      opacity:0.15;
-      z-index:-1;
+      background-size:cover; background-position:center;
+      opacity:0.15; z-index:-1;
     }
 
-    /* Login Screen */
+    /* Modern Login Box */
     .login-screen {
-      height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:#111;
+      height:100vh; display:flex; justify-content:center; align-items:center;
     }
-
     .login-box {
-      background:white;
-      color:black;
-      padding:40px;
-      border-radius:12px;
-      width:320px;
+      background:rgba(255,255,255,0.95); color:black;
+      padding:40px; border-radius:12px; width:350px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-
-    .login-box input {
-      width:100%;
-      padding:10px;
-      margin:10px 0;
-    }
-
-    .login-box button {
-      width:100%;
-      padding:10px;
-      cursor:pointer;
-    }
-
-    /* Landing */
+    .login-box input { width:100%; padding:12px; margin:10px 0; border:1px solid #ccc; border-radius:6px; }
+    .login-box button { width:100%; padding:12px; cursor:pointer; background:#1a3668; color:white; border:none; border-radius:6px; font-weight:bold; }
+    
+    /* App Layout */
     .topbar {
-      position:fixed;
-      top:25px;
-      left:40px;
-      right:40px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+      position:fixed; top:0; left:0; right:0; padding:20px 40px;
+      display:flex; justify-content:space-between; align-items:center;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index:100;
     }
-
-    .posts {
-      margin-top:120px;
-      padding:40px;
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-      gap:20px;
-    }
-
-    .card {
-      background:rgba(255,255,255,0.08);
-      backdrop-filter:blur(8px);
-      padding:20px;
-      border-radius:16px;
-    }
-
-    .center-message {
-      position:absolute;
-      top:45%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      opacity:0.6;
-    }
-
+    .posts { margin-top:100px; padding:40px; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
+    .card { background:rgba(255,255,255,0.08); backdrop-filter:blur(8px); padding:20px; border-radius:16px; border: 1px solid rgba(255,255,255,0.1); }
+    .card h3 { color: #f39c12; margin-bottom: 10px; }
+    .center-message { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:0.6; text-align:center; }
   </style>
 </head>
 
 <body>
 
-  <!-- LOGIN SCREEN -->
   <div class="login-screen" id="loginScreen">
     <div class="login-box">
-      <h3>Compliance Hub Login</h3>
-      <input type="text" id="username" placeholder="Username">
+      <h3 style="margin-bottom:20px; text-align:center;">Compliance Hub Login</h3>
+      <input type="email" id="email" placeholder="Email (user@example.com)">
       <input type="password" id="password" placeholder="Password">
-      <button onclick="login()">Login</button>
-      <p style="font-size:12px;margin-top:10px;">
-        Editor: admin@vikingcloud.com  
-      </p>
+      <button onclick="handleLogin()">Sign In</button>
+      <p id="loginError" style="color:red; font-size:12px; margin-top:10px; display:none;"></p>
     </div>
   </div>
 
-  <!-- APP -->
   <div id="app" class="hidden">
     <div class="bg-image"></div>
 
     <div class="topbar">
-      <div>All Notes</div>
+      <div style="font-weight:bold; font-size:1.2em;">VikingCloud Hub</div>
       <div>
-        <button id="createBtn" class="hidden" onclick="createPost()">+ Create</button>
-        <button id="changeCredBtn" class="hidden" onclick="changeCredentials()">Change Login</button>
-        <button onclick="logout()">Logout</button>
+        <span id="userDisplay" style="margin-right:15px; font-size:0.9em; opacity:0.7;"></span>
+        <button id="createBtn" class="hidden" style="background:#28a745; color:white; padding:8px 15px; margin-right:5px; border-radius:4px;" onclick="createPost()">+ Create</button>
+        <button onclick="handleLogout()" style="background:#d93025; color:white; padding:8px 15px; border-radius:4px;">Logout</button>
       </div>
     </div>
 
-    <div class="center-message" id="emptyMessage">
-      No notes yet.
+    <div class="center-message hidden" id="emptyMessage">
+      <h2>No compliance notes available.</h2>
     </div>
 
     <div class="posts" id="posts"></div>
   </div>
 
   <script>
-    /* ✅ YOUR SUPABASE DETAILS (ALWAYS INCLUDED) */
     const supabaseUrl = "https://rspfzjybkicxgvcfqdzh.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-    /* Default Credentials */
-    let editorUsername = "admin@vikingcloud.com";
-    let editorPassword = "admin@vikingcloud.com";
-
-    let userRole = "viewer";
-
-    async function login() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      if (username === editorUsername && password === editorPassword) {
-        userRole = "editor";
+    // REAL-TIME AUTH LISTENER
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        showApp(session.user);
       } else {
-        userRole = "viewer";
+        showLogin();
       }
+    });
 
-      document.getElementById("loginScreen").classList.add("hidden");
-      document.getElementById("app").classList.remove("hidden");
+    async function handleLogin() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("loginError");
 
-      if (userRole === "editor") {
-        document.getElementById("createBtn").classList.remove("hidden");
-        document.getElementById("changeCredBtn").classList.remove("hidden");
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        errorDiv.innerText = error.message;
+        errorDiv.style.display = "block";
       }
-
-      loadPosts();
     }
 
-    function logout() {
+    async function handleLogout() {
+      await supabaseClient.auth.signOut();
       location.reload();
     }
 
+    function showApp(user) {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("app").classList.remove("hidden");
+      document.getElementById("userDisplay").innerText = user.email;
+
+      // Editor Logic: If email is admin, show create button
+      if (user.email === "admin@vikingcloud.com") {
+        document.getElementById("createBtn").classList.remove("hidden");
+      }
+      loadPosts();
+    }
+
+    function showLogin() {
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("app").classList.add("hidden");
+    }
+
     async function loadPosts() {
-      const { data } = await supabaseClient
+      const { data, error } = await supabaseClient
         .from("posts")
         .select("*")
         .order("created_at", { ascending: false });
@@ -175,40 +134,34 @@
       container.innerHTML = "";
 
       if (!data || data.length === 0) {
-        document.getElementById("emptyMessage").style.display = "block";
+        document.getElementById("emptyMessage").classList.remove("hidden");
         return;
       }
 
-      document.getElementById("emptyMessage").style.display = "none";
-
+      document.getElementById("emptyMessage").classList.add("hidden");
       data.forEach(post => {
         container.innerHTML += `
           <div class="card">
             <h3>${post.title}</h3>
             <p>${post.content}</p>
-          </div>
-        `;
+            <div style="font-size:10px; margin-top:15px; opacity:0.5;">
+              ${new Date(post.created_at).toLocaleDateString()}
+            </div>
+          </div>`;
       });
     }
 
-    function createPost() {
-      if (userRole !== "editor") return;
-      alert("Editor can create post (we can add modal next).");
-    }
-
-    function changeCredentials() {
-      if (userRole !== "editor") return;
-
-      const newUser = prompt("Enter new username:");
-      const newPass = prompt("Enter new password:");
-
-      if (newUser && newPass) {
-        editorUsername = newUser;
-        editorPassword = newPass;
-        alert("Credentials updated successfully.");
+    async function createPost() {
+      const title = prompt("Enter Note Title:");
+      const content = prompt("Enter Note Content:");
+      if (title && content) {
+        const { error } = await supabaseClient
+          .from("posts")
+          .insert([{ title, content }]);
+        if (error) alert(error.message);
+        else loadPosts();
       }
     }
   </script>
-
 </body>
 </html>
