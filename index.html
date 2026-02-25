@@ -5,9 +5,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     /* CSS THEMES */
-    :root { --bg: #111; --text: #fff; --accent: #f39c12; --card: rgba(255,255,255,0.08); --blur: blur(10px); }
-    .theme-cloud { --bg: #0f2027; --card: rgba(255,255,255,0.15); }
-    .theme-corp { --bg: #f4f7f6; --text: #1a3668; --card: #ffffff; --accent: #1a3668; }
+    :root { 
+        --bg: #111; --text: #fff; --accent: #f39c12; 
+        --card: rgba(255,255,255,0.08); --blur: blur(10px);
+        --glow: rgba(243, 156, 18, 0.3); /* Default Orange Glow */
+    }
+    .theme-cloud { --bg: #0f2027; --card: rgba(255,255,255,0.15); --glow: rgba(52, 152, 219, 0.4); }
+    .theme-corp { --bg: #f4f7f6; --text: #1a3668; --card: #ffffff; --accent: #1a3668; --glow: rgba(26, 54, 104, 0.2); }
 
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; transition: 0.3s ease; }
     body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; }
@@ -16,7 +20,7 @@
 
     /* SPLASH GREETING */
     #splash {
-        position: fixed; inset: 0; background: #111; z-index: 5000;
+        position: fixed; inset: 0; background: #000; z-index: 5000;
         display: flex; justify-content: center; align-items: center;
         font-size: 2.5em; font-weight: bold; color: var(--accent);
     }
@@ -28,12 +32,11 @@
         background: var(--card); padding: 40px; border-radius: 20px; width: 280px; cursor: pointer;
         border: 1px solid rgba(255,255,255,0.1); backdrop-filter: var(--blur);
     }
-    .role-card:hover { transform: translateY(-10px); border-color: var(--accent); }
+    .role-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 10px 30px var(--glow); }
 
     /* PAGE 2: DASHBOARD */
     .topbar { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: var(--bg); border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .theme-icons span { cursor: pointer; margin-left: 15px; font-size: 1.2em; }
-
+    
     /* GRID SYSTEM: 5x5 Pattern */
     .feed-grid { 
         display: grid; 
@@ -41,20 +44,25 @@
         gap: 20px; 
         padding: 120px 40px 40px; 
     }
+
+    /* STICKY NOTE WITH GLOW HOVER */
     .sticky-note { 
         background: var(--card); height: 240px; padding: 20px; border-radius: 12px;
-        border-bottom: 4px solid var(--accent); cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.05); cursor: pointer;
         display: flex; flex-direction: column; justify-content: space-between;
+        position: relative; overflow: hidden;
     }
-    .sticky-note:hover { transform: scale(1.03); }
-    .sticky-note h3 { font-size: 1.1em; color: var(--accent); }
+    .sticky-note:hover { 
+        transform: translateY(-5px);
+        background: var(--glow); /* The Light-up effect */
+        border-color: var(--accent);
+        box-shadow: 0 0 20px var(--glow);
+    }
+    .sticky-note h3 { font-size: 1.1em; color: var(--accent); margin-bottom: 8px; }
     .sticky-note p { font-size: 0.85em; opacity: 0.8; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
 
-    /* FULL PAGE MODES */
-    .full-overlay { 
-        position: fixed; inset: 0; background: var(--bg); z-index: 1000; 
-        padding: 60px; display: none; overflow-y: auto;
-    }
+    /* OVERLAYS */
+    .full-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; padding: 60px; display: none; overflow-y: auto; }
     .active { display: block !important; }
     .content-max { max-width: 900px; margin: 0 auto; }
 
@@ -74,11 +82,11 @@
     <div id="loginPage">
         <h1>VikingCloud Compliance Hub</h1>
         <div class="role-container">
-            <div class="role-card" onclick="startLogin('editor')">
+            <div class="role-card" onclick="startEditorLogin()">
                 <h2>Editor</h2>
-                <p>Manage compliance updates and team access.</p>
+                <p>Manage compliance updates (Password required).</p>
             </div>
-            <div class="role-card" onclick="startLogin('viewer')">
+            <div class="role-card" onclick="startViewerLogin()">
                 <h2>Viewer</h2>
                 <p>Read-only access to compliance notes.</p>
             </div>
@@ -87,13 +95,11 @@
 
     <div id="mainDashboard" class="hidden">
         <div class="topbar">
-            <div>
-                <span id="welcomeMsg" style="font-weight:bold; font-size:1.2em;">VikingCloud Hub</span>
-            </div>
-            <div class="theme-icons">
-                <span onclick="setTheme('dark')">🌑</span>
-                <span onclick="setTheme('cloud')">☁️</span>
-                <span onclick="setTheme('corp')">🏢</span>
+            <div><span id="welcomeMsg" style="font-weight:bold; font-size:1.2em;">VikingCloud Hub</span></div>
+            <div class="theme-icons" style="font-size:1.3em;">
+                <span style="cursor:pointer;" onclick="setTheme('dark')">🌑</span>
+                <span style="cursor:pointer;" onclick="setTheme('cloud')">☁️</span>
+                <span style="cursor:pointer;" onclick="setTheme('corp')">🏢</span>
             </div>
             <div>
                 <button id="addEditorBtn" class="btn hidden" style="background:#8e44ad; color:white;" onclick="inviteEditor()">+ Add Editor</button>
@@ -104,20 +110,12 @@
         <div id="feed" class="feed-grid"></div>
     </div>
 
-    <div id="fullView" class="full-overlay">
-        <button class="btn" onclick="closeFullView()">← Back</button>
-        <div class="content-max">
-            <h1 id="viewTitle"></h1>
-            <p id="viewBody"></p>
-        </div>
-    </div>
-
+    <div id="fullView" class="full-overlay"><button class="btn" onclick="closeFullView()">← Back</button><div class="content-max"><h1 id="viewTitle"></h1><p id="viewBody"></p></div></div>
+    
     <div id="noteEditor" class="full-overlay">
         <div class="content-max">
             <h1 id="editorHeading">Create Update</h1>
-            <input type="hidden" id="editId">
-            <input type="text" id="postTitle" placeholder="Title...">
-            <textarea id="postContent" rows="15" placeholder="Details..."></textarea>
+            <input type="hidden" id="editId"><input type="text" id="postTitle" placeholder="Title..."><textarea id="postContent" rows="15" placeholder="Details..."></textarea>
             <button class="btn btn-create" onclick="saveNote()">Save & Publish</button>
             <button class="btn" onclick="closeNoteEditor()" style="background:none; color:gray;">Cancel</button>
         </div>
@@ -130,28 +128,33 @@
 
         let currentUserRole = 'viewer';
         let editorName = "";
+        const ADMIN_PASS = "viking2026"; // Change your password here
 
-        async function startLogin(role) {
-            if (role === 'editor') {
-                const name = prompt("Enter your Name:");
-                if(!name) return;
-                editorName = name;
-                currentUserRole = 'editor';
-                showSplash(`Welcome, Editor ${name}`);
+        // LOGIN GATE
+        function startEditorLogin() {
+            const pass = prompt("Enter Editor Password:");
+            if (pass === ADMIN_PASS) {
+                const name = prompt("Identify yourself (Editor Name):");
+                if (name) {
+                    editorName = name;
+                    currentUserRole = 'editor';
+                    showSplash(`Welcome, Editor ${name}`);
+                }
             } else {
-                currentUserRole = 'viewer';
-                enterDashboard();
+                alert("Incorrect Password.");
             }
+        }
+
+        function startViewerLogin() {
+            currentUserRole = 'viewer';
+            enterDashboard();
         }
 
         function showSplash(msg) {
             const s = document.getElementById('splash');
             s.innerText = msg;
             s.classList.remove('hidden');
-            setTimeout(() => {
-                s.classList.add('hidden');
-                enterDashboard();
-            }, 2000);
+            setTimeout(() => { s.classList.add('hidden'); enterDashboard(); }, 2000);
         }
 
         function enterDashboard() {
@@ -159,8 +162,9 @@
             document.getElementById('mainDashboard').classList.remove('hidden');
             if (currentUserRole === 'editor') {
                 document.getElementById('welcomeMsg').innerText = `Hello, ${editorName}`;
-                document.getElementById('createTrigger').classList.remove('hidden');
-                document.getElementById('addEditorBtn').classList.remove('hidden');
+                document.querySelectorAll('.hidden').forEach(el => {
+                    if(el.id === 'createTrigger' || el.id === 'addEditorBtn') el.classList.remove('hidden');
+                });
             }
             loadNotes();
         }
@@ -173,34 +177,35 @@
                 const card = document.createElement('div');
                 card.className = 'sticky-note';
                 card.onclick = () => viewNote(note);
-                
-                let controls = '';
-                if(currentUserRole === 'editor') {
-                    controls = `<div>
-                        <button class="btn btn-edit" onclick="event.stopPropagation(); openEditNote(${JSON.stringify(note).replace(/"/g, '&quot;')})">Edit</button>
-                        <button class="btn btn-delete" onclick="event.stopPropagation(); deleteNote(${note.id})">Delete</button>
-                    </div>`;
-                }
-                
+                let controls = currentUserRole === 'editor' ? `<div>
+                    <button class="btn btn-edit" onclick="event.stopPropagation(); openEditNote(${JSON.stringify(note).replace(/"/g, '&quot;')})">Edit</button>
+                    <button class="btn btn-delete" onclick="event.stopPropagation(); deleteNote(${note.id})">Delete</button>
+                </div>` : '';
                 card.innerHTML = `<div><h3>${note.title}</h3><p>${note.content}</p></div>${controls}`;
                 feed.appendChild(card);
             });
         }
 
+        // SUPABASE ACTIONS
         async function saveNote() {
             const title = document.getElementById('postTitle').value;
             const content = document.getElementById('postContent').value;
             const id = document.getElementById('editId').value;
-            
-            if(id) {
-                await client.from('posts').update({ title, content }).eq('id', id);
-            } else {
-                await client.from('posts').insert([{ title, content }]);
-            }
-            closeNoteEditor();
-            loadNotes();
+            if(id) await client.from('posts').update({ title, content }).eq('id', id);
+            else await client.from('posts').insert([{ title, content }]);
+            closeNoteEditor(); loadNotes();
         }
 
+        async function deleteNote(id) {
+            if(confirm("Delete this?")) { await client.from('posts').delete().eq('id', id); loadNotes(); }
+        }
+
+        // NAVIGATION
+        function viewNote(note) {
+            document.getElementById('viewTitle').innerText = note.title;
+            document.getElementById('viewBody').innerText = note.content;
+            document.getElementById('fullView').classList.add('active');
+        }
         function openEditNote(note) {
             document.getElementById('editorHeading').innerText = "Edit Update";
             document.getElementById('editId').value = note.id;
@@ -208,36 +213,9 @@
             document.getElementById('postContent').value = note.content;
             document.getElementById('noteEditor').classList.add('active');
         }
-
-        async function deleteNote(id) {
-            if(confirm("Delete this?")) {
-                await client.from('posts').delete().eq('id', id);
-                loadNotes();
-            }
-        }
-
-        function inviteEditor() {
-            const email = prompt("Enter the email of the new Editor to authorize:");
-            if(email) alert(`Access invitation sent to ${email} (Mock Logic)`);
-        }
-
-        function viewNote(note) {
-            document.getElementById('viewTitle').innerText = note.title;
-            document.getElementById('viewBody').innerText = note.content;
-            document.getElementById('fullView').classList.add('active');
-        }
-
         function closeFullView() { document.getElementById('fullView').classList.remove('active'); }
-        function openEditor() { 
-            document.getElementById('editorHeading').innerText = "Create Update";
-            document.getElementById('noteEditor').classList.add('active'); 
-        }
-        function closeNoteEditor() { 
-            document.getElementById('noteEditor').classList.remove('active');
-            document.getElementById('editId').value = '';
-            document.getElementById('postTitle').value = '';
-            document.getElementById('postContent').value = '';
-        }
+        function openEditor() { document.getElementById('editorHeading').innerText = "Create Update"; document.getElementById('noteEditor').classList.add('active'); }
+        function closeNoteEditor() { document.getElementById('noteEditor').classList.remove('active'); }
         function setTheme(t) { document.body.className = 'theme-' + t; }
     </script>
 </body>
