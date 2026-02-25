@@ -4,60 +4,107 @@
   <title>VikingCloud - Compliance Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* THEMES */
-    :root { --bg: #0a192f; --text: #c5a059; --accent: #d4af37; --card: rgba(255, 255, 255, 0.05); --glow: rgba(197, 160, 89, 0.2); }
-    .theme-forest { --bg: #0b1a0e; --text: #708238; --accent: #bab86c; --card: rgba(255, 255, 255, 0.03); --glow: rgba(112, 130, 56, 0.25); }
-    .theme-cream { --bg: #fff5e1; --text: #d99a7d; --accent: #bc856d; --card: rgba(0, 0, 0, 0.03); --glow: rgba(217, 154, 125, 0.2); }
+    /* 🎨 REFINED VISUAL THEMES */
+    :root { 
+        --bg: #0a192f; --text: #c5a059; --accent: #d4af37; 
+        --card: rgba(10, 25, 47, 0.85); --glow: rgba(197, 160, 89, 0.3);
+        --bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2072');
+    }
+    
+    .theme-forest { 
+        --bg: #0b1a0e; --text: #708238; --accent: #bab86c; 
+        --card: rgba(11, 26, 14, 0.85); --glow: rgba(112, 130, 56, 0.4);
+        --bg-img: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=2071');
+    }
 
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; transition: 0.4s ease; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; }
+    /* Sweet Creamery - Lowered Exposure Version */
+    .theme-cream { 
+        --bg: #dccab0; /* Muted from #fff5e1 (-1.5 exposure feel) */
+        --text: #7a5a4a; /* Darkened for better contrast on muted bg */
+        --accent: #96634d; 
+        --card: rgba(220, 202, 176, 0.9); 
+        --glow: rgba(122, 90, 74, 0.2);
+        --bg-img: url('https://images.unsplash.com/photo-1516550893923-42d28e5677af?auto=format&fit=crop&q=80&w=2072');
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; transition: all 0.5s ease; }
+    
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; position: relative; }
+
+    .bg-layer {
+        position: fixed; inset: 0;
+        background-image: var(--bg-img);
+        background-size: cover; background-position: center;
+        opacity: 0.2; z-index: -1;
+    }
+
     .hidden { display: none !important; }
 
-    /* LAYOUT */
-    .topbar { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: var(--bg); border-bottom: 1px solid var(--card); }
-    .feed-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 120px 40px 40px; }
-    
-    /* STICKY NOTE */
+    /* LAYOUT COMPONENTS */
+    .topbar { 
+        position: fixed; top: 0; width: 100%; padding: 20px 40px; 
+        display: flex; justify-content: space-between; align-items: center; 
+        z-index: 100; background: var(--bg); border-bottom: 1px solid var(--text);
+    }
+
+    .feed-grid { 
+        display: grid; grid-template-columns: repeat(5, 1fr); 
+        gap: 20px; padding: 120px 40px 40px; 
+    }
+
     .sticky-note { 
         background: var(--card); height: 240px; padding: 20px; border-radius: 12px;
-        border: 1px solid transparent; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;
+        border: 1px solid var(--text); cursor: pointer; display: flex; 
+        flex-direction: column; justify-content: space-between;
+        backdrop-filter: blur(8px);
     }
-    .sticky-note:hover { background: var(--bg); border-color: var(--accent); box-shadow: 0 0 25px var(--glow); transform: scale(1.02); }
+    .sticky-note:hover { 
+        transform: scale(1.02) translateY(-5px); 
+        box-shadow: 0 10px 30px var(--glow);
+        background: var(--bg);
+    }
+
+    /* BUTTONS & INPUTS */
+    .btn { padding: 10px 20px; border-radius: 6px; border: 1px solid var(--text); font-weight: bold; cursor: pointer; background: transparent; color: inherit; }
+    .btn-create { background: var(--accent); color: var(--bg); border: none; }
     
-    /* THEME DROPDOWN */
-    .theme-dropdown select { background: var(--card); color: var(--text); border: 1px solid var(--text); padding: 8px 15px; border-radius: 20px; cursor: pointer; }
+    select { background: var(--bg); color: var(--text); border: 1px solid var(--text); padding: 8px 15px; border-radius: 20px; cursor: pointer; outline: none; }
 
     /* OVERLAYS */
     .full-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; padding: 60px; display: none; overflow-y: auto; }
     .active { display: block !important; }
-    .btn { padding: 10px 20px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
-    input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; background: var(--card); color: var(--text); border: 1px solid var(--text); border-radius: 8px; }
   </style>
 </head>
 <body>
 
+    <div class="bg-layer"></div>
     <div id="splash" style="position:fixed; inset:0; background:#000; z-index:5000; display:none; justify-content:center; align-items:center; font-size:2.5em; color:var(--accent);"></div>
 
     <div id="loginPage" style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-        <h1 style="margin-bottom:30px;">VikingCloud Compliance Hub</h1>
-        <div style="display:flex; gap:20px;">
-            <div style="border:1px solid var(--text); padding:40px; border-radius:20px; cursor:pointer;" onclick="startEditorLogin()"><h2>Editor</h2></div>
-            <div style="border:1px solid var(--text); padding:40px; border-radius:20px; cursor:pointer;" onclick="startViewerLogin()"><h2>Viewer</h2></div>
+        <h1 style="margin-bottom:10px; font-size: 3.5em; letter-spacing: 2px;">VikingCloud</h1>
+        <p style="margin-bottom:40px; opacity: 0.7; letter-spacing: 4px; font-size: 0.8em; text-transform: uppercase;">Compliance Knowledge Hub</p>
+        <div style="display:flex; gap:30px;">
+            <div style="background: var(--card); border:1px solid var(--text); padding:50px 70px; border-radius:20px; cursor:pointer; text-align: center;" onclick="startEditorLogin()">
+                <h2 style="font-size: 1.5em;">EDITOR</h2>
+            </div>
+            <div style="background: var(--card); border:1px solid var(--text); padding:50px 70px; border-radius:20px; cursor:pointer; text-align: center;" onclick="startViewerLogin()">
+                <h2 style="font-size: 1.5em;">VIEWER</h2>
+            </div>
         </div>
     </div>
 
     <div id="mainDashboard" class="hidden">
         <div class="topbar">
-            <div id="welcomeMsg" style="font-weight:bold;">VikingCloud Hub</div>
+            <div id="welcomeMsg" style="font-weight:bold; font-size: 1.1em; letter-spacing: 1px;">VikingCloud Hub</div>
             <div>
-                <select onchange="setTheme(this.value)" style="background:none; color:inherit; margin-right:15px; border-radius:10px; padding:5px;">
+                <select onchange="setTheme(this.value)">
                     <option value="default">🌌 Dark Navy</option>
                     <option value="forest">🌲 Forest</option>
                     <option value="cream">🍦 Sweet Creamery</option>
                 </select>
-                <button id="addEditorBtn" class="btn hidden" style="background:var(--card); color:var(--text); border:1px solid var(--text);" onclick="addNewEditor()">+ Add Editor</button>
-                <button id="createTrigger" class="btn hidden" style="background:var(--accent); color:var(--bg);" onclick="openEditor()">+ Create Note</button>
-                <button class="btn" onclick="location.reload()" style="background:none; color:var(--text);">Logout</button>
+                <button id="addEditorBtn" class="btn hidden" onclick="addNewEditor()" style="margin-left: 10px;">+ Add Editor</button>
+                <button id="createTrigger" class="btn btn-create hidden" onclick="openEditor()">+ Create Note</button>
+                <button class="btn" onclick="location.reload()" style="border:none; opacity: 0.6;">Logout</button>
             </div>
         </div>
         <div id="feed" class="feed-grid"></div>
@@ -65,16 +112,24 @@
 
     <div id="noteEditor" class="full-overlay">
         <div style="max-width:800px; margin:auto;">
-            <h1 id="editorHeading">New Update</h1>
+            <h1 id="editorHeading" style="margin-bottom:30px;">New Update</h1>
             <input type="hidden" id="editId">
-            <input type="text" id="postTitle" placeholder="Title...">
-            <textarea id="postContent" rows="15" placeholder="Details..."></textarea>
-            <button class="btn" style="background:var(--accent); color:var(--bg);" onclick="saveNote()">Publish</button>
-            <button class="btn" onclick="closeNoteEditor()">Cancel</button>
+            <input type="text" id="postTitle" placeholder="Update Title..." style="width:100%; padding:20px; margin-bottom:20px; background:var(--card); color:inherit; border:1px solid var(--text); font-size: 1.2em;">
+            <textarea id="postContent" rows="15" placeholder="Compliance details..." style="width:100%; padding:20px; margin-bottom:20px; background:var(--card); color:inherit; border:1px solid var(--text); font-size: 1.1em;"></textarea>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-create" onclick="saveNote()">Publish Update</button>
+                <button class="btn" onclick="closeNoteEditor()">Cancel</button>
+            </div>
         </div>
     </div>
 
-    <div id="fullView" class="full-overlay"><button class="btn" onclick="closeFullView()">← Back</button><h1 id="viewTitle" style="margin-top:20px;"></h1><p id="viewBody" style="margin-top:20px; white-space:pre-wrap;"></p></div>
+    <div id="fullView" class="full-overlay">
+        <button class="btn" onclick="closeFullView()">← Back to Dashboard</button>
+        <div style="max-width:900px; margin: 40px auto;">
+            <h1 id="viewTitle" style="font-size:3.5em; color:var(--accent); margin-bottom:30px;"></h1>
+            <p id="viewBody" style="white-space:pre-wrap; line-height:1.8; font-size:1.3em;"></p>
+        </div>
+    </div>
 
     <script>
         const _U = "https://rspfzjybkicxgvcfqdzh.supabase.co";
@@ -85,18 +140,22 @@
         let editorName = '';
 
         async function startEditorLogin() {
-            const pass = prompt("Password:");
+            const pass = prompt("Enter Editor Password:");
             if (pass === "viking2026") {
-                const name = prompt("Your Name:");
-                // Check if name exists in our authorized list
-                const { data } = await client.from('authorized_editors').select('*').eq('name', name).single();
+                const nameInput = prompt("Verify Name:");
+                if(!nameInput) return;
+                
+                // CASE-INSENSITIVE SEARCH
+                const { data, error } = await client.from('authorized_editors')
+                    .select('*')
+                    .ilike('name', nameInput) 
+                    .single();
+
                 if (data) {
-                    editorName = name; role = 'editor';
-                    showSplash(`Welcome, Editor ${name}`);
-                } else {
-                    alert("You are not an authorized editor.");
-                }
-            } else { alert("Wrong password."); }
+                    editorName = data.name; role = 'editor';
+                    showSplash(`Welcome, Editor ${editorName}`);
+                } else { alert("User not found in authorized database."); }
+            } else { alert("Incorrect Password."); }
         }
 
         function startViewerLogin() { role = 'viewer'; enterDashboard(); }
@@ -126,22 +185,21 @@
                 const card = document.createElement('div');
                 card.className = 'sticky-note';
                 card.onclick = () => viewNote(note);
-                let tools = role === 'editor' ? `<div style="margin-top:10px;">
-                    <button class="btn" style="font-size:10px; background:var(--accent); color:var(--bg);" onclick="event.stopPropagation(); openEditNote(${JSON.stringify(note).replace(/"/g, '&quot;')})">Edit</button>
-                    <button class="btn" style="font-size:10px; background:rgba(255,0,0,0.3); color:white;" onclick="event.stopPropagation(); deleteNote(${note.id})">Del</button>
+                let tools = role === 'editor' ? `<div style="margin-top:10px; display:flex; gap:10px;">
+                    <span style="font-size:11px; text-decoration:underline; cursor:pointer;" onclick="event.stopPropagation(); openEditNote(${JSON.stringify(note).replace(/"/g, '&quot;')})">Edit</span>
+                    <span style="font-size:11px; text-decoration:underline; color:rgba(255,0,0,0.6); cursor:pointer;" onclick="event.stopPropagation(); deleteNote(${note.id})">Delete</span>
                 </div>` : '';
-                card.innerHTML = `<div><h3>${note.title}</h3><p>${note.content}</p></div>${tools}`;
+                card.innerHTML = `<div><h3>${note.title}</h3><p style="font-size:0.9em; opacity:0.8; overflow:hidden; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical;">${note.content}</p></div>${tools}`;
                 feed.appendChild(card);
             });
         }
 
-        // REAL "ADD EDITOR" LOGIC
         async function addNewEditor() {
-            const newName = prompt("Enter the name of the new Editor to authorize:");
+            const newName = prompt("Name of new Editor to add:");
             if (newName) {
                 const { error } = await client.from('authorized_editors').insert([{ name: newName }]);
-                if (!error) alert(`${newName} is now an authorized Editor!`);
-                else alert("Error adding editor.");
+                if(!error) alert(newName + " has been authorized.");
+                else alert("Error: " + error.message);
             }
         }
 
@@ -149,28 +207,23 @@
             const title = document.getElementById('postTitle').value;
             const content = document.getElementById('postContent').value;
             const id = document.getElementById('editId').value;
-            if(!title || !content) return alert("Missing fields");
+            if(!title || !content) return alert("Please fill in both title and content.");
             
-            let error;
-            if(id) {
-                const res = await client.from('posts').update({ title, content }).eq('id', id);
-                error = res.error;
-            } else {
-                const res = await client.from('posts').insert([{ title, content }]);
-                error = res.error;
-            }
+            let res;
+            if(id) res = await client.from('posts').update({ title, content }).eq('id', id);
+            else res = await client.from('posts').insert([{ title, content }]);
             
-            if(!error) { closeNoteEditor(); loadNotes(); }
-            else { alert("Error saving to Supabase: " + error.message); }
+            if(!res.error) { closeNoteEditor(); loadNotes(); }
+            else alert("Error saving: " + res.error.message);
         }
 
-        async function deleteNote(id) { if(confirm("Delete?")) { await client.from('posts').delete().eq('id', id); loadNotes(); } }
+        async function deleteNote(id) { if(confirm("Delete this update permanently?")) { await client.from('posts').delete().eq('id', id); loadNotes(); } }
         function viewNote(note) { document.getElementById('viewTitle').innerText = note.title; document.getElementById('viewBody').innerText = note.content; document.getElementById('fullView').classList.add('active'); }
-        function openEditNote(note) { document.getElementById('editorHeading').innerText = "Edit Update"; document.getElementById('editId').value = note.id; document.getElementById('postTitle').value = note.title; document.getElementById('postContent').value = note.content; document.getElementById('noteEditor').classList.add('active'); }
+        function openEditNote(note) { document.getElementById('editorHeading').innerText = "Edit Note"; document.getElementById('editId').value = note.id; document.getElementById('postTitle').value = note.title; document.getElementById('postContent').value = note.content; document.getElementById('noteEditor').classList.add('active'); }
         function closeFullView() { document.getElementById('fullView').classList.remove('active'); }
         function openEditor() { document.getElementById('editorHeading').innerText = "New Update"; document.getElementById('noteEditor').classList.add('active'); }
         function closeNoteEditor() { document.getElementById('noteEditor').classList.remove('active'); document.getElementById('editId').value = ''; document.getElementById('postTitle').value = ''; document.getElementById('postContent').value = ''; }
-        function setTheme(t) { document.body.className = ''; if(t !== 'default') document.body.classList.add('theme-' + t); }
+        function setTheme(t) { document.body.className = (t === 'default' ? '' : 'theme-' + t); }
     </script>
 </body>
 </html>
