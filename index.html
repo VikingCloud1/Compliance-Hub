@@ -1,167 +1,196 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>VikingCloud Compliance Hub</title>
+  <title>VikingCloud - Compliance Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
-    body { height:100vh; overflow-x:hidden; background:#111; color:white; }
-    .hidden { display:none !important; }
+    /* CSS THEMES */
+    :root { --bg: #111; --text: #fff; --accent: #f39c12; --card: rgba(255,255,255,0.08); --blur: blur(10px); }
+    .theme-cloud { --bg: #0f2027; --card: rgba(255,255,255,0.15); }
+    .theme-corp { --bg: #f4f7f6; --text: #1a3668; --card: #ffffff; --accent: #1a3668; }
 
-    /* 15% Background */
-    .bg-image {
-      position:fixed; inset:0;
-      background:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');
-      background-size:cover; background-position:center;
-      opacity:0.15; z-index:-1;
-    }
-
-    /* Modern Login Box */
-    .login-screen {
-      height:100vh; display:flex; justify-content:center; align-items:center;
-    }
-    .login-box {
-      background:rgba(255,255,255,0.95); color:black;
-      padding:40px; border-radius:12px; width:350px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .login-box input { width:100%; padding:12px; margin:10px 0; border:1px solid #ccc; border-radius:6px; }
-    .login-box button { width:100%; padding:12px; cursor:pointer; background:#1a3668; color:white; border:none; border-radius:6px; font-weight:bold; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; transition: 0.3s ease; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; }
     
-    /* App Layout */
-    .topbar {
-      position:fixed; top:0; left:0; right:0; padding:20px 40px;
-      display:flex; justify-content:space-between; align-items:center;
-      background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index:100;
+    .hidden { display: none !important; }
+
+    /* PAGE 1: LOGIN SELECTION */
+    #loginPage { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+    .role-container { display: flex; gap: 20px; margin-top: 30px; }
+    .role-card { 
+        background: var(--card); padding: 40px; border-radius: 20px; width: 250px; cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.1); backdrop-filter: var(--blur);
     }
-    .posts { margin-top:100px; padding:40px; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
-    .card { background:rgba(255,255,255,0.08); backdrop-filter:blur(8px); padding:20px; border-radius:16px; border: 1px solid rgba(255,255,255,0.1); }
-    .card h3 { color: #f39c12; margin-bottom: 10px; }
-    .center-message { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:0.6; text-align:center; }
+    .role-card:hover { transform: translateY(-10px); border-color: var(--accent); }
+    .role-card h2 { margin-bottom: 10px; color: var(--accent); }
+
+    /* PAGE 2: DASHBOARD */
+    .topbar { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 100; background: var(--bg); }
+    .theme-icons span { cursor: pointer; margin-left: 15px; font-size: 1.2em; opacity: 0.6; }
+    .theme-icons span:hover { opacity: 1; color: var(--accent); }
+
+    /* GRID SYSTEM: 5x5 Pattern */
+    .feed-grid { 
+        display: grid; 
+        grid-template-columns: repeat(5, 1fr); /* Forced 5 columns */
+        gap: 20px; 
+        padding: 120px 40px 40px; 
+    }
+    .sticky-note { 
+        background: var(--card); height: 220px; padding: 20px; border-radius: 12px;
+        border-bottom: 4px solid var(--accent); cursor: pointer;
+        display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .sticky-note:hover { transform: scale(1.03); }
+    .sticky-note h3 { font-size: 1.1em; margin-bottom: 10px; color: var(--accent); }
+    .sticky-note p { font-size: 0.9em; opacity: 0.8; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
+
+    /* FULL PAGE VIEWING MODE */
+    #expandedView { 
+        position: fixed; inset: 0; background: var(--bg); z-index: 1000; 
+        padding: 60px; display: none; overflow-y: auto;
+    }
+    #expandedView.active { display: block; }
+    .expanded-content { max-width: 900px; margin: 0 auto; }
+    .expanded-content h1 { font-size: 3em; color: var(--accent); margin-bottom: 20px; }
+    .expanded-content p { font-size: 1.3em; line-height: 1.8; opacity: 0.9; white-space: pre-wrap; }
+
+    /* UI ELEMENTS */
+    .btn { padding: 10px 20px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
+    .btn-create { background: var(--accent); color: #fff; }
+    .btn-delete { background: #e74c3c; color: #fff; font-size: 0.7em; margin-top: 10px; }
+    
+    /* Input Styling */
+    input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.05); color: white; border: 1px solid #444; border-radius: 8px; font-size: 1.1em; }
   </style>
 </head>
+<body class="theme-cloud">
 
-<body>
-
-  <div class="login-screen" id="loginScreen">
-    <div class="login-box">
-      <h3 style="margin-bottom:20px; text-align:center;">Compliance Hub Login</h3>
-      <input type="email" id="email" placeholder="Email (user@example.com)">
-      <input type="password" id="password" placeholder="Password">
-      <button onclick="handleLogin()">Sign In</button>
-      <p id="loginError" style="color:red; font-size:12px; margin-top:10px; display:none;"></p>
-    </div>
-  </div>
-
-  <div id="app" class="hidden">
-    <div class="bg-image"></div>
-
-    <div class="topbar">
-      <div style="font-weight:bold; font-size:1.2em;">VikingCloud Hub</div>
-      <div>
-        <span id="userDisplay" style="margin-right:15px; font-size:0.9em; opacity:0.7;"></span>
-        <button id="createBtn" class="hidden" style="background:#28a745; color:white; padding:8px 15px; margin-right:5px; border-radius:4px;" onclick="createPost()">+ Create</button>
-        <button onclick="handleLogout()" style="background:#d93025; color:white; padding:8px 15px; border-radius:4px;">Logout</button>
-      </div>
-    </div>
-
-    <div class="center-message hidden" id="emptyMessage">
-      <h2>No compliance notes available.</h2>
-    </div>
-
-    <div class="posts" id="posts"></div>
-  </div>
-
-  <script>
-    const supabaseUrl = "https://rspfzjybkicxgvcfqdzh.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
-    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
-    // REAL-TIME AUTH LISTENER
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        showApp(session.user);
-      } else {
-        showLogin();
-      }
-    });
-
-    async function handleLogin() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const errorDiv = document.getElementById("loginError");
-
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
-
-      if (error) {
-        errorDiv.innerText = error.message;
-        errorDiv.style.display = "block";
-      }
-    }
-
-    async function handleLogout() {
-      await supabaseClient.auth.signOut();
-      location.reload();
-    }
-
-    function showApp(user) {
-      document.getElementById("loginScreen").classList.add("hidden");
-      document.getElementById("app").classList.remove("hidden");
-      document.getElementById("userDisplay").innerText = user.email;
-
-      // Editor Logic: If email is admin, show create button
-      if (user.email === "admin@vikingcloud.com") {
-        document.getElementById("createBtn").classList.remove("hidden");
-      }
-      loadPosts();
-    }
-
-    function showLogin() {
-      document.getElementById("loginScreen").classList.remove("hidden");
-      document.getElementById("app").classList.add("hidden");
-    }
-
-    async function loadPosts() {
-      const { data, error } = await supabaseClient
-        .from("posts")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      const container = document.getElementById("posts");
-      container.innerHTML = "";
-
-      if (!data || data.length === 0) {
-        document.getElementById("emptyMessage").classList.remove("hidden");
-        return;
-      }
-
-      document.getElementById("emptyMessage").classList.add("hidden");
-      data.forEach(post => {
-        container.innerHTML += `
-          <div class="card">
-            <h3>${post.title}</h3>
-            <p>${post.content}</p>
-            <div style="font-size:10px; margin-top:15px; opacity:0.5;">
-              ${new Date(post.created_at).toLocaleDateString()}
+    <div id="loginPage">
+        <h1>VikingCloud Compliance Portal</h1>
+        <p>Choose your access level to proceed</p>
+        <div class="role-container">
+            <div class="role-card" onclick="login('editor')">
+                <h2>Editor</h2>
+                <p>Post, Edit, and Delete compliance updates.</p>
             </div>
-          </div>`;
-      });
-    }
+            <div class="role-card" onclick="login('viewer')">
+                <h2>Viewer</h2>
+                <p>Browse and read current portal notes.</p>
+            </div>
+        </div>
+    </div>
 
-    async function createPost() {
-      const title = prompt("Enter Note Title:");
-      const content = prompt("Enter Note Content:");
-      if (title && content) {
-        const { error } = await supabaseClient
-          .from("posts")
-          .insert([{ title, content }]);
-        if (error) alert(error.message);
-        else loadPosts();
-      }
-    }
-  </script>
+    <div id="mainDashboard" class="hidden">
+        <div class="topbar">
+            <div style="font-weight:bold; font-size:1.4em;">VikingCloud Hub</div>
+            <div class="theme-icons">
+                <span onclick="setTheme('dark')">🌑</span>
+                <span onclick="setTheme('cloud')">☁️</span>
+                <span onclick="setTheme('corp')">🏢</span>
+            </div>
+            <div>
+                <button id="createTrigger" class="btn btn-create hidden" onclick="openEditor()">+ Create Note</button>
+                <button class="btn" onclick="location.reload()" style="background:#444; color:#fff; margin-left:10px;">Logout</button>
+            </div>
+        </div>
+
+        <div id="feed" class="feed-grid"></div>
+    </div>
+
+    <div id="expandedView">
+        <button class="btn" onclick="closeExpanded()" style="margin-bottom:30px;">← Close Note</button>
+        <div class="expanded-content">
+            <h1 id="expTitle"></h1>
+            <p id="expBody"></p>
+        </div>
+    </div>
+
+    <div id="editorMode" class="hidden" style="position:fixed; inset:0; background:var(--bg); z-index:2000; padding:60px;">
+        <div class="expanded-content">
+            <h1 id="editorLabel">New Compliance Note</h1>
+            <input type="text" id="postTitle" placeholder="Title of the update...">
+            <textarea id="postContent" rows="15" placeholder="Detailed compliance requirements..."></textarea>
+            <button class="btn btn-create" onclick="saveNote()">Publish to Hub</button>
+            <button class="btn" onclick="closeEditor()" style="background:none; color:gray;">Discard</button>
+        </div>
+    </div>
+
+    <script>
+        // Supabase Initialization
+        const supabaseUrl = "https://rspfzjybkicxgvcfqdzh.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
+        const client = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentUserRole = 'viewer';
+
+        // Login Logic
+        function login(role) {
+            currentUserRole = role;
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            if(role === 'editor') document.getElementById('createTrigger').classList.remove('hidden');
+            loadNotes();
+        }
+
+        // Theme Switcher
+        function setTheme(t) {
+            document.body.className = 'theme-' + t;
+        }
+
+        // CRUD Operations
+        async function loadNotes() {
+            const { data } = await client.from('posts').select('*').order('created_at', { ascending: false });
+            const feed = document.getElementById('feed');
+            feed.innerHTML = '';
+            data.forEach(note => {
+                const card = document.createElement('div');
+                card.className = 'sticky-note';
+                card.onclick = () => viewNote(note);
+                
+                let delBtn = currentUserRole === 'editor' ? `<button class="btn btn-delete" onclick="event.stopPropagation(); deleteNote(${note.id})">Delete</button>` : '';
+                
+                card.innerHTML = `<div><h3>${note.title}</h3><p>${note.content}</p></div>${delBtn}`;
+                feed.appendChild(card);
+            });
+        }
+
+        async function saveNote() {
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            if(!title || !content) return alert("Please fill both fields.");
+
+            await client.from('posts').insert([{ title, content }]);
+            closeEditor();
+            loadNotes();
+        }
+
+        async function deleteNote(id) {
+            if(confirm("Permanently remove this note?")) {
+                await client.from('posts').delete().eq('id', id);
+                loadNotes();
+            }
+        }
+
+        // Full Page Interaction Logic
+        function viewNote(note) {
+            document.getElementById('expTitle').innerText = note.title;
+            document.getElementById('expBody').innerText = note.content;
+            document.getElementById('expandedView').classList.add('active');
+            document.getElementById('mainDashboard').classList.add('hidden');
+        }
+
+        function closeExpanded() {
+            document.getElementById('expandedView').classList.remove('active');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+        }
+
+        function openEditor() { document.getElementById('editorMode').classList.remove('hidden'); }
+        function closeEditor() { 
+            document.getElementById('editorMode').classList.add('hidden');
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+        }
+    </script>
 </body>
 </html>
