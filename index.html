@@ -204,3 +204,53 @@ document.querySelector("button[onclick='verifyEditor()']")
     .setAttribute("onclick", "loginEditor()");
 
 </script>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Compliance Hub</title>
+</head>
+<body>
+
+<h1>Compliance Hub</h1>
+<div id="posts"></div>
+
+<!-- ✅ Correct Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const { createClient } = supabase;
+
+  const supabaseUrl = "YOUR_SUPABASE_URL";
+  const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+
+  const client = createClient(supabaseUrl, supabaseKey);
+
+  async function loadPosts() {
+    const { data, error } = await client
+      .from("posts")
+      .select("*");
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const container = document.getElementById("posts");
+    container.innerHTML = "";
+
+    data.forEach(post => {
+      container.innerHTML += `
+        <h3>${post.title}</h3>
+        <p>${post.content}</p>
+        <hr/>
+      `;
+    });
+  }
+
+  loadPosts();
+</script>
+
+</body>
+</html>
