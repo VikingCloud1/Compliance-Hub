@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Compliance Hub</title>
+</head>
+<body>
+
+<h1>Compliance Hub</h1>
+<div id="posts"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const { createClient } = window.supabase;
+
+  const supabaseUrl = "PASTE_YOUR_SUPABASE_URL_HERE";
+  const supabaseKey = "PASTE_YOUR_ANON_KEY_HERE";
+
+  const client = createClient(supabaseUrl, supabaseKey);
+
+  async function loadPosts() {
+    const { data, error } = await client
+      .from("posts")
+      .select("*");
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const container = document.getElementById("posts");
+    container.innerHTML = "";
+
+    data.forEach(post => {
+      container.innerHTML += `
+        <h3>${post.title}</h3>
+        <p>${post.content}</p>
+        <hr/>
+      `;
+    });
+  }
+
+  loadPosts();
+</script>
+
+</body>
+</html>
