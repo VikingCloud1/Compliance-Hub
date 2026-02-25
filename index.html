@@ -6,22 +6,113 @@
 <body>
 
 <h1>Compliance Hub</h1>
+
+<!-- 🔐 LOGIN SECTION -->
+<div id="auth-section">
+  <h3>Login</h3>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="logout()">Logout</button>
+  <p id="auth-message"></p>
+</div>
+
+<hr>
+
+<!-- ✍️ EDITOR SECTION -->
+<div id="editor-section" style="display:none;">
+  <h3>Create Post</h3>
+  <input type="text" id="title" placeholder="Title"><br><br>
+  <textarea id="content" placeholder="Content"></textarea><br><br>
+  <button onclick="createPost()">Publish</button>
+</div>
+
+<hr>
+
+<h2>Posts</h2>
 <div id="posts"></div>
 
+<!-- ✅ SUPABASE CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
   const { createClient } = window.supabase;
 
+  // 🔥🔥 REPLACE THESE 2 VALUES ONLY 🔥🔥
   const supabaseUrl = "https://rspfzjybkicxgvcfqdzh.supabase.co";
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
+  // 🔥🔥 DO NOT TOUCH ANYTHING ELSE 🔥🔥
 
   const client = createClient(supabaseUrl, supabaseKey);
+
+  async function checkUser() {
+    const { data: { user } } = await client.auth.getUser();
+
+    if (user) {
+      document.getElementById("editor-section").style.display = "block";
+      document.getElementById("auth-message").innerText =
+        "Logged in as " + user.email;
+    }
+  }
+
+  async function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const { error } = await client.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      document.getElementById("auth-message").innerText = error.message;
+    } else {
+      document.getElementById("auth-message").innerText = "Login successful";
+      checkUser();
+    }
+  }
+
+  async function logout() {
+    await client.auth.signOut();
+    location.reload();
+  }
+
+  async function createPost() {
+    const title = document.getElementById("title").value;
+    const content = document.getElementById("content").value;
+
+    const { error } = await client
+      .from("posts")
+      .insert([{ title, content }]);
+
+    if (error) {
+      alert(error.message);
+    } else {
+      alert("Post created successfully!");
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+      loadPosts();
+    }
+  }
+
+  async function deletePost(id) {
+    const { error } = await client
+      .from("posts")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      alert(error.message);
+    } else {
+      loadPosts();
+    }
+  }
 
   async function loadPosts() {
     const { data, error } = await client
       .from("posts")
-      .select("*");
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.error(error);
@@ -35,14 +126,15 @@
       container.innerHTML += `
         <h3>${post.title}</h3>
         <p>${post.content}</p>
+        <button onclick="deletePost(${post.id})">Delete</button>
         <hr/>
       `;
     });
   }
 
+  checkUser();
   loadPosts();
 </script>
 
 </body>
 </html>
-
