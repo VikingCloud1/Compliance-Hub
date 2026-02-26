@@ -93,25 +93,6 @@
         opacity: 0.6; margin-top: 2px; margin-bottom: 36px; font-weight: 300;
     }
 
-    /* Landing search */
-    .landing-search-wrap {
-        position: relative; width: 380px; margin-bottom: 44px;
-    }
-    .landing-search-wrap input {
-        width: 100%; padding: 14px 24px 14px 48px;
-        border-radius: 40px; background: var(--card);
-        border: 1px solid var(--text); color: var(--text);
-        outline: none; font-size: 0.95em; font-family: 'Raleway', sans-serif;
-        backdrop-filter: blur(10px);
-    }
-    .landing-search-wrap input::placeholder { color: var(--text); opacity: 0.45; }
-    .landing-search-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 20px var(--glow); }
-    .landing-search-icon {
-        position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
-        opacity: 0.5; pointer-events: none;
-    }
-    .landing-search-wrap input:focus + .landing-search-icon,
-    .landing-search-wrap:focus-within .landing-search-icon { opacity: 0.9; }
 
     .login-cards {
         display: flex; gap: 30px;
@@ -306,12 +287,111 @@
         color: var(--accent); letter-spacing: 1px;
         text-align: center;
     }
+
+    /* ── CUSTOM AUTH MODAL ── */
+    #authModal {
+        position: fixed; inset: 0; z-index: 8000;
+        display: none; justify-content: center; align-items: center;
+        background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+    }
+    #authModal.open { display: flex; }
+    .auth-box {
+        background: var(--bg); border: 1px solid var(--accent);
+        border-radius: 18px; padding: 40px 44px; width: 360px;
+        box-shadow: 0 0 60px var(--glow);
+        animation: dropIn 0.25s ease;
+    }
+    .auth-box h2 {
+        font-family: 'Cinzel', serif; letter-spacing: 3px;
+        font-size: 1em; color: var(--accent); margin-bottom: 24px;
+        text-align: center; text-transform: uppercase;
+    }
+    .auth-field {
+        position: relative; margin-bottom: 16px;
+    }
+    .auth-field label {
+        display: block; font-size: 0.72em; letter-spacing: 2px;
+        text-transform: uppercase; opacity: 0.55; margin-bottom: 6px;
+        font-family: 'Cinzel', serif;
+    }
+    .auth-field input {
+        width: 100%; padding: 12px 44px 12px 16px;
+        background: var(--card); border: 1px solid var(--text);
+        border-radius: 8px; color: var(--text); font-size: 0.95em;
+        font-family: 'Raleway', sans-serif; outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .auth-field input:focus { border-color: var(--accent); box-shadow: 0 0 14px var(--glow); }
+    /* eye toggle */
+    .eye-toggle {
+        position: absolute; right: 12px; bottom: 11px;
+        cursor: pointer; opacity: 0.4; transition: opacity 0.2s;
+        background: none; border: none; padding: 0; color: var(--text);
+    }
+    .eye-toggle:hover { opacity: 0.9; }
+    .auth-actions { display: flex; gap: 10px; margin-top: 22px; }
+    .auth-submit {
+        flex: 1; padding: 12px; border-radius: 8px;
+        background: var(--accent); color: #fff; border: none;
+        font-weight: 700; cursor: pointer; font-family: 'Raleway', sans-serif;
+        font-size: 0.9em; letter-spacing: 1px;
+        transition: opacity 0.2s;
+    }
+    .auth-submit:hover { opacity: 0.85; }
+    .auth-cancel {
+        padding: 12px 18px; border-radius: 8px;
+        background: transparent; border: 1px solid var(--text);
+        color: var(--text); cursor: pointer; font-family: 'Raleway', sans-serif;
+        font-size: 0.9em; transition: border-color 0.2s;
+    }
+    .auth-cancel:hover { border-color: var(--accent); color: var(--accent); }
+    .auth-error {
+        color: #e74c3c; font-size: 0.78em; text-align: center;
+        margin-top: 10px; min-height: 16px; letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
 
     <div class="bg-layer"></div>
     <div id="splash" style="position:fixed; inset:0; background:#000; z-index:5000; display:none; justify-content:center; align-items:center; font-size:2.5em; color:var(--accent); font-weight: bold; font-family:'Cinzel',serif;"></div>
+
+
+    <!-- ── CUSTOM AUTH MODAL ── -->
+    <div id="authModal">
+        <div class="auth-box">
+            <h2 id="authModalTitle">Editor Login</h2>
+
+            <!-- Step 1: Password -->
+            <div id="authStepPass">
+                <div class="auth-field">
+                    <label>Password</label>
+                    <input type="password" id="authPassInput" placeholder="Enter editor password" autocomplete="current-password">
+                    <button class="eye-toggle" type="button" onclick="toggleEye('authPassInput', this)" tabindex="-1">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <div class="auth-actions">
+                    <button class="auth-submit" onclick="submitPass()">Continue</button>
+                    <button class="auth-cancel" onclick="closeAuthModal()">Cancel</button>
+                </div>
+                <div class="auth-error" id="passError"></div>
+            </div>
+
+            <!-- Step 2: Name -->
+            <div id="authStepName" style="display:none;">
+                <div class="auth-field">
+                    <label>Your Name</label>
+                    <input type="text" id="authNameInput" placeholder="Enter your full name" autocomplete="name">
+                </div>
+                <div class="auth-actions">
+                    <button class="auth-submit" onclick="submitName()">Login</button>
+                    <button class="auth-cancel" onclick="closeAuthModal()">Cancel</button>
+                </div>
+                <div class="auth-error" id="nameError"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- ══════════════ LANDING PAGE ══════════════ -->
     <div id="loginPage">
@@ -336,15 +416,7 @@
             <div class="landing-sub">Compliance Update Hub</div>
         </div>
 
-        <!-- Landing Search Bar -->
-        <div class="landing-search-wrap">
-            <input type="text" id="landingSearch" placeholder="Search compliance topics..." autocomplete="off">
-            <svg class="landing-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-        </div>
-
-        <!-- Login Cards -->
+<!-- Login Cards -->
         <div class="login-cards">
             <div class="login-card" onclick="startEditorLogin()">
                 <h2>EDITOR</h2>
@@ -495,48 +567,73 @@
         let founderEditorId = null;
         let isFounder = false; // true if the logged-in editor IS the founder
 
-        // Carry landing search term into dashboard
-        document.getElementById('landingSearch').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                pendingSearch = this.value.trim();
-            }
-        });
+function startEditorLogin() {
+            // Open custom modal at step 1
+            document.getElementById('authPassInput').value = '';
+            document.getElementById('authNameInput').value = '';
+            document.getElementById('passError').textContent = '';
+            document.getElementById('nameError').textContent = '';
+            document.getElementById('authStepPass').style.display = 'block';
+            document.getElementById('authStepName').style.display = 'none';
+            document.getElementById('authModal').classList.add('open');
+            setTimeout(() => document.getElementById('authPassInput').focus(), 80);
+        }
 
-        async function startEditorLogin() {
-            pendingSearch = document.getElementById('landingSearch').value.trim();
-            const pass = prompt("Enter Editor Password:");
-            if (pass === "viking2026") {
-                const nameInput = prompt("Verify Your Name:");
-                if(!nameInput) return;
-                const { data } = await client.from('authorized_editors').select('*').ilike('name', nameInput).single();
-                if (data) {
-                    editorName = data.name;
-                    role = 'editor';
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('open');
+        }
 
-                    // Resolve the founder (editor with the lowest id = earliest created)
-                    const { data: firstRow } = await client
-                        .from('authorized_editors')
-                        .select('id')
-                        .order('id', { ascending: true })
-                        .limit(1)
-                        .single();
+        function toggleEye(inputId, btn) {
+            const inp = document.getElementById(inputId);
+            const isPass = inp.type === 'password';
+            inp.type = isPass ? 'text' : 'password';
+            btn.innerHTML = isPass
+                ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+                : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+        }
 
-                    if (firstRow) {
-                        founderEditorId = firstRow.id;
-                        isFounder = (data.id === founderEditorId);
-                    }
-
-                    showSplash(`Welcome, Editor ${editorName}`);
-                } else {
-                    alert("Access Denied: Name not found in authorized list.");
-                }
+        function submitPass() {
+            const pass = document.getElementById('authPassInput').value;
+            if (pass === 'viking2026') {
+                document.getElementById('authStepPass').style.display = 'none';
+                document.getElementById('authStepName').style.display = 'block';
+                setTimeout(() => document.getElementById('authNameInput').focus(), 80);
             } else {
-                alert("Incorrect Password.");
+                document.getElementById('passError').textContent = 'Incorrect password. Try again.';
+                document.getElementById('authPassInput').value = '';
+                document.getElementById('authPassInput').focus();
+            }
+        }
+
+        async function submitName() {
+            const nameInput = document.getElementById('authNameInput').value.trim();
+            if (!nameInput) { document.getElementById('nameError').textContent = 'Please enter your name.'; return; }
+            const { data } = await client.from('authorized_editors').select('*').ilike('name', nameInput).single();
+            if (data) {
+                editorName = data.name;
+                role = 'editor';
+                closeAuthModal();
+
+                const { data: firstRow } = await client
+                    .from('authorized_editors')
+                    .select('id')
+                    .order('id', { ascending: true })
+                    .limit(1)
+                    .single();
+
+                if (firstRow) {
+                    founderEditorId = firstRow.id;
+                    isFounder = (data.id === founderEditorId);
+                }
+
+                showSplash('Welcome, Editor ' + editorName);
+            } else {
+                document.getElementById('nameError').textContent = 'Name not found in authorized list.';
+                document.getElementById('authNameInput').select();
             }
         }
 
         function startViewerLogin() {
-            pendingSearch = document.getElementById('landingSearch').value.trim();
             role = 'viewer'; enterDashboard();
         }
 
@@ -772,6 +869,10 @@
 
         tickClocks();
         setInterval(tickClocks, 1000);
+
+        // Enter-key support for auth modal
+        document.getElementById('authPassInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') submitPass(); });
+        document.getElementById('authNameInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') submitName(); });
     </script>
 </body>
 </html>
