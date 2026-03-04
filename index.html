@@ -2,1291 +2,1177 @@
 <html>
 <head>
   <title>Compliance Update Hub</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='16' fill='%230a192f'/%3E%3Cpath d='M12 48 Q40 56 68 48' stroke='%23d4af37' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 48 Q40 62 64 48' stroke='%23d4af37' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.5'/%3E%3Cline x1='40' y1='48' x2='40' y2='16' stroke='%23d4af37' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M40 18 L60 30 L40 46 Z' fill='%23d4af37'/%3E%3Cline x1='40' y1='22' x2='40' y2='44' stroke='%230a192f' stroke-width='2'/%3E%3Cline x1='42' y1='32' x2='58' y2='32' stroke='%230a192f' stroke-width='2'/%3E%3Cline x1='22' y1='46' x2='18' y2='55' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' opacity='0.7'/%3E%3Cline x1='32' y1='49' x2='29' y2='58' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' opacity='0.7'/%3E%3Cline x1='48' y1='49' x2='51' y2='58' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' opacity='0.7'/%3E%3Cline x1='58' y1='46' x2='62' y2='55' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' opacity='0.7'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='16' fill='%230a192f'/%3E%3Cpath d='M12 48 Q40 56 68 48' stroke='%23d4af37' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cline x1='40' y1='48' x2='40' y2='16' stroke='%23d4af37' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M40 18 L60 30 L40 46 Z' fill='%23d4af37'/%3E%3C/svg%3E">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    :root { 
-        --bg: #0a192f; --text: #c5a059; --accent: #d4af37; 
-        --card: rgba(10, 25, 47, 0.85); --glow: rgba(197, 160, 89, 0.3);
-        --bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2072');
+    :root {
+      --bg:#0a192f; --text:#c5a059; --accent:#d4af37;
+      --card:rgba(10,25,47,0.9); --glow:rgba(197,160,89,0.28);
+      --bg-img:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2072');
     }
-    .theme-forest { --bg: #0b1a0e; --text: #708238; --accent: #bab86c; --card: rgba(11, 26, 14, 0.85); --glow: rgba(112, 130, 56, 0.4); --bg-img: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=2071'); }
-    .theme-cream { --bg: #d2b48c; --text: #3d2b1f; --accent: #8b4513; --card: rgba(210, 180, 140, 0.9); --glow: rgba(61, 43, 31, 0.15); --bg-img: url('https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4?auto=format&fit=crop&q=80&w=2070'); }
-    .theme-ocean { --bg: #002b36; --text: #93a1a1; --accent: #2aa198; --card: rgba(0, 43, 54, 0.85); --glow: rgba(42, 161, 152, 0.4); --bg-img: url('https://images.unsplash.com/photo-1518467166778-b88f373ffec7?auto=format&fit=crop&q=80&w=2070'); }
+    .theme-forest{--bg:#0b1a0e;--text:#708238;--accent:#bab86c;--card:rgba(11,26,14,0.9);--glow:rgba(112,130,56,0.35);--bg-img:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=2071');}
+    .theme-cream{--bg:#d2b48c;--text:#3d2b1f;--accent:#8b4513;--card:rgba(210,180,140,0.92);--glow:rgba(61,43,31,0.18);--bg-img:url('https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4?auto=format&fit=crop&q=80&w=2070');}
+    .theme-ocean{--bg:#002b36;--text:#93a1a1;--accent:#2aa198;--card:rgba(0,43,54,0.9);--glow:rgba(42,161,152,0.35);--bg-img:url('https://images.unsplash.com/photo-1518467166778-b88f373ffec7?auto=format&fit=crop&q=80&w=2070');}
 
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Raleway', sans-serif; transition: color 0.5s, background-color 0.5s, border-color 0.5s; }
-    body { background-color: var(--bg); color: var(--text); min-height: 100vh; position: relative; overflow-x: hidden; }
-    .bg-layer { position: fixed; inset: 0; background-image: var(--bg-img); background-size: cover; background-position: center; opacity: 0.2; z-index: -1; }
-    .hidden { display: none !important; }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;font-family:'Raleway',sans-serif;}
+    body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background-color .5s,color .5s;}
+    .bg-layer{position:fixed;inset:0;background-image:var(--bg-img);background-size:cover;background-position:center;opacity:.15;z-index:-1;pointer-events:none;}
+    .hidden{display:none!important;}
 
-    .logo-mark { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--accent); }
-    .logo-icon { width: 38px; height: 38px; position: relative; flex-shrink: 0; }
-    .logo-icon svg { width: 100%; height: 100%; }
-    .logo-text { font-family: 'Cinzel', serif; font-size: 1.15em; letter-spacing: 3px; font-weight: 700; color: var(--accent); line-height: 1; }
-    .logo-text span { display: block; font-size: 0.45em; letter-spacing: 6px; opacity: 0.65; font-weight: 400; margin-top: 3px; text-transform: uppercase; }
+    /* ─── SPLASH ─── */
+    #splash{position:fixed;inset:0;background:#000;z-index:9000;display:none;justify-content:center;align-items:center;font-family:'Cinzel',serif;font-size:2em;color:var(--accent);letter-spacing:4px;}
 
-    .topbar { 
-        position: fixed; top: 0; width: 100%; padding: 15px 40px; 
-        display: flex; justify-content: space-between; align-items: center; 
-        z-index: 100; background: var(--bg); border-bottom: 1px solid var(--text);
-        backdrop-filter: blur(10px);
-    }
-    .search-container { position: relative; flex-grow: 1; max-width: 400px; margin: 0 20px; }
-    #searchInput { 
-        width: 100%; padding: 10px 20px; border-radius: 20px; 
-        background: var(--card); border: 1px solid var(--text); 
-        color: var(--text); outline: none; font-size: 0.9em;
-    }
-    #searchInput::placeholder { color: var(--text); opacity: 0.5; }
+    /* ─── AUTH MODAL ─── */
+    #authModal{position:fixed;inset:0;z-index:8000;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);}
+    #authModal.open{display:flex;}
+    .auth-box{background:var(--bg);border:1px solid var(--accent);border-radius:18px;padding:42px 46px;width:360px;box-shadow:0 0 60px var(--glow);animation:fadeUp .25s ease;}
+    .auth-box h2{font-family:'Cinzel',serif;letter-spacing:3px;font-size:1em;color:var(--accent);margin-bottom:26px;text-align:center;text-transform:uppercase;}
+    .auth-field{position:relative;margin-bottom:16px;}
+    .auth-field label{display:block;font-size:.7em;letter-spacing:2px;text-transform:uppercase;opacity:.5;margin-bottom:7px;font-family:'Cinzel',serif;}
+    .auth-field input{width:100%;padding:12px 44px 12px 16px;background:var(--card);border:1px solid var(--text);border-radius:8px;color:var(--text);font-size:.95em;outline:none;transition:border-color .2s,box-shadow .2s;}
+    .auth-field input:focus{border-color:var(--accent);box-shadow:0 0 12px var(--glow);}
+    .eye-btn{position:absolute;right:12px;bottom:11px;cursor:pointer;opacity:.4;background:none;border:none;padding:0;color:var(--text);transition:opacity .2s;}
+    .eye-btn:hover{opacity:.9;}
+    .auth-actions{display:flex;gap:10px;margin-top:22px;}
+    .auth-submit{flex:1;padding:12px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif;font-size:.9em;letter-spacing:1px;transition:opacity .2s;}
+    .auth-submit:hover{opacity:.85;}
+    .auth-cancel{padding:12px 18px;border-radius:8px;background:transparent;border:1px solid var(--text);color:var(--text);cursor:pointer;transition:all .2s;}
+    .auth-cancel:hover{border-color:var(--accent);color:var(--accent);}
+    .auth-error{color:#e74c3c;font-size:.76em;text-align:center;margin-top:10px;min-height:16px;letter-spacing:.5px;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-    /* ══════════════ BELT SLIDER ══════════════ */
-    #beltSection {
-        padding-top: 80px;
-        position: relative;
-        width: 100%;
-    }
+    /* ─── LANDING ─── */
+    #landingPage{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;padding:40px 20px;}
+    .landing-logo{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:16px;}
+    .landing-logo-icon{width:70px;height:70px;}
+    .landing-logo-icon svg{width:100%;height:100%;filter:drop-shadow(0 0 18px var(--glow));}
+    .landing-title{font-family:'Cinzel',serif;font-size:2.6em;letter-spacing:4px;font-weight:900;color:var(--accent);text-shadow:0 0 40px var(--glow);text-align:center;}
+    .landing-sub{letter-spacing:6px;font-size:.7em;text-transform:uppercase;opacity:.45;margin-top:6px;margin-bottom:52px;font-weight:300;}
+    .role-cards{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;}
+    .role-card{background:var(--card);border:1px solid var(--text);border-radius:20px;padding:50px 68px;cursor:pointer;text-align:center;backdrop-filter:blur(12px);transition:border-color .3s,box-shadow .3s,transform .3s;}
+    .role-card:hover{border-color:var(--accent);box-shadow:0 0 40px var(--glow);transform:translateY(-5px);}
+    .role-card .rc-icon{font-size:2em;margin-bottom:14px;}
+    .role-card h2{font-family:'Cinzel',serif;font-size:1.15em;letter-spacing:3px;color:var(--accent);}
+    .role-card p{font-size:.65em;opacity:.4;margin-top:8px;letter-spacing:3px;text-transform:uppercase;}
 
-    /* fade masks on left & right edges */
-    #beltSection::before,
-    #beltSection::after {
-        content: '';
-        position: absolute;
-        top: 80px; bottom: 0;
-        width: 120px;
-        z-index: 10;
-        pointer-events: none;
-    }
-    #beltSection::before {
-        left: 0;
-        background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
-    }
-    #beltSection::after {
-        right: 0;
-        background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
-    }
+    /* ─── TOPBAR ─── */
+    .topbar{position:fixed;top:0;width:100%;padding:13px 36px;display:flex;justify-content:space-between;align-items:center;z-index:200;background:var(--bg);border-bottom:1px solid rgba(197,160,89,.2);backdrop-filter:blur(12px);}
+    .logo-mark{display:flex;align-items:center;gap:10px;cursor:pointer;color:var(--accent);text-decoration:none;}
+    .logo-icon{width:32px;height:32px;flex-shrink:0;}
+    .logo-icon svg{width:100%;height:100%;}
+    .logo-text{font-family:'Cinzel',serif;font-size:1em;letter-spacing:3px;font-weight:700;color:var(--accent);line-height:1;}
+    .logo-text span{display:block;font-size:.4em;letter-spacing:5px;opacity:.5;font-weight:400;margin-top:2px;text-transform:uppercase;}
+    .topbar-right{display:flex;align-items:center;gap:10px;}
+    select.theme-sel{background:var(--bg);color:var(--text);border:1px solid var(--text);padding:7px 13px;border-radius:20px;cursor:pointer;outline:none;font-size:.8em;}
+    .tbtn{padding:7px 16px;border-radius:6px;border:1px solid var(--text);font-weight:600;cursor:pointer;background:transparent;color:var(--text);font-size:.8em;font-family:'Raleway',sans-serif;transition:all .2s;white-space:nowrap;}
+    .tbtn:hover{border-color:var(--accent);color:var(--accent);}
+    .tbtn-accent{background:var(--accent);color:#fff;border:none;}
+    .tbtn-accent:hover{opacity:.88;color:#fff;border:none;}
 
-    .belt-track-wrap {
-        overflow: hidden;
-        width: 100%;
-        padding: 30px 0 20px;
-        cursor: default;
-        position: relative;
-    }
+    /* editor mgmt */
+    .emgmt{position:relative;}
+    #emBtn{display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:6px;border:1px solid var(--text);background:transparent;color:var(--text);cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif;font-size:.8em;transition:all .2s;}
+    #emBtn:hover{border-color:var(--accent);color:var(--accent);}
+    #emBtn svg{transition:transform .3s;}
+    #emBtn.open svg{transform:rotate(180deg);}
+    #emDrop{position:absolute;top:calc(100% + 9px);right:0;width:290px;background:var(--bg);border:1px solid var(--accent);border-radius:12px;z-index:500;box-shadow:0 12px 40px var(--glow);overflow:hidden;display:none;animation:fadeUp .18s ease;}
+    #emDrop.open{display:block;}
+    .em-hdr{padding:12px 16px;font-family:'Cinzel',serif;font-size:.68em;letter-spacing:3px;border-bottom:1px solid var(--text);opacity:.6;text-transform:uppercase;}
+    #emList{max-height:200px;overflow-y:auto;}
+    .em-row{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(197,160,89,.07);transition:background .2s;}
+    .em-row:hover{background:rgba(212,175,55,.06);}
+    .em-name{display:flex;align-items:center;gap:9px;font-size:.88em;}
+    .em-av{width:24px;height:24px;border-radius:50%;background:var(--glow);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:.62em;font-weight:700;color:var(--accent);flex-shrink:0;}
+    .em-av.founder{border-color:#ffd700;box-shadow:0 0 7px rgba(255,215,0,.45);}
+    .em-rmv{background:none;border:1px solid transparent;color:#c0392b;cursor:pointer;font-size:.7em;padding:3px 7px;border-radius:4px;opacity:.5;transition:all .2s;}
+    .em-rmv:hover{opacity:1;border-color:#c0392b;background:rgba(192,57,43,.1);}
+    .em-ftr{padding:10px 16px;border-top:1px solid var(--text);}
+    #emAddBtn{width:100%;padding:8px;border-radius:6px;background:transparent;border:1px dashed var(--text);color:var(--text);cursor:pointer;font-size:.8em;font-family:'Raleway',sans-serif;font-weight:600;transition:all .2s;}
+    #emAddBtn:hover{border-color:var(--accent);color:var(--accent);}
+    .em-loading{padding:16px;text-align:center;opacity:.4;font-size:.8em;}
+    .spin{display:inline-block;width:12px;height:12px;border:2px solid var(--text);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    .belt-track {
-        display: flex;
-        gap: 24px;
-        width: max-content;
-        /* animation applied via JS for dynamic width */
-        will-change: transform;
-    }
+    /* ─── SCREENS ─── */
+    .screen{display:none;min-height:100vh;padding-top:68px;}
+    .screen.active{display:block;}
 
-    .belt-track.paused {
-        animation-play-state: paused !important;
-    }
+    /* ─── DASHBOARD ─── */
+    #screenDash{padding-top:68px;}
 
-    @keyframes beltScroll {
-        from { transform: translateX(0); }
-        to   { transform: translateX(var(--belt-travel)); }
-    }
+    /* Updates band — top ~35% */
+    .updates-band{padding:28px 40px 0;}
+    .sec-hdr{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+    .sec-label{font-family:'Cinzel',serif;font-size:.68em;letter-spacing:5px;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
+    .sec-line{flex:1;height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;}
+    .sec-action{font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2px;text-transform:uppercase;color:var(--accent);opacity:.5;cursor:pointer;padding:4px 10px;border:1px solid transparent;border-radius:5px;transition:all .2s;white-space:nowrap;}
+    .sec-action:hover{opacity:1;border-color:var(--accent);}
 
-    /* ── Belt Cards ── */
-    .belt-card {
-        width: 240px;
-        height: 180px;
-        flex-shrink: 0;
-        background: var(--card);
-        border: 1px solid var(--text);
-        border-radius: 14px;
-        padding: 20px 18px;
-        backdrop-filter: blur(10px);
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    /* ─── STICKY NOTE GRID (updates) ─── */
+    .sticky-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;padding-bottom:24px;}
+    .sticky-note{
+      position:relative;
+      background:#d4af37;
+      border-radius:2px 2px 2px 18px;
+      padding:18px 16px 36px;
+      cursor:pointer;
+      min-height:160px;
+      box-shadow:3px 4px 14px rgba(0,0,0,.35),inset 0 -3px 6px rgba(0,0,0,.12);
+      transition:transform .25s,box-shadow .25s;
+      overflow:hidden;
     }
-    .belt-card::before {
-        content: '';
-        position: absolute;
-        bottom: 0; left: 0; right: 0;
-        height: 50%;
-        background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 100%);
-        border-radius: 0 0 14px 14px;
-        pointer-events: none;
+    /* colour variants — cycle through these */
+    .sticky-note.sc0{background:#d4af37;}
+    .sticky-note.sc1{background:#c9a227;}
+    .sticky-note.sc2{background:#bfa035;}
+    .sticky-note.sc3{background:#cba830;}
+    .sticky-note.sc4{background:#d6b84a;}
+    /* folded corner */
+    .sticky-note::after{
+      content:'';position:absolute;bottom:0;right:0;
+      width:22px;height:22px;
+      background:linear-gradient(225deg,rgba(0,0,0,.22) 50%,transparent 50%);
+      border-radius:0 0 2px 0;
     }
-    .belt-card:hover {
-        border-color: var(--accent);
-        box-shadow: 0 0 30px var(--glow), 0 8px 24px rgba(0,0,0,0.4);
-        transform: translateY(-6px) scale(1.03);
-        z-index: 5;
+    .sticky-note:hover{transform:translateY(-4px) rotate(-1deg);box-shadow:5px 8px 22px rgba(0,0,0,.45);}
+    .sticky-note-title{
+      font-family:'Cinzel',serif;font-size:.8em;letter-spacing:1.5px;
+      color:rgba(10,25,47,.85);font-weight:700;line-height:1.35;
+      margin-bottom:10px;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
     }
-    .belt-card h3 {
-        font-family: 'Cinzel', serif;
-        font-size: 0.82em;
-        letter-spacing: 1.5px;
-        color: var(--accent);
-        margin-bottom: 10px;
-        line-height: 1.3;
-        /* clamp to 2 lines */
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+    .sticky-note-body{
+      font-size:.76em;color:rgba(10,25,47,.68);line-height:1.6;
+      display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;
     }
-    .belt-card p {
-        font-size: 0.78em;
-        opacity: 0.7;
-        line-height: 1.5;
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+    .sticky-note-footer{
+      position:absolute;bottom:10px;left:16px;right:26px;
+      display:flex;justify-content:space-between;align-items:center;
+      opacity:0;transition:opacity .2s;
     }
-    .belt-card-tools {
-        position: absolute;
-        bottom: 10px; right: 12px;
-        display: flex; gap: 10px;
-        opacity: 0;
-        transition: opacity 0.25s ease;
-    }
-    .belt-card:hover .belt-card-tools { opacity: 1; }
-    .belt-card-tools span {
-        font-size: 10px;
-        letter-spacing: 1px;
-        text-decoration: underline;
-        cursor: pointer;
-        font-family: 'Cinzel', serif;
-        color: var(--accent);
-    }
-    .belt-card-tools span.del { color: #e74c3c; }
+    .sticky-note:hover .sticky-note-footer{opacity:1;}
+    .sticky-note-date{font-size:.6em;color:rgba(10,25,47,.45);font-family:'Cinzel',serif;letter-spacing:1px;}
+    .sticky-note-actions{display:flex;gap:10px;}
+    .sticky-note-actions span{font-size:.62em;letter-spacing:1px;text-decoration:underline;cursor:pointer;font-family:'Cinzel',serif;color:rgba(10,25,47,.6);}
+    .sticky-note-actions span:hover{color:rgba(10,25,47,.9);}
+    .sticky-note-actions span.del{color:rgba(160,30,30,.7);}
+    .sticky-note-actions span.del:hover{color:rgba(160,30,30,1);}
 
-    /* ══════════════ EXPANDED PANEL ══════════════ */
-    #expandPanel {
-        width: 100%;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1),
-                    opacity 0.45s ease,
-                    padding 0.4s ease;
-        opacity: 0;
-        background: transparent;
-    }
-    #expandPanel.open {
-        max-height: 70vh;
-        opacity: 1;
-    }
+    /* Divider between updates and notes */
+    .dash-divider{margin:0 40px;height:1px;background:linear-gradient(to right,transparent,var(--text),transparent);opacity:.12;}
 
-    .expand-inner {
-        margin: 0 40px 40px;
-        background: var(--card);
-        border: 1px solid var(--accent);
-        border-radius: 18px;
-        padding: 40px 50px;
-        backdrop-filter: blur(16px);
-        box-shadow: 0 20px 60px var(--glow), 0 4px 20px rgba(0,0,0,0.5);
-        position: relative;
-        overflow-y: auto;
-        max-height: calc(70vh - 60px);
-    }
-    .expand-inner::-webkit-scrollbar { width: 4px; }
-    .expand-inner::-webkit-scrollbar-track { background: transparent; }
-    .expand-inner::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; opacity: 0.5; }
+    /* Notes band — bottom ~65% */
+    .notes-band{padding:24px 40px 100px;}
+    .headings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+    .heading-chip{background:var(--card);border:1px solid var(--text);border-radius:10px;padding:16px 20px;cursor:pointer;backdrop-filter:blur(10px);transition:border-color .3s,box-shadow .25s,transform .25s;display:flex;align-items:center;gap:12px;}
+    .heading-chip:hover{border-color:var(--accent);box-shadow:0 4px 20px var(--glow);transform:translateY(-2px);}
+    .hc-arrow{font-size:.75em;opacity:.3;transition:opacity .2s;}
+    .heading-chip:hover .hc-arrow{opacity:.8;}
+    .hc-title{font-family:'Cinzel',serif;font-size:.8em;letter-spacing:1.5px;color:var(--accent);flex:1;line-height:1.3;}
+    .hc-actions{display:flex;gap:8px;flex-shrink:0;}
+    .hc-actions span{font-size:.6em;letter-spacing:1px;text-decoration:underline;cursor:pointer;font-family:'Cinzel',serif;color:var(--accent);opacity:0;transition:opacity .2s;}
+    .heading-chip:hover .hc-actions span{opacity:.7;}
+    .heading-chip:hover .hc-actions span:hover{opacity:1;}
+    .hc-actions span.del{color:#e74c3c;}
 
-    /* pointer arrow at top of expand panel */
-    .expand-arrow {
-        position: absolute;
-        top: -11px;
-        left: var(--arrow-left, 50%);
-        transform: translateX(-50%);
-        width: 20px; height: 12px;
-        overflow: visible;
-        transition: left 0.3s ease;
-    }
-    .expand-arrow::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 50%;
-        transform: translateX(-50%);
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-bottom: 12px solid var(--accent);
-    }
+    /* ─── NOTE DRILL SCREENS (shared styles) ─── */
+    .drill-screen{padding:36px 40px 100px;}
 
-    .expand-title {
-        font-family: 'Cinzel', serif;
-        font-size: 1.6em;
-        letter-spacing: 2px;
-        color: var(--accent);
-        margin-bottom: 20px;
-        padding-right: 80px;
-        line-height: 1.3;
-    }
-    .expand-body {
-        font-size: 1.05em;
-        line-height: 1.85;
-        opacity: 0.85;
-        white-space: pre-wrap;
-    }
-    .expand-close {
-        position: absolute;
-        top: 18px; right: 22px;
-        background: none; border: 1px solid var(--text);
-        color: var(--text); cursor: pointer;
-        border-radius: 6px; padding: 5px 12px;
-        font-family: 'Raleway', sans-serif;
-        font-size: 0.78em; letter-spacing: 1px;
-        transition: border-color 0.2s, color 0.2s;
-    }
-    .expand-close:hover { border-color: var(--accent); color: var(--accent); }
+    /* Breadcrumb */
+    .breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:32px;flex-wrap:wrap;}
+    .bc-item{font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;text-transform:uppercase;opacity:.4;cursor:pointer;transition:opacity .2s;}
+    .bc-item:hover{opacity:.85;}
+    .bc-item.current{opacity:.85;color:var(--accent);cursor:default;}
+    .bc-sep{opacity:.25;font-size:.7em;}
 
-    /* ══════════════ SEARCH FILTER RESULTS ══════════════ */
-    #searchResultsWrap {
-        padding: 0 40px 40px;
-        display: none;
-    }
-    #searchResultsWrap.visible { display: block; }
-    .search-results-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 20px;
-    }
-    .search-card {
-        background: var(--card);
-        border: 1px solid var(--text);
-        border-radius: 14px;
-        padding: 22px 20px;
-        cursor: pointer;
-        backdrop-filter: blur(10px);
-        transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
-    }
-    .search-card:hover {
-        border-color: var(--accent);
-        box-shadow: 0 8px 24px var(--glow);
-        transform: translateY(-4px);
-    }
-    .search-card h3 { font-family: 'Cinzel', serif; font-size: 0.88em; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 10px; }
-    .search-card p { font-size: 0.82em; opacity: 0.7; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+    /* Drill section header */
+    .drill-title{font-family:'Cinzel',serif;font-size:1.5em;letter-spacing:2px;color:var(--accent);margin-bottom:8px;}
+    .drill-subtitle{font-size:.8em;opacity:.45;margin-bottom:28px;letter-spacing:.5px;}
 
-    /* ══════════════ OTHER UI ══════════════ */
-    .btn { padding: 10px 20px; border-radius: 6px; border: 1px solid var(--text); font-weight: bold; cursor: pointer; background: transparent; color: inherit; }
-    .btn-create { background: var(--accent); color: #fff; border: none; }
-    select { background: var(--bg); color: var(--text); border: 1px solid var(--text); padding: 8px 15px; border-radius: 20px; cursor: pointer; outline: none; }
+    /* Pointer list (sub-headings, sub-sub-headings) */
+    .pointer-list{display:flex;flex-direction:column;gap:0;}
+    .pointer-row{display:flex;align-items:center;padding:13px 8px;border-bottom:1px solid rgba(197,160,89,.1);cursor:pointer;border-radius:6px;transition:background .2s;}
+    .pointer-row:hover{background:rgba(212,175,55,.06);}
+    .pointer-row:last-child{border-bottom:none;}
+    .pr-bullet{width:6px;height:6px;border-radius:50%;border:1px solid var(--accent);flex-shrink:0;margin:0 14px;opacity:.5;}
+    .pr-title{flex:1;font-family:'Cinzel',serif;font-size:.86em;letter-spacing:1.5px;color:var(--accent);opacity:.8;}
+    .pr-arrow{opacity:.25;font-size:.8em;margin-right:4px;transition:opacity .2s;}
+    .pointer-row:hover .pr-arrow{opacity:.7;}
+    .pr-actions{display:flex;gap:12px;margin-right:10px;}
+    .pr-actions span{font-size:.65em;letter-spacing:1px;text-decoration:underline;cursor:pointer;font-family:'Cinzel',serif;color:var(--accent);opacity:0;transition:opacity .2s;}
+    .pointer-row:hover .pr-actions span{opacity:.65;}
+    .pointer-row:hover .pr-actions span:hover{opacity:1;}
+    .pr-actions span.del{color:#e74c3c;}
 
-    .full-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1000; padding: 60px; display: none; overflow-y: auto; }
-    .active { display: block !important; }
+    /* ─── NOTE BODY SCREEN ─── */
+    .note-body-inner{max-width:820px;}
+    .nb-tag{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:4px;text-transform:uppercase;opacity:.38;margin-bottom:12px;}
+    .nb-title{font-family:'Cinzel',serif;font-size:2.2em;letter-spacing:2px;color:var(--accent);margin-bottom:32px;line-height:1.25;}
+    .nb-divider{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;margin-bottom:32px;}
+    .nb-body{font-size:1.05em;line-height:1.9;opacity:.82;white-space:pre-wrap;}
 
-    #loginPage { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0; }
-    .landing-logo { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 10px; }
-    .landing-logo-icon { width: 72px; height: 72px; }
-    .landing-logo-icon svg { width: 100%; height: 100%; filter: drop-shadow(0 0 18px var(--glow)); }
-    .landing-title { font-family: 'Cinzel', serif; font-size: 3em; letter-spacing: 4px; font-weight: 900; color: var(--accent); text-shadow: 0 0 40px var(--glow); }
-    .landing-sub { letter-spacing: 6px; font-size: 0.75em; text-transform: uppercase; opacity: 0.6; margin-top: 2px; margin-bottom: 36px; font-weight: 300; }
-    .login-cards { display: flex; gap: 30px; }
-    .login-card { background: var(--card); border: 1px solid var(--text); padding: 50px 70px; border-radius: 20px; cursor: pointer; text-align: center; font-family: 'Cinzel', serif; letter-spacing: 2px; }
-    .login-card:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--glow); transform: translateY(-4px); }
-    .login-card h2 { font-size: 1.2em; }
-    .login-card p { font-size: 0.65em; opacity: 0.5; margin-top: 8px; letter-spacing: 3px; font-family: 'Raleway', sans-serif; text-transform: uppercase; }
+    /* Empty states */
+    .empty{padding:40px 0;opacity:.3;font-family:'Cinzel',serif;letter-spacing:3px;font-size:.76em;}
 
-    .editor-mgmt-wrap { position: relative; }
-    #editorMgmtBtn { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 6px; border: 1px solid var(--text); background: transparent; color: var(--text); cursor: pointer; font-weight: bold; font-family: 'Raleway', sans-serif; font-size: 0.9em; white-space: nowrap; }
-    #editorMgmtBtn:hover { border-color: var(--accent); color: var(--accent); }
-    #editorMgmtBtn svg { transition: transform 0.3s ease; }
-    #editorMgmtBtn.open svg { transform: rotate(180deg); }
-    #editorDropdown { position: absolute; top: calc(100% + 10px); right: 0; width: 300px; background: var(--bg); border: 1px solid var(--accent); border-radius: 12px; z-index: 500; box-shadow: 0 12px 40px var(--glow); overflow: hidden; display: none; animation: dropIn 0.2s ease; }
-    @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-    #editorDropdown.open { display: block; }
-    .dropdown-header { padding: 14px 18px; font-family: 'Cinzel', serif; font-size: 0.75em; letter-spacing: 3px; border-bottom: 1px solid var(--text); opacity: 0.7; text-transform: uppercase; }
-    #editorList { max-height: 220px; overflow-y: auto; }
-    #editorList::-webkit-scrollbar { width: 4px; }
-    #editorList::-webkit-scrollbar-thumb { background: var(--text); border-radius: 2px; }
-    .editor-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid rgba(197,160,89,0.1); transition: background 0.2s; }
-    .editor-row:last-child { border-bottom: none; }
-    .editor-row:hover { background: rgba(212,175,55,0.07); }
-    .editor-row-name { display: flex; align-items: center; gap: 10px; font-size: 0.92em; }
-    .editor-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--glow); border: 1px solid var(--accent); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-size: 0.7em; font-weight: 700; color: var(--accent); flex-shrink: 0; }
-    .editor-avatar.is-founder { border-color: #ffd700; box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
-    .founder-badge { font-size: 0.7em; opacity: 0.55; margin-left: 4px; cursor: default; user-select: none; }
-    .btn-remove-editor { background: none; border: 1px solid transparent; color: #c0392b; cursor: pointer; font-size: 0.75em; padding: 3px 8px; border-radius: 4px; opacity: 0.5; transition: all 0.2s; font-family: 'Raleway', sans-serif; }
-    .btn-remove-editor:hover { opacity: 1; border-color: #c0392b; background: rgba(192,57,43,0.1); }
-    .dropdown-footer { padding: 12px 18px; border-top: 1px solid var(--text); }
-    #addEditorInlineBtn { width: 100%; padding: 9px; border-radius: 6px; background: transparent; border: 1px dashed var(--text); color: var(--text); cursor: pointer; font-size: 0.85em; font-family: 'Raleway', sans-serif; font-weight: 600; transition: all 0.2s; }
-    #addEditorInlineBtn:hover { border-color: var(--accent); color: var(--accent); background: rgba(212,175,55,0.05); }
-    .editor-loading { padding: 20px 18px; text-align: center; opacity: 0.5; font-size: 0.85em; }
+    /* ─── MODAL ─── */
+    .modal-ov{position:fixed;inset:0;z-index:3000;display:none;justify-content:center;align-items:flex-start;padding:60px 20px;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);overflow-y:auto;}
+    .modal-ov.open{display:flex;}
+    .modal-box{background:var(--bg);border:1px solid var(--accent);border-radius:18px;padding:38px 44px;width:100%;max-width:580px;box-shadow:0 0 60px var(--glow);animation:fadeUp .22s ease;position:relative;}
+    .modal-box h2{font-family:'Cinzel',serif;letter-spacing:3px;font-size:.95em;color:var(--accent);margin-bottom:26px;text-transform:uppercase;}
+    .mclose{position:absolute;top:15px;right:17px;background:none;border:1px solid var(--text);color:var(--text);cursor:pointer;border-radius:6px;padding:4px 11px;font-size:.72em;font-family:'Raleway',sans-serif;transition:all .2s;}
+    .mclose:hover{border-color:var(--accent);color:var(--accent);}
+    .ff{margin-bottom:17px;}
+    .ff label{display:block;font-size:.68em;letter-spacing:2px;text-transform:uppercase;opacity:.48;margin-bottom:6px;font-family:'Cinzel',serif;}
+    .ff input,.ff textarea{width:100%;padding:11px 15px;background:var(--card);border:1px solid var(--text);border-radius:8px;color:var(--text);font-size:.92em;font-family:'Raleway',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;}
+    .ff input:focus,.ff textarea:focus{border-color:var(--accent);box-shadow:0 0 10px var(--glow);}
+    .ff textarea{resize:vertical;min-height:130px;}
+    .mactions{display:flex;gap:11px;margin-top:22px;}
+    .mprimary{flex:1;padding:12px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif;font-size:.9em;letter-spacing:1px;transition:opacity .2s;}
+    .mprimary:hover{opacity:.87;}
+    .msecondary{padding:12px 18px;border-radius:8px;background:transparent;border:1px solid var(--text);color:var(--text);cursor:pointer;font-family:'Raleway',sans-serif;font-size:.9em;transition:all .2s;}
+    .msecondary:hover{border-color:var(--accent);color:var(--accent);}
 
-    .tz-strip { display: flex; align-items: center; gap: 18px; }
-    .tz-item { display: flex; flex-direction: column; align-items: center; line-height: 1; gap: 3px; }
-    .tz-label { font-family: 'Cinzel', serif; font-size: 0.55em; letter-spacing: 3px; opacity: 0.5; text-transform: uppercase; }
-    .tz-time { font-family: 'Raleway', sans-serif; font-size: 0.88em; font-weight: 600; color: var(--accent); letter-spacing: 1px; }
-    .tz-divider { width: 1px; height: 28px; background: var(--text); opacity: 0.25; }
+    /* ─── VIEW OVERLAY (updates full view) ─── */
+    #viewOv{position:fixed;inset:0;z-index:2500;display:none;background:var(--bg);overflow-y:auto;}
+    #viewOv.open{display:block;}
+    .view-inner{max-width:820px;margin:0 auto;padding:50px 40px 80px;}
+    .view-back{display:inline-flex;align-items:center;gap:8px;font-family:'Cinzel',serif;font-size:.66em;letter-spacing:2px;text-transform:uppercase;opacity:.4;cursor:pointer;margin-bottom:34px;transition:opacity .2s;}
+    .view-back:hover{opacity:.85;}
+    .view-tag{font-family:'Cinzel',serif;font-size:.58em;letter-spacing:4px;text-transform:uppercase;opacity:.35;margin-bottom:12px;}
+    .view-title{font-family:'Cinzel',serif;font-size:2.4em;letter-spacing:2px;color:var(--accent);margin-bottom:28px;line-height:1.2;}
+    .view-div{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;margin-bottom:30px;}
+    .view-body{font-size:1.05em;line-height:1.88;opacity:.82;white-space:pre-wrap;}
 
-    .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--text); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    /* ─── LIVE / TOAST ─── */
+    #liveBadge{position:fixed;bottom:22px;left:22px;z-index:300;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--text);border-radius:20px;padding:6px 13px;font-family:'Cinzel',serif;font-size:.58em;letter-spacing:2px;text-transform:uppercase;opacity:0;backdrop-filter:blur(10px);transition:opacity .5s,border-color .4s;pointer-events:none;}
+    #liveBadge.connected{opacity:1;border-color:#27ae60;color:#27ae60;}
+    #liveBadge.connecting{opacity:1;border-color:var(--accent);color:var(--accent);}
+    #liveBadge.disconnected{opacity:1;border-color:#e74c3c;color:#e74c3c;}
+    .live-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+    #liveBadge.connected .live-dot{animation:pulse 2s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+    #liveToast{position:fixed;bottom:66px;left:22px;z-index:300;background:var(--card);border:1px solid var(--accent);border-radius:10px;padding:10px 15px;font-size:.78em;letter-spacing:.5px;backdrop-filter:blur(12px);box-shadow:0 6px 24px var(--glow);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s;pointer-events:none;max-width:270px;}
+    #liveToast.show{opacity:1;transform:translateY(0);}
 
-    #tzPanel { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 90; display: flex; flex-direction: row; align-items: center; gap: 0; background: var(--card); border: 1px solid var(--text); border-bottom: none; border-radius: 16px 16px 0 0; padding: 14px 30px; backdrop-filter: blur(14px); box-shadow: 0 -6px 30px var(--glow); }
-    .tz-clock-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0 24px; }
-    .tz-clock-wrap + .tz-clock-wrap { border-top: none; border-left: 1px solid rgba(197,160,89,0.18); }
-    .analog-clock { width: 52px; height: 52px; flex-shrink: 0; }
-    .clock-face { fill: none; stroke: var(--text); stroke-width: 1.5; opacity: 0.35; }
-    .clock-tick { stroke: var(--text); stroke-width: 1; opacity: 0.25; }
-    .clock-tick-h { stroke: var(--text); stroke-width: 1.8; opacity: 0.45; }
-    .hand-hour { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
-    .hand-min { stroke: var(--text); stroke-width: 1.8; stroke-linecap: round; }
-    .hand-sec { stroke: #e74c3c; stroke-width: 1; stroke-linecap: round; }
-    .clock-center { fill: var(--accent); }
-    .tz-label { font-family: 'Cinzel', serif; font-size: 0.62em; letter-spacing: 3px; opacity: 0.55; text-transform: uppercase; text-align: center; }
-    .tz-digital { font-family: 'Raleway', sans-serif; font-size: 0.78em; font-weight: 600; color: var(--accent); letter-spacing: 1px; text-align: center; }
+    /* ─── TZ CLOCKS ─── */
+    #tzPanel{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:90;display:flex;align-items:center;background:var(--card);border:1px solid var(--text);border-bottom:none;border-radius:16px 16px 0 0;padding:11px 26px;backdrop-filter:blur(14px);box-shadow:0 -6px 30px var(--glow);}
+    .tz-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 20px;}
+    .tz-wrap+.tz-wrap{border-left:1px solid rgba(197,160,89,.16);}
+    .aclock{width:46px;height:46px;flex-shrink:0;}
+    .cf{fill:none;stroke:var(--text);stroke-width:1.5;opacity:.28;}
+    .ct{stroke:var(--text);stroke-width:1;opacity:.2;}
+    .cth{stroke:var(--text);stroke-width:1.8;opacity:.38;}
+    .hh{stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;}
+    .hm{stroke:var(--text);stroke-width:1.8;stroke-linecap:round;}
+    .hs{stroke:#e74c3c;stroke-width:1;stroke-linecap:round;}
+    .cc{fill:var(--accent);}
+    .tz-lbl{font-family:'Cinzel',serif;font-size:.56em;letter-spacing:3px;opacity:.45;text-transform:uppercase;text-align:center;}
+    .tz-dig{font-family:'Raleway',sans-serif;font-size:.72em;font-weight:600;color:var(--accent);letter-spacing:1px;text-align:center;}
 
-    #liveBadge { position: fixed; bottom: 24px; left: 24px; z-index: 200; display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--text); border-radius: 20px; padding: 7px 14px; font-family: 'Cinzel', serif; font-size: 0.62em; letter-spacing: 2px; text-transform: uppercase; opacity: 0; backdrop-filter: blur(10px); transition: opacity 0.5s ease, border-color 0.4s; pointer-events: none; user-select: none; }
-    #liveBadge.connected { opacity: 1; border-color: #27ae60; color: #27ae60; }
-    #liveBadge.connecting { opacity: 1; border-color: var(--accent); color: var(--accent); }
-    #liveBadge.disconnected { opacity: 1; border-color: #e74c3c; color: #e74c3c; }
-    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-    #liveBadge.connected .live-dot { animation: live-pulse 2s ease-in-out infinite; }
-    @keyframes live-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
-
-    #liveToast { position: fixed; bottom: 70px; left: 24px; z-index: 200; background: var(--card); border: 1px solid var(--accent); border-radius: 10px; padding: 12px 18px; font-size: 0.82em; letter-spacing: 0.5px; backdrop-filter: blur(12px); box-shadow: 0 6px 24px var(--glow); display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(8px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; max-width: 280px; }
-    #liveToast.show { opacity: 1; transform: translateY(0); }
-    .toast-icon { font-size: 1.1em; flex-shrink: 0; }
-
-    #authModal { position: fixed; inset: 0; z-index: 8000; display: none; justify-content: center; align-items: center; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); }
-    #authModal.open { display: flex; }
-    .auth-box { background: var(--bg); border: 1px solid var(--accent); border-radius: 18px; padding: 40px 44px; width: 360px; box-shadow: 0 0 60px var(--glow); animation: dropIn 0.25s ease; }
-    .auth-box h2 { font-family: 'Cinzel', serif; letter-spacing: 3px; font-size: 1em; color: var(--accent); margin-bottom: 24px; text-align: center; text-transform: uppercase; }
-    .auth-field { position: relative; margin-bottom: 16px; }
-    .auth-field label { display: block; font-size: 0.72em; letter-spacing: 2px; text-transform: uppercase; opacity: 0.55; margin-bottom: 6px; font-family: 'Cinzel', serif; }
-    .auth-field input { width: 100%; padding: 12px 44px 12px 16px; background: var(--card); border: 1px solid var(--text); border-radius: 8px; color: var(--text); font-size: 0.95em; font-family: 'Raleway', sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
-    .auth-field input:focus { border-color: var(--accent); box-shadow: 0 0 14px var(--glow); }
-    .eye-toggle { position: absolute; right: 12px; bottom: 11px; cursor: pointer; opacity: 0.4; transition: opacity 0.2s; background: none; border: none; padding: 0; color: var(--text); }
-    .eye-toggle:hover { opacity: 0.9; }
-    .auth-actions { display: flex; gap: 10px; margin-top: 22px; }
-    .auth-submit { flex: 1; padding: 12px; border-radius: 8px; background: var(--accent); color: #fff; border: none; font-weight: 700; cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.9em; letter-spacing: 1px; transition: opacity 0.2s; }
-    .auth-submit:hover { opacity: 0.85; }
-    .auth-cancel { padding: 12px 18px; border-radius: 8px; background: transparent; border: 1px solid var(--text); color: var(--text); cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 0.9em; transition: border-color 0.2s; }
-    .auth-cancel:hover { border-color: var(--accent); color: var(--accent); }
-    .auth-error { color: #e74c3c; font-size: 0.78em; text-align: center; margin-top: 10px; min-height: 16px; letter-spacing: 0.5px; }
-
-    .editor-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .editor-toolbar h1 { margin-bottom: 0; }
-    #autosaveStatus { display: flex; align-items: center; gap: 8px; font-size: 0.78em; letter-spacing: 1.5px; text-transform: uppercase; font-family: 'Cinzel', serif; opacity: 0.6; transition: opacity 0.4s ease, color 0.4s ease; user-select: none; }
-    #autosaveStatus .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text); flex-shrink: 0; transition: background 0.4s ease, box-shadow 0.4s ease; }
-    #autosaveStatus.saving { opacity: 0.9; color: var(--accent); }
-    #autosaveStatus.saving .status-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse-dot 0.8s ease-in-out infinite; }
-    #autosaveStatus.saved { opacity: 0.85; color: #27ae60; }
-    #autosaveStatus.saved .status-dot { background: #27ae60; box-shadow: 0 0 8px rgba(39,174,96,0.6); }
-    #autosaveStatus.error { opacity: 0.85; color: #e74c3c; }
-    #autosaveStatus.error .status-dot { background: #e74c3c; box-shadow: 0 0 8px rgba(231,76,60,0.5); }
-    @keyframes pulse-dot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } }
-
-    #draftBanner { display: none; align-items: center; justify-content: space-between; background: rgba(212,175,55,0.1); border: 1px solid var(--accent); border-radius: 8px; padding: 12px 18px; margin-bottom: 16px; font-size: 0.88em; gap: 12px; }
-    #draftBanner.visible { display: flex; }
-    .draft-banner-msg { display: flex; align-items: center; gap: 10px; }
-    .draft-banner-icon { font-size: 1.1em; }
-    .draft-actions { display: flex; gap: 8px; flex-shrink: 0; }
-    .btn-draft-restore { padding: 6px 14px; border-radius: 5px; background: var(--accent); color: #fff; border: none; cursor: pointer; font-size: 0.85em; font-family: 'Raleway', sans-serif; font-weight: 600; transition: opacity 0.2s; }
-    .btn-draft-restore:hover { opacity: 0.85; }
-    .btn-draft-discard { padding: 6px 14px; border-radius: 5px; background: transparent; border: 1px solid var(--text); color: var(--text); cursor: pointer; font-size: 0.85em; font-family: 'Raleway', sans-serif; font-weight: 600; transition: border-color 0.2s; }
-    .btn-draft-discard:hover { border-color: #e74c3c; color: #e74c3c; }
-    #charCounter { text-align: right; font-size: 0.72em; opacity: 0.35; margin-top: -14px; margin-bottom: 14px; font-family: 'Cinzel', serif; letter-spacing: 1px; transition: color 0.3s; }
-
-    /* Belt label strip */
-    .belt-label-bar {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 14px 40px 0;
-    }
-    .belt-label-title {
-        font-family: 'Cinzel', serif;
-        font-size: 0.65em;
-        letter-spacing: 4px;
-        text-transform: uppercase;
-        opacity: 0.45;
-        white-space: nowrap;
-    }
-    .belt-label-line {
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(to right, var(--text) 0%, transparent 100%);
-        opacity: 0.25;
-    }
-    .belt-label-hint {
-        font-size: 0.62em;
-        opacity: 0.3;
-        font-family: 'Cinzel', serif;
-        letter-spacing: 2px;
-        white-space: nowrap;
-    }
+    /* ─── DEV CREDIT ─── */
+    #devCredit{position:fixed;bottom:9px;right:16px;z-index:50;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:2px;opacity:.28;color:var(--accent);pointer-events:none;user-select:none;}
   </style>
 </head>
 <body>
+<div class="bg-layer"></div>
+<div id="splash" style="display:none;justify-content:center;align-items:center;"></div>
 
-    <div class="bg-layer"></div>
-    <div id="splash" style="position:fixed; inset:0; background:#000; z-index:5000; display:none; justify-content:center; align-items:center; font-size:2.5em; color:var(--accent); font-weight: bold; font-family:'Cinzel',serif;"></div>
-
-    <!-- ── CUSTOM AUTH MODAL ── -->
-    <div id="authModal">
-        <div class="auth-box">
-            <h2 id="authModalTitle">Editor Login</h2>
-            <div id="authStepPass">
-                <div class="auth-field">
-                    <label>Password</label>
-                    <input type="password" id="authPassInput" placeholder="Enter editor password" autocomplete="current-password">
-                    <button class="eye-toggle" type="button" onclick="toggleEye('authPassInput', this)" tabindex="-1">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </button>
-                </div>
-                <div class="auth-actions">
-                    <button class="auth-submit" onclick="submitPass()">Continue</button>
-                    <button class="auth-cancel" onclick="closeAuthModal()">Cancel</button>
-                </div>
-                <div class="auth-error" id="passError"></div>
-            </div>
-            <div id="authStepName" style="display:none;">
-                <div class="auth-field">
-                    <label>Your Name</label>
-                    <input type="text" id="authNameInput" placeholder="Enter your full name" autocomplete="name">
-                </div>
-                <div class="auth-actions">
-                    <button class="auth-submit" onclick="submitName()">Login</button>
-                    <button class="auth-cancel" onclick="closeAuthModal()">Cancel</button>
-                </div>
-                <div class="auth-error" id="nameError"></div>
-            </div>
-        </div>
+<!-- ══ AUTH MODAL ══ -->
+<div id="authModal">
+  <div class="auth-box">
+    <h2>Editor Login</h2>
+    <div id="authStepPass">
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="authPassInput" placeholder="Enter editor password" autocomplete="current-password">
+        <button class="eye-btn" type="button" onclick="toggleEye('authPassInput',this)" tabindex="-1">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="auth-actions">
+        <button class="auth-submit" onclick="submitPass()">Continue</button>
+        <button class="auth-cancel" onclick="closeAuthModal()">Cancel</button>
+      </div>
+      <div class="auth-error" id="passError"></div>
     </div>
-
-    <!-- ══════════════ LANDING PAGE ══════════════ -->
-    <div id="loginPage">
-        <div class="landing-logo">
-            <div class="landing-logo-icon">
-                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="40" cy="40" r="38" stroke="var(--accent)" stroke-width="1.5" opacity="0.4"/>
-                    <path d="M12 48 Q40 56 68 48" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                    <path d="M16 48 Q40 62 64 48" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/>
-                    <line x1="40" y1="48" x2="40" y2="18" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
-                    <path d="M40 20 L58 30 L40 44 Z" fill="var(--accent)" opacity="0.8"/>
-                    <line x1="40" y1="24" x2="40" y2="42" stroke="var(--bg)" stroke-width="1.5"/>
-                    <line x1="42" y1="32" x2="56" y2="32" stroke="var(--bg)" stroke-width="1.5"/>
-                    <line x1="22" y1="46" x2="18" y2="54" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-                    <line x1="32" y1="49" x2="29" y2="57" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-                    <line x1="48" y1="49" x2="51" y2="57" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-                    <line x1="58" y1="46" x2="62" y2="54" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-                </svg>
-            </div>
-            <div class="landing-title">Compliance Update Hub</div>
-        </div>
-        <div class="login-cards">
-            <div class="login-card" onclick="startEditorLogin()">
-                <h2>EDITOR</h2>
-                <p>Manage content</p>
-            </div>
-            <div class="login-card" onclick="startViewerLogin()">
-                <h2>VIEWER</h2>
-                <p>Read access</p>
-            </div>
-        </div>
+    <div id="authStepName" style="display:none;">
+      <div class="auth-field">
+        <label>Your Name</label>
+        <input type="text" id="authNameInput" placeholder="Enter your full name" autocomplete="name">
+      </div>
+      <div class="auth-actions">
+        <button class="auth-submit" onclick="submitName()">Login</button>
+        <button class="auth-cancel" onclick="closeAuthModal()">Cancel</button>
+      </div>
+      <div class="auth-error" id="nameError"></div>
     </div>
+  </div>
+</div>
 
-    <!-- ══════════════ MAIN DASHBOARD ══════════════ -->
-    <div id="mainDashboard" class="hidden">
-        <div class="topbar">
-            <div class="logo-mark">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 48 Q40 56 68 48" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                        <line x1="40" y1="48" x2="40" y2="18" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
-                        <path d="M40 20 L58 30 L40 44 Z" fill="var(--accent)" opacity="0.85"/>
-                        <line x1="40" y1="24" x2="40" y2="42" stroke="var(--bg)" stroke-width="1.5"/>
-                        <line x1="42" y1="32" x2="56" y2="32" stroke="var(--bg)" stroke-width="1.5"/>
-                    </svg>
-                </div>
-                <div class="logo-text">
-                    Compliance Update Hub
-                    <span id="welcomeMsg">Compliance Hub</span>
-                </div>
-            </div>
-            
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search compliance notes..." oninput="filterNotes()">
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <select id="themePicker" onchange="setTheme(this.value)">
-                    <option value="default">🌌 Dark Navy</option>
-                    <option value="forest">🌲 Forest</option>
-                    <option value="cream">📜 Muted Beige</option>
-                    <option value="ocean">🌊 Deep Ocean</option>
-                </select>
-
-                <div class="editor-mgmt-wrap hidden" id="editorMgmtWrap">
-                    <button id="editorMgmtBtn" onclick="toggleEditorDropdown()">
-                        Editors
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                    </button>
-                    <div id="editorDropdown">
-                        <div class="dropdown-header">Authorized Editors</div>
-                        <div id="editorList"><div class="editor-loading"><span class="spin"></span></div></div>
-                        <div class="dropdown-footer">
-                            <button id="addEditorInlineBtn" onclick="addNewEditor()">+ Add New Editor</button>
-                        </div>
-                    </div>
-                </div>
-
-                <button id="createTrigger" class="btn btn-create hidden" onclick="openEditor()">+ Create</button>
-                <button class="btn" onclick="logout()" style="border:none; opacity: 0.6;">Logout</button>
-            </div>
-        </div>
-
-        <!-- ══════════════ BELT SLIDER SECTION ══════════════ -->
-        <div id="beltSection">
-            <div class="belt-label-bar">
-                <span class="belt-label-title">Live Updates</span>
-                <div class="belt-label-line"></div>
-                <span class="belt-label-hint">Hover to expand</span>
-            </div>
-            <div class="belt-track-wrap" id="beltWrap">
-                <div class="belt-track" id="beltTrack"></div>
-            </div>
-
-            <!-- Expand panel sits right below the belt -->
-            <div id="expandPanel">
-                <div class="expand-inner" id="expandInner">
-                    <div class="expand-arrow" id="expandArrow"></div>
-                    <button class="expand-close" onclick="closeExpandPanel()">✕ Close</button>
-                    <div class="expand-title" id="expandTitle"></div>
-                    <div class="expand-body" id="expandBody"></div>
-                </div>
-            </div>
-
-            <!-- Search results (shown when searching) -->
-            <div id="searchResultsWrap">
-                <div class="search-results-grid" id="searchResultsGrid"></div>
-            </div>
-        </div>
+<!-- ══ LANDING ══ -->
+<div id="landingPage">
+  <div class="landing-logo">
+    <div class="landing-logo-icon">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" stroke="var(--accent)" stroke-width="1.5" opacity=".3"/>
+        <path d="M12 48 Q40 56 68 48" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M16 48 Q40 62 64 48" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".45"/>
+        <line x1="40" y1="48" x2="40" y2="18" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M40 20 L58 30 L40 44 Z" fill="var(--accent)" opacity=".85"/>
+        <line x1="40" y1="24" x2="40" y2="42" stroke="var(--bg)" stroke-width="1.5"/>
+        <line x1="42" y1="32" x2="56" y2="32" stroke="var(--bg)" stroke-width="1.5"/>
+      </svg>
     </div>
-
-    <!-- ══════════════ NOTE EDITOR ══════════════ -->
-    <div id="noteEditor" class="full-overlay">
-        <div style="max-width:800px; margin:auto;">
-            <div class="editor-toolbar">
-                <h1 id="editorHeading">New Update</h1>
-                <div id="autosaveStatus">
-                    <div class="status-dot"></div>
-                    <span id="autosaveText">Draft</span>
-                </div>
-            </div>
-            <div id="draftBanner">
-                <div class="draft-banner-msg">
-                    <span class="draft-banner-icon">📋</span>
-                    <span id="draftBannerMsg">You have an unsaved draft. Restore it?</span>
-                </div>
-                <div class="draft-actions">
-                    <button class="btn-draft-restore" onclick="restoreDraft()">Restore</button>
-                    <button class="btn-draft-discard" onclick="discardDraft()">Discard</button>
-                </div>
-            </div>
-            <input type="hidden" id="editId">
-            <input type="text" id="postTitle" placeholder="Update Title..."
-                style="width:100%; padding:20px; margin-bottom:20px; background:var(--card); color:inherit; border:1px solid var(--text); font-size: 1.2em;"
-                oninput="onEditorInput()">
-            <textarea id="postContent" rows="15" placeholder="Compliance details..."
-                style="width:100%; padding:20px; margin-bottom:8px; background:var(--card); color:inherit; border:1px solid var(--text); font-size: 1.1em;"
-                oninput="onEditorInput()"></textarea>
-            <div id="charCounter">0 characters</div>
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-create" onclick="saveNote()">Publish Update</button>
-                <button class="btn" onclick="closeNoteEditor()">Cancel</button>
-            </div>
-        </div>
+    <div class="landing-title">Compliance Update Hub</div>
+    <div class="landing-sub">Choose your access level</div>
+  </div>
+  <div class="role-cards">
+    <div class="role-card" onclick="startEditorLogin()">
+      <div class="rc-icon">✍️</div>
+      <h2>EDITOR</h2>
+      <p>Manage content</p>
     </div>
-
-    <div id="fullView" class="full-overlay">
-        <button class="btn" onclick="closeFullView()">← Back</button>
-        <div style="max-width:900px; margin: 40px auto;">
-            <h1 id="viewTitle" style="font-size:3.5em; color:var(--accent); margin-bottom:30px;"></h1>
-            <p id="viewBody" style="white-space:pre-wrap; line-height:1.8; font-size:1.3em;"></p>
-        </div>
+    <div class="role-card" onclick="startViewerLogin()">
+      <div class="rc-icon">👁️</div>
+      <h2>VIEWER</h2>
+      <p>Read access</p>
     </div>
+  </div>
+</div>
 
-    <div id="liveBadge" class="connecting">
-        <div class="live-dot"></div>
-        <span id="liveBadgeText">Connecting…</span>
+<!-- ══ TOPBAR ══ -->
+<div class="topbar hidden" id="topbar">
+  <div class="logo-mark" onclick="navTo('dash')">
+    <div class="logo-icon">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 48 Q40 56 68 48" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <line x1="40" y1="48" x2="40" y2="18" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M40 20 L58 30 L40 44 Z" fill="var(--accent)" opacity=".85"/>
+        <line x1="40" y1="24" x2="40" y2="42" stroke="var(--bg)" stroke-width="1.5"/>
+        <line x1="42" y1="32" x2="56" y2="32" stroke="var(--bg)" stroke-width="1.5"/>
+      </svg>
     </div>
-    <div id="liveToast">
-        <span class="toast-icon" id="toastIcon">⚡</span>
-        <span id="toastMsg">Content updated</span>
+    <div class="logo-text">Compliance Hub<span id="welcomeMsg">Viewer</span></div>
+  </div>
+  <div class="topbar-right">
+    <select class="theme-sel" onchange="setTheme(this.value)">
+      <option value="default">🌌 Dark Navy</option>
+      <option value="forest">🌲 Forest</option>
+      <option value="cream">📜 Beige</option>
+      <option value="ocean">🌊 Ocean</option>
+    </select>
+    <div class="emgmt hidden" id="emgmtWrap">
+      <button id="emBtn" onclick="toggleEmDrop()">Editors
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div id="emDrop">
+        <div class="em-hdr">Authorized Editors</div>
+        <div id="emList"><div class="em-loading"><span class="spin"></span></div></div>
+        <div class="em-ftr"><button id="emAddBtn" onclick="addEditor()">+ Add Editor</button></div>
+      </div>
     </div>
+    <button class="tbtn tbtn-accent hidden" id="newBtn" onclick="openNewModal()">+ New</button>
+    <button class="tbtn" onclick="logout()">Logout</button>
+  </div>
+</div>
 
-    <!-- ══════════════ TIMEZONE CLOCK PANEL ══════════════ -->
-    <div id="tzPanel">
-        <div class="tz-clock-wrap">
-            <svg class="analog-clock" viewBox="0 0 60 60">
-                <g id="ticks-IST"></g>
-                <circle cx="30" cy="30" r="27" class="clock-face"/>
-                <line id="IST-h" x1="30" y1="30" x2="30" y2="15" class="hand-hour"/>
-                <line id="IST-m" x1="30" y1="30" x2="30" y2="8"  class="hand-min"/>
-                <line id="IST-s" x1="30" y1="34" x2="30" y2="6"  class="hand-sec"/>
-                <circle cx="30" cy="30" r="2.5" class="clock-center"/>
-            </svg>
-            <div class="tz-label">IST</div>
-            <div class="tz-digital" id="dig-IST">--:--</div>
-        </div>
-        <div class="tz-clock-wrap">
-            <svg class="analog-clock" viewBox="0 0 60 60">
-                <g id="ticks-GMT"></g>
-                <circle cx="30" cy="30" r="27" class="clock-face"/>
-                <line id="GMT-h" x1="30" y1="30" x2="30" y2="15" class="hand-hour"/>
-                <line id="GMT-m" x1="30" y1="30" x2="30" y2="8"  class="hand-min"/>
-                <line id="GMT-s" x1="30" y1="34" x2="30" y2="6"  class="hand-sec"/>
-                <circle cx="30" cy="30" r="2.5" class="clock-center"/>
-            </svg>
-            <div class="tz-label">GMT</div>
-            <div class="tz-digital" id="dig-GMT">--:--</div>
-        </div>
-        <div class="tz-clock-wrap">
-            <svg class="analog-clock" viewBox="0 0 60 60">
-                <g id="ticks-EST"></g>
-                <circle cx="30" cy="30" r="27" class="clock-face"/>
-                <line id="EST-h" x1="30" y1="30" x2="30" y2="15" class="hand-hour"/>
-                <line id="EST-m" x1="30" y1="30" x2="30" y2="8"  class="hand-min"/>
-                <line id="EST-s" x1="30" y1="34" x2="30" y2="6"  class="hand-sec"/>
-                <circle cx="30" cy="30" r="2.5" class="clock-center"/>
-            </svg>
-            <div class="tz-label">EST</div>
-            <div class="tz-digital" id="dig-EST">--:--</div>
-        </div>
+<!-- ══ SCREEN: DASHBOARD ══ -->
+<div class="screen" id="screenDash">
+
+  <!-- Updates band -->
+  <div class="updates-band">
+    <div class="sec-hdr">
+      <span class="sec-label">Updates</span>
+      <div class="sec-line"></div>
+      <span class="sec-action hidden" id="addUpdateBtn" onclick="openNewUpdateModal()">+ Add Update</span>
     </div>
+    <div class="sticky-grid" id="updatesGrid"></div>
+  </div>
 
-    <script>
-        const _U = "https://rspfzjybkicxgvcfqdzh.supabase.co";
-        const _K = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
-        const client = supabase.createClient(_U, _K);
+  <div class="dash-divider"></div>
 
-        let role = 'viewer';
-        let editorName = '';
-        let allNotes = [];
-        let pendingSearch = '';
-        let founderEditorId = null;
-        let isFounder = false;
+  <!-- Notes band -->
+  <div class="notes-band">
+    <div class="sec-hdr">
+      <span class="sec-label">Notes</span>
+      <div class="sec-line"></div>
+      <span class="sec-action hidden" id="addHeadingBtn" onclick="openNewHeadingModal()">+ Add Heading</span>
+    </div>
+    <div class="headings-grid" id="headingsGrid"></div>
+  </div>
+</div>
 
-        /* ══════════════ AUTOSAVE ENGINE ══════════════ */
-        const DRAFT_KEY = 'compliance_draft';
-        let autosaveTimer = null;
-        let autosaveSavedTimer = null;
-        const AUTOSAVE_DELAY = 1500;
+<!-- ══ SCREEN: SUB-HEADINGS ══ -->
+<div class="screen" id="screenSub">
+  <div class="drill-screen">
+    <div class="breadcrumb" id="bcSub"></div>
+    <div class="drill-title" id="subDrillTitle"></div>
+    <div class="drill-subtitle" id="subDrillSub">Sub-headings</div>
+    <div class="pointer-list" id="subList"></div>
+  </div>
+</div>
 
-        function setAutosaveStatus(state, msg) {
-            const el = document.getElementById('autosaveStatus');
-            const txt = document.getElementById('autosaveText');
-            el.className = state;
-            txt.textContent = msg;
+<!-- ══ SCREEN: SUB-SUB-HEADINGS ══ -->
+<div class="screen" id="screenSubSub">
+  <div class="drill-screen">
+    <div class="breadcrumb" id="bcSubSub"></div>
+    <div class="drill-title" id="subsubDrillTitle"></div>
+    <div class="drill-subtitle" id="subsubDrillSub">Topics</div>
+    <div class="pointer-list" id="subsubList"></div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: NOTE BODY ══ -->
+<div class="screen" id="screenNote">
+  <div class="drill-screen">
+    <div class="breadcrumb" id="bcNote"></div>
+    <div class="note-body-inner">
+      <div class="nb-tag">Note</div>
+      <div class="nb-title" id="noteBodyTitle"></div>
+      <div class="nb-divider"></div>
+      <div class="nb-body" id="noteBodyText"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ UPDATE FULL VIEW ══ -->
+<div id="viewOv">
+  <div class="view-inner">
+    <div class="view-back" onclick="closeUpdateView()">← Back</div>
+    <div class="view-tag">Update</div>
+    <div class="view-title" id="viewTitle"></div>
+    <div class="view-div"></div>
+    <div class="view-body" id="viewBody"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="modal-ov" id="modal">
+  <div class="modal-box">
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <h2 id="modalTitle">New Item</h2>
+    <div class="ff" id="ffTitle">
+      <label id="ffTitleLabel">Title</label>
+      <input type="text" id="mTitle" placeholder="Enter title…" spellcheck="true">
+    </div>
+    <div class="ff hidden" id="ffBody">
+      <label>Body</label>
+      <textarea id="mBody" placeholder="Enter note content…" spellcheck="true" autocorrect="on" rows="8"></textarea>
+    </div>
+    <div class="mactions">
+      <button class="mprimary" onclick="saveModal()">Save</button>
+      <button class="msecondary" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LIVE BADGE + TOAST ══ -->
+<div id="liveBadge" class="connecting"><div class="live-dot"></div><span id="liveBadgeText">Connecting…</span></div>
+<div id="liveToast"><span id="toastIcon">⚡</span> <span id="toastMsg"></span></div>
+
+<!-- ══ TZ CLOCKS ══ -->
+<div id="tzPanel">
+  <div class="tz-wrap">
+    <svg class="aclock" viewBox="0 0 60 60"><g id="tk-IST"></g><circle cx="30" cy="30" r="27" class="cf"/><line id="IST-h" x1="30" y1="30" x2="30" y2="15" class="hh"/><line id="IST-m" x1="30" y1="30" x2="30" y2="8" class="hm"/><line id="IST-s" x1="30" y1="34" x2="30" y2="6" class="hs"/><circle cx="30" cy="30" r="2.5" class="cc"/></svg>
+    <div class="tz-lbl">IST</div><div class="tz-dig" id="dig-IST">--:--</div>
+  </div>
+  <div class="tz-wrap">
+    <svg class="aclock" viewBox="0 0 60 60"><g id="tk-GMT"></g><circle cx="30" cy="30" r="27" class="cf"/><line id="GMT-h" x1="30" y1="30" x2="30" y2="15" class="hh"/><line id="GMT-m" x1="30" y1="30" x2="30" y2="8" class="hm"/><line id="GMT-s" x1="30" y1="34" x2="30" y2="6" class="hs"/><circle cx="30" cy="30" r="2.5" class="cc"/></svg>
+    <div class="tz-lbl">GMT</div><div class="tz-dig" id="dig-GMT">--:--</div>
+  </div>
+  <div class="tz-wrap">
+    <svg class="aclock" viewBox="0 0 60 60"><g id="tk-EST"></g><circle cx="30" cy="30" r="27" class="cf"/><line id="EST-h" x1="30" y1="30" x2="30" y2="15" class="hh"/><line id="EST-m" x1="30" y1="30" x2="30" y2="8" class="hm"/><line id="EST-s" x1="30" y1="34" x2="30" y2="6" class="hs"/><circle cx="30" cy="30" r="2.5" class="cc"/></svg>
+    <div class="tz-lbl">EST</div><div class="tz-dig" id="dig-EST">--:--</div>
+  </div>
+</div>
+
+<div id="devCredit">Developed by Kedar &amp; Tirth</div>
+
+<script>
+/* ══════════════════════════════════════════
+   SUPABASE
+══════════════════════════════════════════ */
+const _U = "https://rspfzjybkicxgvcfqdzh.supabase.co";
+const _K = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
+const db = supabase.createClient(_U, _K);
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let role = 'viewer';
+let editorName = '';
+let founderEditorId = null;
+let isFounder = false;
+let allUpdates = [];
+let realtimeChannel = null;
+let toastTimer = null;
+let viewerTimer = null;
+
+// Navigation state
+let currentHeading = null;   // { id, title }
+let currentSubheading = null; // { id, title }
+
+// Modal context
+let modalCtx = null;
+// { mode: 'new-update'|'edit-update'|'new-heading'|'edit-heading'|
+//          'new-sub'|'edit-sub'|'new-subsub'|'edit-subsub',
+//   item: existing item if editing }
+
+/* ══════════════════════════════════════════
+   LANDING / AUTH
+══════════════════════════════════════════ */
+function startEditorLogin() {
+  document.getElementById('authPassInput').value = '';
+  document.getElementById('authNameInput').value = '';
+  document.getElementById('passError').textContent = '';
+  document.getElementById('nameError').textContent = '';
+  document.getElementById('authStepPass').style.display = 'block';
+  document.getElementById('authStepName').style.display = 'none';
+  document.getElementById('authModal').classList.add('open');
+  setTimeout(() => document.getElementById('authPassInput').focus(), 80);
+}
+
+function startViewerLogin() { role = 'viewer'; enterDashboard(); }
+
+function closeAuthModal() { document.getElementById('authModal').classList.remove('open'); }
+
+function toggleEye(id, btn) {
+  const inp = document.getElementById(id);
+  const isP = inp.type === 'password';
+  inp.type = isP ? 'text' : 'password';
+  btn.innerHTML = isP
+    ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+    : '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+
+function submitPass() {
+  const pass = document.getElementById('authPassInput').value;
+  if (pass === 'viking2026') {
+    document.getElementById('authStepPass').style.display = 'none';
+    document.getElementById('authStepName').style.display = 'block';
+    setTimeout(() => document.getElementById('authNameInput').focus(), 80);
+  } else {
+    document.getElementById('passError').textContent = 'Incorrect password.';
+    document.getElementById('authPassInput').value = '';
+    document.getElementById('authPassInput').focus();
+  }
+}
+
+async function submitName() {
+  const n = document.getElementById('authNameInput').value.trim();
+  if (!n) { document.getElementById('nameError').textContent = 'Please enter your name.'; return; }
+  const { data } = await db.from('authorized_editors').select('*').ilike('name', n).single();
+  if (data) {
+    editorName = data.name; role = 'editor';
+    closeAuthModal();
+    const { data: fr } = await db.from('authorized_editors').select('id').order('id',{ascending:true}).limit(1).single();
+    if (fr) { founderEditorId = fr.id; isFounder = (data.id === fr.id); }
+    showSplash('Welcome, ' + editorName);
+  } else {
+    document.getElementById('nameError').textContent = 'Name not found.';
+    document.getElementById('authNameInput').select();
+  }
+}
+
+function showSplash(msg) {
+  const s = document.getElementById('splash');
+  s.textContent = msg; s.style.display = 'flex';
+  setTimeout(() => { s.style.display = 'none'; enterDashboard(); }, 1800);
+}
+
+function enterDashboard() {
+  closeAuthModal();
+  document.getElementById('landingPage').classList.add('hidden');
+  document.getElementById('topbar').classList.remove('hidden');
+  document.getElementById('welcomeMsg').textContent = role === 'editor' ? 'Editor: ' + editorName : 'Viewer';
+  if (role === 'editor') {
+    document.getElementById('emgmtWrap').classList.remove('hidden');
+    document.getElementById('newBtn').classList.remove('hidden');
+    document.getElementById('addUpdateBtn').classList.remove('hidden');
+    document.getElementById('addHeadingBtn').classList.remove('hidden');
+  }
+  sessionStorage.setItem('ch_role', role);
+  navTo('dash');
+  loadUpdates();
+  loadHeadings();
+  startRealtime();
+  if (role === 'viewer') startViewerAutoRefresh();
+}
+
+function logout() {
+  sessionStorage.removeItem('ch_role');
+  location.reload();
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function navTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen' + screen.charAt(0).toUpperCase() + screen.slice(1)).classList.add('active');
+  // Update "+ New" button label based on screen
+  const newBtn = document.getElementById('newBtn');
+  if (screen === 'dash') newBtn.textContent = '+ New';
+  else if (screen === 'sub') newBtn.textContent = '+ New Sub-Heading';
+  else if (screen === 'subSub') newBtn.textContent = '+ New Topic';
+  else if (screen === 'note') newBtn.style.display = 'none';
+  if (screen !== 'note') newBtn.style.display = '';
+  window.scrollTo(0, 0);
+}
+
+function openNewModal() {
+  // context-sensitive: figure out which screen we're on
+  const screens = { screenDash: 'dash', screenSub: 'sub', screenSubSub: 'subSub', screenNote: 'note' };
+  let current = 'dash';
+  document.querySelectorAll('.screen').forEach(s => { if (s.classList.contains('active')) current = screens[s.id] || 'dash'; });
+  if (current === 'dash') openNewUpdateModal();
+  else if (current === 'sub') openNewSubModal();
+  else if (current === 'subSub') openNewSubSubModal();
+}
+
+/* ══════════════════════════════════════════
+   BREADCRUMBS
+══════════════════════════════════════════ */
+function renderBreadcrumb(containerId, items) {
+  // items: [{label, onClick, current}]
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((item, i) => {
+    const sep = i < items.length - 1 ? '<span class="bc-sep">›</span>' : '';
+    const cls = 'bc-item' + (item.current ? ' current' : '');
+    return `<span class="${cls}" onclick="${item.onClick || ''}">${esc(item.label)}</span>${sep}`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════
+   UPDATES (Supabase posts table)
+══════════════════════════════════════════ */
+async function loadUpdates() {
+  const { data } = await db.from('posts').select('*').order('created_at', { ascending: false });
+  allUpdates = data || [];
+  renderUpdates();
+}
+
+function renderUpdates() {
+  const grid = document.getElementById('updatesGrid');
+  grid.innerHTML = '';
+
+  if (!allUpdates.length) {
+    grid.innerHTML = '<div class="empty">No updates yet.</div>';
+    return;
+  }
+
+  const colors = ['sc0','sc1','sc2','sc3','sc4'];
+  allUpdates.forEach((u, i) => {
+    const d = u.created_at ? new Date(u.created_at).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'}) : '';
+    let actions = '';
+    if (role === 'editor') {
+      actions = `<div class="sticky-note-actions">
+        <span onclick="event.stopPropagation();openEditUpdateModal(${JSON.stringify(u).replace(/"/g,'&quot;')})">Edit</span>
+        <span class="del" onclick="event.stopPropagation();deleteUpdate(${u.id})">Del</span>
+      </div>`;
+    }
+    const note = document.createElement('div');
+    note.className = `sticky-note ${colors[i % colors.length]}`;
+    note.innerHTML = `
+      <div class="sticky-note-title">${esc(u.title)}</div>
+      <div class="sticky-note-body">${esc(u.content)}</div>
+      <div class="sticky-note-footer">
+        <span class="sticky-note-date">${d}</span>
+        ${actions}
+      </div>`;
+    note.addEventListener('click', () => openUpdateView(u));
+    grid.appendChild(note);
+  });
+}
+
+function openUpdateView(u) {
+  document.getElementById('viewTitle').textContent = u.title;
+  document.getElementById('viewBody').textContent = u.content;
+  document.getElementById('viewOv').classList.add('open');
+}
+function closeUpdateView() { document.getElementById('viewOv').classList.remove('open'); }
+
+async function deleteUpdate(id) {
+  if (!confirm('Delete this update?')) return;
+  await db.from('posts').delete().eq('id', id);
+  await loadUpdates();
+}
+
+function openNewUpdateModal() {
+  modalCtx = { mode: 'new-update' };
+  document.getElementById('modalTitle').textContent = 'New Update';
+  document.getElementById('ffTitleLabel').textContent = 'Title';
+  document.getElementById('mTitle').value = '';
+  document.getElementById('mBody').value = '';
+  document.getElementById('ffBody').classList.remove('hidden');
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('mTitle').focus(), 80);
+}
+
+function openEditUpdateModal(u) {
+  modalCtx = { mode: 'edit-update', item: u };
+  document.getElementById('modalTitle').textContent = 'Edit Update';
+  document.getElementById('ffTitleLabel').textContent = 'Title';
+  document.getElementById('mTitle').value = u.title || '';
+  document.getElementById('mBody').value = u.content || '';
+  document.getElementById('ffBody').classList.remove('hidden');
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('mTitle').focus(), 80);
+}
+
+/* ══════════════════════════════════════════
+   HEADINGS (note_headings table)
+══════════════════════════════════════════ */
+async function loadHeadings() {
+  const { data } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
+  renderHeadings(data || []);
+}
+
+function renderHeadings(list) {
+  const grid = document.getElementById('headingsGrid');
+  grid.innerHTML = '';
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty">No headings yet.</div>';
+    return;
+  }
+  list.forEach(h => {
+    const chip = document.createElement('div');
+    chip.className = 'heading-chip';
+    let actions = '';
+    if (role === 'editor') {
+      actions = `<div class="hc-actions">
+        <span onclick="event.stopPropagation();openEditHeadingModal(${JSON.stringify(h).replace(/"/g,'&quot;')})">Edit</span>
+        <span class="del" onclick="event.stopPropagation();deleteHeading(${h.id})">Del</span>
+      </div>`;
+    }
+    chip.innerHTML = `<span class="hc-title">${esc(h.title)}</span>${actions}<span class="hc-arrow">›</span>`;
+    chip.addEventListener('click', () => openSubScreen(h));
+    grid.appendChild(chip);
+  });
+}
+
+async function deleteHeading(id) {
+  if (!confirm('Delete this heading and all its contents?')) return;
+  await db.from('note_headings').delete().eq('id', id);
+  await loadHeadings();
+}
+
+function openNewHeadingModal() {
+  modalCtx = { mode: 'new-heading' };
+  document.getElementById('modalTitle').textContent = 'New Heading';
+  document.getElementById('ffTitleLabel').textContent = 'Heading Title';
+  document.getElementById('mTitle').value = '';
+  document.getElementById('ffBody').classList.add('hidden');
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('mTitle').focus(), 80);
+}
+
+function openEditHeadingModal(h) {
+  modalCtx = { mode: 'edit-heading', item: h };
+  document.getElementById('modalTitle').textContent = 'Edit Heading';
+  document.getElementById('ffTitleLabel').textContent = 'Heading Title';
+  document.getElementById('mTitle').value = h.title || '';
+  document.getElementById('ffBody').classList.add('hidden');
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('mTitle').focus(), 80);
+}
+
+/* ══════════════════════════════════════════
+   SUB-HEADINGS (note_subheadings table)
+══════════════════════════════════════════ */
+async function openSubScreen(heading) {
+  currentHeading = heading;
+  currentSubheading = null;
+
+  renderBreadcrumb('bcSub', [
+    { label: 'Dashboard', onClick: "navTo('dash')" },
+    { label: heading.title, current: true }
+  ]);
+  document.getElementById('subDrillTitle').textContent = heading.title;
+  document.getElementById('subDrillSub').textContent = 'Sub-headings';
+  navTo('sub');
+  await loadSubheadings(heading.id);
+}
+
+async function loadSubheadings(headingId) {
+  const { data } = await db.from('note_subheadings').select('*').eq('heading_id', headingId).order('created_at', { ascending: true });
+  renderSubheadings(data || []);
+}
+
+function renderSubheadings(list) {
+  const el = document.getElementById('subList');
+  el.innerHTML = '';
+  if (!list.length) {
+    el.innerHTML = '<div class="empty">No sub-headings yet.</div>';
+    return;
+  }
+  list.forEach(sub => {
+    const row = document.createElement('div');
+    row.className = 'pointer-row';
+    let actions = '';
+    if (role === 'editor') {
+      actions = `<div class="pr-actions">
+        <span onclick="event.stopPropagation();openEditSubModal(${JSON.stringify(sub).replace(/"/g,'&quot;')})">Edit</span>
+        <span class="del" onclick="event.stopPropagation();deleteSubheading(${sub.id})">Del</span>
+      </div>`;
+    }
+    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(sub.title)}</span>${actions}<span class="pr-arrow">›</span>`;
+    row.addEventListener('click', () => openSubSubScreen(sub));
+    el.appendChild(row);
+  });
+}
+
+async function deleteSubheading(id) {
+  if (!confirm('Delete this sub-heading and all its topics?')) return;
+  await db.from('note_subheadings').delete().eq('id', id);
+  await loadSubheadings(currentHeading.id);
+}
+
+function openNewSubModal() {
+  modalCtx = { mode: 'new-sub' };
+  document.getElementById('modalTitle').textContent = 'New Sub-Heading';
+  document.getElementById('ffTitleLabel').textContent = 'Sub-Heading Title';
+  document.getElementById('mTitle').value = '';
+  document.getElementById('ffBody').classList.add('hidden');
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('mTitle').focus(), 80);
+}
+
+function openEditSubModal(sub) {
+  modalCtx = { mode: 'edit-sub', item: sub };
+  document.getElementById('modalTitle').textContent = 'Edit Sub-Heading';
+  document.getElementById('ffTitleLabel').textContent = 'Sub-Heading Title';
+  document.getElementById('mTitle').value = sub.title || '';
+  document.getElementById('ffBody').classList.add('hidden');
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('mTitle').focus(), 80);
+}
+
+/* ══════════════════════════════════════════
+   SUB-SUB-HEADINGS (note_subsubheadings table)
+══════════════════════════════════════════ */
+async function openSubSubScreen(subheading) {
+  currentSubheading = subheading;
+
+  renderBreadcrumb('bcSubSub', [
+    { label: 'Dashboard', onClick: "navTo('dash')" },
+    { label: currentHeading.title, onClick: "openSubScreen(currentHeading)" },
+    { label: subheading.title, current: true }
+  ]);
+  document.getElementById('subsubDrillTitle').textContent = subheading.title;
+  document.getElementById('subsubDrillSub').textContent = 'Topics';
+  navTo('subSub');
+  await loadSubSubheadings(subheading.id);
+}
+
+async function loadSubSubheadings(subheadingId) {
+  const { data } = await db.from('note_subsubheadings').select('*').eq('subheading_id', subheadingId).order('created_at', { ascending: true });
+  renderSubSubheadings(data || []);
+}
+
+function renderSubSubheadings(list) {
+  const el = document.getElementById('subsubList');
+  el.innerHTML = '';
+  if (!list.length) {
+    el.innerHTML = '<div class="empty">No topics yet.</div>';
+    return;
+  }
+  list.forEach(ss => {
+    const row = document.createElement('div');
+    row.className = 'pointer-row';
+    let actions = '';
+    if (role === 'editor') {
+      actions = `<div class="pr-actions">
+        <span onclick="event.stopPropagation();openEditSubSubModal(${JSON.stringify(ss).replace(/"/g,'&quot;')})">Edit</span>
+        <span class="del" onclick="event.stopPropagation();deleteSubSubheading(${ss.id})">Del</span>
+      </div>`;
+    }
+    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(ss.title)}</span>${actions}<span class="pr-arrow">›</span>`;
+    row.addEventListener('click', () => openNoteScreen(ss));
+    el.appendChild(row);
+  });
+}
+
+async function deleteSubSubheading(id) {
+  if (!confirm('Delete this topic?')) return;
+  await db.from('note_subsubheadings').delete().eq('id', id);
+  await loadSubSubheadings(currentSubheading.id);
+}
+
+function openNewSubSubModal() {
+  modalCtx = { mode: 'new-subsub' };
+  document.getElementById('modalTitle').textContent = 'New Topic';
+  document.getElementById('ffTitleLabel').textContent = 'Topic Title';
+  document.getElementById('mTitle').value = '';
+  document.getElementById('mBody').value = '';
+  document.getElementById('ffBody').classList.remove('hidden');
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('mTitle').focus(), 80);
+}
+
+function openEditSubSubModal(ss) {
+  modalCtx = { mode: 'edit-subsub', item: ss };
+  document.getElementById('modalTitle').textContent = 'Edit Topic';
+  document.getElementById('ffTitleLabel').textContent = 'Topic Title';
+  document.getElementById('mTitle').value = ss.title || '';
+  document.getElementById('mBody').value = ss.body || '';
+  document.getElementById('ffBody').classList.remove('hidden');
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('mTitle').focus(), 80);
+}
+
+/* ══════════════════════════════════════════
+   NOTE BODY SCREEN
+══════════════════════════════════════════ */
+function openNoteScreen(ss) {
+  renderBreadcrumb('bcNote', [
+    { label: 'Dashboard', onClick: "navTo('dash')" },
+    { label: currentHeading.title, onClick: "openSubScreen(currentHeading)" },
+    { label: currentSubheading.title, onClick: "openSubSubScreen(currentSubheading)" },
+    { label: ss.title, current: true }
+  ]);
+  document.getElementById('noteBodyTitle').textContent = ss.title;
+  document.getElementById('noteBodyText').textContent = ss.body || '(No content yet.)';
+  navTo('note');
+}
+
+/* ══════════════════════════════════════════
+   MODAL SAVE
+══════════════════════════════════════════ */
+async function saveModal() {
+  const title = document.getElementById('mTitle').value.trim();
+  const body  = document.getElementById('mBody').value.trim();
+  if (!title) { alert('Title is required.'); return; }
+  const ctx = modalCtx;
+
+  if (ctx.mode === 'new-update') {
+    if (!body) { alert('Body is required.'); return; }
+    await db.from('posts').insert([{ title, content: body }]);
+    await loadUpdates();
+
+  } else if (ctx.mode === 'edit-update') {
+    if (!body) { alert('Body is required.'); return; }
+    await db.from('posts').update({ title, content: body }).eq('id', ctx.item.id);
+    await loadUpdates();
+
+  } else if (ctx.mode === 'new-heading') {
+    await db.from('note_headings').insert([{ title }]);
+    await loadHeadings();
+
+  } else if (ctx.mode === 'edit-heading') {
+    await db.from('note_headings').update({ title }).eq('id', ctx.item.id);
+    await loadHeadings();
+    if (currentHeading && currentHeading.id === ctx.item.id) {
+      currentHeading.title = title;
+      document.getElementById('subDrillTitle').textContent = title;
+    }
+
+  } else if (ctx.mode === 'new-sub') {
+    await db.from('note_subheadings').insert([{ heading_id: currentHeading.id, title }]);
+    await loadSubheadings(currentHeading.id);
+
+  } else if (ctx.mode === 'edit-sub') {
+    await db.from('note_subheadings').update({ title }).eq('id', ctx.item.id);
+    await loadSubheadings(currentHeading.id);
+
+  } else if (ctx.mode === 'new-subsub') {
+    if (!body) { alert('Body is required.'); return; }
+    await db.from('note_subsubheadings').insert([{ subheading_id: currentSubheading.id, title, body }]);
+    await loadSubSubheadings(currentSubheading.id);
+
+  } else if (ctx.mode === 'edit-subsub') {
+    if (!body) { alert('Body is required.'); return; }
+    await db.from('note_subsubheadings').update({ title, body }).eq('id', ctx.item.id);
+    await loadSubSubheadings(currentSubheading.id);
+  }
+
+  closeModal();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  modalCtx = null;
+}
+
+/* ══════════════════════════════════════════
+   REALTIME (updates)
+══════════════════════════════════════════ */
+function setLiveBadge(s, t) {
+  const b = document.getElementById('liveBadge');
+  b.className = s; document.getElementById('liveBadgeText').textContent = t;
+}
+
+function showToast(icon, msg) {
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastMsg').textContent = msg;
+  const t = document.getElementById('liveToast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function startRealtime() {
+  if (realtimeChannel) db.removeChannel(realtimeChannel);
+  realtimeChannel = db.channel('posts-live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, payload => {
+      const ev = payload.eventType;
+      if (ev === 'INSERT') {
+        if (!allUpdates.find(n => n.id === payload.new.id)) {
+          allUpdates.unshift(payload.new); renderUpdates();
+          showToast('📋', `New: "${payload.new.title.substring(0,40)}"`);
         }
-
-        function onEditorInput() {
-            updateCharCounter();
-            setAutosaveStatus('saving', 'Saving draft…');
-            clearTimeout(autosaveTimer);
-            autosaveTimer = setTimeout(performAutosave, AUTOSAVE_DELAY);
-        }
-
-        function performAutosave() {
-            const title   = document.getElementById('postTitle').value;
-            const content = document.getElementById('postContent').value;
-            const editId  = document.getElementById('editId').value;
-            if (!title && !content) { setAutosaveStatus('', 'Draft'); return; }
-            try {
-                localStorage.setItem(DRAFT_KEY, JSON.stringify({ title, content, editId: editId || null, savedAt: new Date().toISOString() }));
-                const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                setAutosaveStatus('saved', 'Draft saved ' + timeStr);
-                clearTimeout(autosaveSavedTimer);
-                autosaveSavedTimer = setTimeout(() => setAutosaveStatus('', 'Draft'), 3000);
-            } catch(e) { setAutosaveStatus('error', 'Could not save draft'); }
-        }
-
-        function updateCharCounter() {
-            const len = document.getElementById('postContent').value.length;
-            const el  = document.getElementById('charCounter');
-            el.textContent = len.toLocaleString() + ' character' + (len === 1 ? '' : 's');
-            el.style.color = len > 5000 ? '#e74c3c' : '';
-        }
-
-        function checkForDraft() {
-            try {
-                const raw = localStorage.getItem(DRAFT_KEY);
-                if (!raw) return;
-                const draft = JSON.parse(raw);
-                if (!draft.title && !draft.content) return;
-                const when = new Date(draft.savedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                document.getElementById('draftBannerMsg').textContent = `Unsaved draft from ${when}. Restore it?`;
-                document.getElementById('draftBanner').classList.add('visible');
-            } catch(e) {}
-        }
-
-        function restoreDraft() {
-            try {
-                const draft = JSON.parse(localStorage.getItem(DRAFT_KEY));
-                document.getElementById('postTitle').value   = draft.title   || '';
-                document.getElementById('postContent').value = draft.content || '';
-                if (draft.editId) document.getElementById('editId').value = draft.editId;
-                updateCharCounter();
-                setAutosaveStatus('saved', 'Draft restored');
-            } catch(e) {}
-            document.getElementById('draftBanner').classList.remove('visible');
-        }
-
-        function discardDraft() {
-            localStorage.removeItem(DRAFT_KEY);
-            document.getElementById('draftBanner').classList.remove('visible');
-            setAutosaveStatus('', 'Draft');
-        }
-
-        function clearDraft() { localStorage.removeItem(DRAFT_KEY); }
-
-        /* ══════════════ INFINITE BELT SLIDER ENGINE ══════════════ */
-        let beltOffset = 0;
-        let beltPaused = false;
-        let beltRAF = null;
-        let beltCardWidth = 264; // card width + gap
-        let beltOriginalCount = 0;
-        let beltSpeed = 0.6; // px per frame (~60fps → slow conveyor)
-        let expandedNoteId = null;
-
-        function buildBelt(notes) {
-            const track = document.getElementById('beltTrack');
-            track.innerHTML = '';
-            if (!notes || notes.length === 0) {
-                track.innerHTML = '<div style="padding:60px 40px; opacity:0.4; font-family:\'Cinzel\',serif; letter-spacing:3px; font-size:0.8em;">No updates yet.</div>';
-                return;
-            }
-
-            beltOriginalCount = notes.length;
-
-            // We need enough copies to fill screen width * 3 for seamless infinite scroll
-            // Minimum: fill at least 3x the viewport
-            const viewportW = window.innerWidth;
-            const cardW = 264;
-            const minCards = Math.ceil((viewportW * 3) / cardW) + beltOriginalCount;
-            const copies = Math.max(3, Math.ceil(minCards / beltOriginalCount));
-
-            for (let c = 0; c < copies; c++) {
-                notes.forEach(note => {
-                    const card = createBeltCard(note);
-                    track.appendChild(card);
-                });
-            }
-
-            beltCardWidth = cardW;
-            beltOffset = 0;
-            track.style.transform = 'translateX(0px)';
-            startBeltAnimation();
-        }
-
-        function createBeltCard(note) {
-            const card = document.createElement('div');
-            card.className = 'belt-card';
-            card.dataset.id = note.id;
-
-            let toolsHtml = '';
-            if (role === 'editor') {
-                const safeNote = JSON.stringify(note).replace(/"/g, '&quot;');
-                toolsHtml = `<div class="belt-card-tools">
-                    <span onclick="event.stopPropagation(); openEditNote(${safeNote})">Edit</span>
-                    <span class="del" onclick="event.stopPropagation(); deleteNote(${note.id})">Del</span>
-                </div>`;
-            }
-
-            card.innerHTML = `
-                <h3>${note.title}</h3>
-                <p>${note.content}</p>
-                ${toolsHtml}
-            `;
-
-            card.addEventListener('mouseenter', (e) => {
-                beltPaused = true;
-                showExpandPanel(note, card);
-            });
-
-            card.addEventListener('mouseleave', () => {
-                // Don't resume yet — let user read the expand panel
-                // Belt resumes when mouse leaves expand panel or after a delay
-            });
-
-            return card;
-        }
-
-        function startBeltAnimation() {
-            if (beltRAF) cancelAnimationFrame(beltRAF);
-
-            const track = document.getElementById('beltTrack');
-            const totalOriginalWidth = beltOriginalCount * beltCardWidth;
-
-            function step() {
-                if (!beltPaused) {
-                    beltOffset += beltSpeed;
-                    // When we've scrolled one full set of originals, reset seamlessly
-                    if (beltOffset >= totalOriginalWidth) {
-                        beltOffset -= totalOriginalWidth;
-                    }
-                    track.style.transform = `translateX(-${beltOffset}px)`;
-                }
-                beltRAF = requestAnimationFrame(step);
-            }
-
-            beltRAF = requestAnimationFrame(step);
-        }
-
-        /* ── Expand Panel ── */
-        function showExpandPanel(note, cardEl) {
-            if (expandedNoteId === note.id) return;
-            expandedNoteId = note.id;
-
-            document.getElementById('expandTitle').textContent = note.title;
-            document.getElementById('expandBody').textContent  = note.content;
-
-            // Position the arrow above the hovered card
-            const panel = document.getElementById('expandPanel');
-            const inner = document.getElementById('expandInner');
-            const arrow = document.getElementById('expandArrow');
-
-            const cardRect   = cardEl.getBoundingClientRect();
-            const innerRect  = inner.getBoundingClientRect();
-            const cardCenterX = cardRect.left + cardRect.width / 2;
-
-            // Offset relative to expand-inner's left edge
-            inner.style.position = 'relative'; // ensure arrow is positioned correctly
-            arrow.style.left = Math.max(20, Math.min(cardCenterX - 40, window.innerWidth - 80)) + 'px';
-
-            panel.classList.add('open');
-            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function closeExpandPanel() {
-            document.getElementById('expandPanel').classList.remove('open');
-            expandedNoteId = null;
-            beltPaused = false;
-        }
-
-        // Resume belt when mouse leaves the entire belt section
-        document.addEventListener('DOMContentLoaded', () => {
-            const beltSec = document.getElementById('beltSection');
-            if (beltSec) {
-                beltSec.addEventListener('mouseleave', () => {
-                    beltPaused = false;
-                });
-            }
-        });
-
-        /* ══════════════ SEARCH FILTER ══════════════ */
-        function filterNotes() {
-            const term = document.getElementById('searchInput').value.toLowerCase().trim();
-            const searchWrap = document.getElementById('searchResultsWrap');
-            const beltWrap   = document.getElementById('beltWrap');
-            const expandPanel = document.getElementById('expandPanel');
-            const labelBar    = document.querySelector('.belt-label-bar');
-
-            if (term) {
-                // Hide belt, show grid results
-                beltWrap.style.display   = 'none';
-                expandPanel.style.display = 'none';
-                labelBar.style.display   = 'none';
-                searchWrap.classList.add('visible');
-                searchWrap.style.paddingTop = '20px';
-
-                const filtered = allNotes.filter(n =>
-                    n.title.toLowerCase().includes(term) ||
-                    n.content.toLowerCase().includes(term)
-                );
-                const grid = document.getElementById('searchResultsGrid');
-                grid.innerHTML = '';
-                filtered.forEach(note => {
-                    const card = document.createElement('div');
-                    card.className = 'search-card';
-                    let toolsHtml = '';
-                    if (role === 'editor') {
-                        const safeNote = JSON.stringify(note).replace(/"/g, '&quot;');
-                        toolsHtml = `<div style="margin-top:10px; opacity:0.6; display:flex; gap:14px;">
-                            <span style="font-size:11px; text-decoration:underline; cursor:pointer; font-family:'Cinzel',serif; color:var(--accent);" onclick="openEditNote(${safeNote})">Edit</span>
-                            <span style="font-size:11px; text-decoration:underline; cursor:pointer; font-family:'Cinzel',serif; color:#e74c3c;" onclick="deleteNote(${note.id})">Delete</span>
-                        </div>`;
-                    }
-                    card.innerHTML = `<h3>${note.title}</h3><p>${note.content}</p>${toolsHtml}`;
-                    card.onclick = () => viewNote(note);
-                    grid.appendChild(card);
-                });
-            } else {
-                // Show belt again
-                beltWrap.style.display   = '';
-                expandPanel.style.display = '';
-                labelBar.style.display   = '';
-                searchWrap.classList.remove('visible');
-            }
-        }
-
-        /* ══════════════ CORE NOTE OPS ══════════════ */
-        function renderNotes(notes) {
-            allNotes = notes;
-            buildBelt(notes);
-        }
-
-        async function loadNotes() {
-            const { data } = await client.from('posts').select('*').order('created_at', { ascending: false });
-            allNotes = data || [];
-            buildBelt(allNotes);
-            if (pendingSearch) {
-                document.getElementById('searchInput').value = pendingSearch;
-                filterNotes();
-            }
-        }
-
-        async function saveNote() {
-            const t = document.getElementById('postTitle').value;
-            const c = document.getElementById('postContent').value;
-            const id = document.getElementById('editId').value;
-            if (!t || !c) return;
-            if (id) await client.from('posts').update({ title: t, content: c }).eq('id', id);
-            else    await client.from('posts').insert([{ title: t, content: c }]);
-            clearDraft();
-            closeNoteEditor();
-            loadNotes();
-        }
-
-        async function deleteNote(id) {
-            if (confirm("Delete this note?")) {
-                await client.from('posts').delete().eq('id', id);
-                loadNotes();
-            }
-        }
-
-        function viewNote(note) {
-            document.getElementById('viewTitle').innerText = note.title;
-            document.getElementById('viewBody').innerText  = note.content;
-            document.getElementById('fullView').classList.add('active');
-        }
-
-        function openEditNote(note) {
-            document.getElementById('editorHeading').innerText    = "Edit Note";
-            document.getElementById('editId').value               = note.id;
-            document.getElementById('postTitle').value            = note.title;
-            document.getElementById('postContent').value          = note.content;
-            updateCharCounter();
-            setAutosaveStatus('', 'Draft');
-            document.getElementById('draftBanner').classList.remove('visible');
-            document.getElementById('noteEditor').classList.add('active');
-        }
-
-        function closeFullView() { document.getElementById('fullView').classList.remove('active'); }
-
-        function openEditor() {
-            document.getElementById('editorHeading').innerText = "New Update";
-            document.getElementById('editId').value   = '';
-            document.getElementById('postTitle').value  = '';
-            document.getElementById('postContent').value = '';
-            updateCharCounter();
-            setAutosaveStatus('', 'Draft');
-            document.getElementById('noteEditor').classList.add('active');
-            checkForDraft();
-        }
-
-        function closeNoteEditor() {
-            const t = document.getElementById('postTitle').value;
-            const c = document.getElementById('postContent').value;
-            if (t || c) performAutosave();
-            clearTimeout(autosaveTimer);
-            clearTimeout(autosaveSavedTimer);
-            document.getElementById('noteEditor').classList.remove('active');
-            document.getElementById('editId').value = '';
-            document.getElementById('draftBanner').classList.remove('visible');
-        }
-
-        function setTheme(t) { document.body.className = (t === 'default' ? '' : 'theme-' + t); }
-
-        /* ══════════════ AUTH ══════════════ */
-        function startEditorLogin() {
-            document.getElementById('authPassInput').value = '';
-            document.getElementById('authNameInput').value = '';
-            document.getElementById('passError').textContent = '';
-            document.getElementById('nameError').textContent = '';
-            document.getElementById('authStepPass').style.display = 'block';
-            document.getElementById('authStepName').style.display = 'none';
-            document.getElementById('authModal').classList.add('open');
-            setTimeout(() => document.getElementById('authPassInput').focus(), 80);
-        }
-
-        function closeAuthModal() { document.getElementById('authModal').classList.remove('open'); }
-
-        function toggleEye(inputId, btn) {
-            const inp = document.getElementById(inputId);
-            const isPass = inp.type === 'password';
-            inp.type = isPass ? 'text' : 'password';
-            btn.innerHTML = isPass
-                ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
-                : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-        }
-
-        function submitPass() {
-            const pass = document.getElementById('authPassInput').value;
-            if (pass === 'viking2026') {
-                document.getElementById('authStepPass').style.display = 'none';
-                document.getElementById('authStepName').style.display = 'block';
-                setTimeout(() => document.getElementById('authNameInput').focus(), 80);
-            } else {
-                document.getElementById('passError').textContent = 'Incorrect password. Try again.';
-                document.getElementById('authPassInput').value = '';
-                document.getElementById('authPassInput').focus();
-            }
-        }
-
-        async function submitName() {
-            const nameInput = document.getElementById('authNameInput').value.trim();
-            if (!nameInput) { document.getElementById('nameError').textContent = 'Please enter your name.'; return; }
-            const { data } = await client.from('authorized_editors').select('*').ilike('name', nameInput).single();
-            if (data) {
-                editorName = data.name;
-                role = 'editor';
-                closeAuthModal();
-                const { data: firstRow } = await client.from('authorized_editors').select('id').order('id', { ascending: true }).limit(1).single();
-                if (firstRow) { founderEditorId = firstRow.id; isFounder = (data.id === founderEditorId); }
-                showSplash('Welcome, Editor ' + editorName);
-            } else {
-                document.getElementById('nameError').textContent = 'Name not found in authorized list.';
-                document.getElementById('authNameInput').select();
-            }
-        }
-
-        function startViewerLogin() {
-            role = 'viewer';
-            sessionStorage.setItem('ch_role', 'viewer');
-            enterDashboard();
-        }
-
-        function logout() { sessionStorage.removeItem('ch_role'); location.reload(); }
-
-        /* ── VIEWER AUTO-REFRESH ── */
-        let viewerRefreshTimer = null;
-        function startViewerAutoRefresh() {
-            if (viewerRefreshTimer) return;
-            viewerRefreshTimer = setInterval(async () => {
-                if (document.getElementById('noteEditor').classList.contains('active')) return;
-                if (document.getElementById('fullView').classList.contains('active')) return;
-                const { data } = await client.from('posts').select('*').order('created_at', { ascending: false });
-                if (!data) return;
-                const incoming = JSON.stringify(data.map(n => ({ id: n.id, title: n.title, content: n.content })));
-                const current  = JSON.stringify(allNotes.map(n => ({ id: n.id, title: n.title, content: n.content })));
-                if (incoming !== current) {
-                    allNotes = data;
-                    const term = document.getElementById('searchInput').value.toLowerCase();
-                    if (!term) buildBelt(allNotes);
-                }
-            }, 5000);
-        }
-
-        function showSplash(msg) {
-            const s = document.getElementById('splash');
-            s.innerText = msg; s.style.display = 'flex';
-            setTimeout(() => { s.style.display = 'none'; enterDashboard(); }, 2000);
-        }
-
-        function enterDashboard() {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('mainDashboard').classList.remove('hidden');
-            if (role === 'editor') {
-                document.getElementById('welcomeMsg').innerText = `Editor: ${editorName}`;
-                document.getElementById('createTrigger').classList.remove('hidden');
-                document.getElementById('editorMgmtWrap').classList.remove('hidden');
-            }
-            if (pendingSearch) document.getElementById('searchInput').value = pendingSearch;
-            loadNotes();
-            startRealtime();
-            if (role === 'viewer') startViewerAutoRefresh();
-        }
-
-        /* ══════════════ EDITOR DROPDOWN ══════════════ */
-        let dropdownOpen = false;
-        function toggleEditorDropdown() {
-            const dropdown = document.getElementById('editorDropdown');
-            const btn = document.getElementById('editorMgmtBtn');
-            dropdownOpen = !dropdownOpen;
-            dropdown.classList.toggle('open', dropdownOpen);
-            btn.classList.toggle('open', dropdownOpen);
-            if (dropdownOpen) { loadEditorList(); setTimeout(() => document.addEventListener('click', outsideDropdownClick), 10); }
-            else { document.removeEventListener('click', outsideDropdownClick); }
-        }
-
-        function outsideDropdownClick(e) {
-            const wrap = document.getElementById('editorMgmtWrap');
-            if (!wrap.contains(e.target)) {
-                dropdownOpen = false;
-                document.getElementById('editorDropdown').classList.remove('open');
-                document.getElementById('editorMgmtBtn').classList.remove('open');
-                document.removeEventListener('click', outsideDropdownClick);
-            }
-        }
-
-        async function loadEditorList() {
-            const list = document.getElementById('editorList');
-            list.innerHTML = '<div class="editor-loading"><span class="spin"></span></div>';
-            const { data, error } = await client.from('authorized_editors').select('*').order('id', { ascending: true });
-            if (error || !data || data.length === 0) { list.innerHTML = '<div class="editor-loading">No editors found.</div>'; return; }
-            const founderId = data[0].id;
-            list.innerHTML = data.map(ed => {
-                const initials = ed.name.split(' ').map(w => w[0]).join('').substring(0,2).toUpperCase();
-                const isSelf = ed.name.toLowerCase() === editorName.toLowerCase();
-                const isEditorFounder = (ed.id === founderId);
-                const showRemoveBtn = !isSelf && !isEditorFounder;
-                const founderTag = isEditorFounder ? `<span class="founder-badge" title="Founder — cannot be removed">👑</span>` : '';
-                return `<div class="editor-row" id="editor-row-${ed.id}">
-                    <div class="editor-row-name">
-                        <div class="editor-avatar ${isEditorFounder ? 'is-founder' : ''}">${initials}</div>
-                        <span>${ed.name}${founderTag}${isSelf ? ' <span style="opacity:0.4;font-size:0.8em;">(you)</span>' : ''}</span>
-                    </div>
-                    ${showRemoveBtn ? `<button class="btn-remove-editor" onclick="removeEditor(${ed.id}, '${ed.name.replace(/'/g, "\\'")}', ${isEditorFounder})">Remove</button>` : ''}
-                </div>`;
-            }).join('');
-        }
-
-        async function removeEditor(id, name, targetIsFounder) {
-            if (targetIsFounder || id === founderEditorId) { alert("The founding editor cannot be removed."); return; }
-            if (!isFounder) { alert("Only the founding editor can remove other editors."); return; }
-            if (!confirm(`Remove "${name}" from the editor list?`)) return;
-            const { error } = await client.from('authorized_editors').delete().eq('id', id);
-            if (!error) {
-                const row = document.getElementById(`editor-row-${id}`);
-                if (row) { row.style.opacity = '0'; row.style.transform = 'translateX(10px)'; setTimeout(() => row.remove(), 300); }
-            } else { alert('Failed to remove editor.'); }
-        }
-
-        async function addNewEditor() {
-            const n = prompt("Enter name of new Editor:");
-            if (n && n.trim()) {
-                const { error } = await client.from('authorized_editors').insert([{ name: n.trim() }]);
-                if (!error) { alert(`"${n.trim()}" has been added as an editor.`); loadEditorList(); }
-                else { alert('Failed to add editor.'); }
-            }
-        }
-
-        /* ══════════════ REALTIME ══════════════ */
-        let realtimeChannel = null;
-        let toastTimer = null;
-
-        function setLiveBadge(state, text) {
-            const badge = document.getElementById('liveBadge');
-            badge.className = state;
-            document.getElementById('liveBadgeText').textContent = text;
-        }
-
-        function showToast(icon, msg) {
-            const toast = document.getElementById('liveToast');
-            document.getElementById('toastIcon').textContent = icon;
-            document.getElementById('toastMsg').textContent  = msg;
-            toast.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
-        }
-
-        function startRealtime() {
-            if (realtimeChannel) client.removeChannel(realtimeChannel);
-            realtimeChannel = client
-                .channel('posts-live')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, (payload) => {
-                    const ev = payload.eventType;
-                    if (ev === 'INSERT') {
-                        const note = payload.new;
-                        if (!allNotes.find(n => n.id === note.id)) { allNotes.unshift(note); buildBelt(allNotes); showToast('📋', `New: "${note.title.substring(0,40)}"`); }
-                    } else if (ev === 'UPDATE') {
-                        const note = payload.new;
-                        const idx = allNotes.findIndex(n => n.id === note.id);
-                        if (idx !== -1) allNotes[idx] = note; else allNotes.unshift(note);
-                        buildBelt(allNotes);
-                        showToast('✏️', `Updated: "${note.title.substring(0,40)}"`);
-                    } else if (ev === 'DELETE') {
-                        allNotes = allNotes.filter(n => n.id !== payload.old.id);
-                        buildBelt(allNotes);
-                        showToast('🗑️', 'A note was removed');
-                    }
-                })
-                .subscribe((status) => {
-                    if (status === 'SUBSCRIBED') setLiveBadge('connected', 'Live');
-                    else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') { setLiveBadge('disconnected', 'Reconnecting…'); setTimeout(startRealtime, 5000); }
-                    else setLiveBadge('connecting', 'Connecting…');
-                });
-        }
-
-        /* ══════════════ ANALOG CLOCKS ══════════════ */
-        (function buildTicks() {
-            ['IST','GMT','EST'].forEach(function(id) {
-                var g = document.getElementById('ticks-' + id);
-                if (!g) return;
-                for (var i = 0; i < 60; i++) {
-                    var isHour = i % 5 === 0;
-                    var r1 = isHour ? 21 : 24, r2 = 27;
-                    var rad = ((i / 60) * 360 - 90) * Math.PI / 180;
-                    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', 30 + r1 * Math.cos(rad));
-                    line.setAttribute('y1', 30 + r1 * Math.sin(rad));
-                    line.setAttribute('x2', 30 + r2 * Math.cos(rad));
-                    line.setAttribute('y2', 30 + r2 * Math.sin(rad));
-                    line.setAttribute('class', isHour ? 'clock-tick-h' : 'clock-tick');
-                    g.appendChild(line);
-                }
-            });
-        })();
-
-        function rotateHand(el, deg) {
-            if (!el) return;
-            var rad = (deg - 90) * Math.PI / 180;
-            var cx = 30, cy = 30;
-            var isSec  = el.classList.contains('hand-sec');
-            var isHour = el.classList.contains('hand-hour');
-            var tipLen  = isSec ? 23 : isHour ? 14 : 21;
-            var tailLen = isSec ? 5  : 0;
-            el.setAttribute('x1', cx - tailLen * Math.cos(rad));
-            el.setAttribute('y1', cy - tailLen * Math.sin(rad));
-            el.setAttribute('x2', cx + tipLen  * Math.cos(rad));
-            el.setAttribute('y2', cy + tipLen  * Math.sin(rad));
-        }
-
-        var TZ_CONFIGS = [
-            { id: 'IST', tz: 'Asia/Kolkata' },
-            { id: 'GMT', tz: 'Etc/GMT' },
-            { id: 'EST', tz: 'America/New_York' }
-        ];
-
-        function tickClocks() {
-            var now = new Date();
-            TZ_CONFIGS.forEach(function(cfg) {
-                function fmt(unit) {
-                    return parseInt(new Intl.DateTimeFormat('en-US', { timeZone: cfg.tz, [unit]: 'numeric', hour12: false }).format(now), 10);
-                }
-                var h24 = fmt('hour'), m = fmt('minute'), s = fmt('second'), h = h24 % 12;
-                rotateHand(document.getElementById(cfg.id + '-h'), h * 30 + m * 0.5);
-                rotateHand(document.getElementById(cfg.id + '-m'), m * 6  + s * 0.1);
-                rotateHand(document.getElementById(cfg.id + '-s'), s * 6);
-                var dig = document.getElementById('dig-' + cfg.id);
-                if (dig) dig.textContent = String(h24).padStart(2,'0') + ':' + String(m).padStart(2,'0');
-            });
-        }
-
-        tickClocks();
-        setInterval(tickClocks, 1000);
-
-        /* ── RESTORE SESSION ── */
-        (function restoreSession() {
-            const savedRole = sessionStorage.getItem('ch_role');
-            if (savedRole === 'viewer') {
-                role = 'viewer';
-                document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('mainDashboard').classList.remove('hidden');
-                loadNotes();
-                startRealtime();
-                startViewerAutoRefresh();
-            }
-        })();
-
-        document.getElementById('authPassInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') submitPass(); });
-        document.getElementById('authNameInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') submitName(); });
-    </script>
+      } else if (ev === 'UPDATE') {
+        const idx = allUpdates.findIndex(n => n.id === payload.new.id);
+        if (idx !== -1) allUpdates[idx] = payload.new; else allUpdates.unshift(payload.new);
+        renderUpdates(); showToast('✏️', `Updated: "${payload.new.title.substring(0,40)}"`);
+      } else if (ev === 'DELETE') {
+        allUpdates = allUpdates.filter(n => n.id !== payload.old.id);
+        renderUpdates(); showToast('🗑️', 'Update removed');
+      }
+    })
+    .subscribe(status => {
+      if (status === 'SUBSCRIBED') setLiveBadge('connected', 'Live');
+      else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') { setLiveBadge('disconnected', 'Reconnecting…'); setTimeout(startRealtime, 5000); }
+      else setLiveBadge('connecting', 'Connecting…');
+    });
+}
+
+function startViewerAutoRefresh() {
+  if (viewerTimer) return;
+  viewerTimer = setInterval(async () => {
+    const { data } = await db.from('posts').select('*').order('created_at', { ascending: false });
+    if (!data) return;
+    const a = JSON.stringify(data.map(n=>({id:n.id,title:n.title}))),
+          b = JSON.stringify(allUpdates.map(n=>({id:n.id,title:n.title})));
+    if (a !== b) { allUpdates = data; renderUpdates(); }
+  }, 7000);
+}
+
+/* ══════════════════════════════════════════
+   EDITOR MANAGEMENT
+══════════════════════════════════════════ */
+let emOpen = false;
+function toggleEmDrop() {
+  emOpen = !emOpen;
+  document.getElementById('emDrop').classList.toggle('open', emOpen);
+  document.getElementById('emBtn').classList.toggle('open', emOpen);
+  if (emOpen) { loadEmList(); setTimeout(() => document.addEventListener('click', emOutside), 10); }
+  else document.removeEventListener('click', emOutside);
+}
+function emOutside(e) {
+  if (!document.getElementById('emgmtWrap').contains(e.target)) {
+    emOpen = false;
+    document.getElementById('emDrop').classList.remove('open');
+    document.getElementById('emBtn').classList.remove('open');
+    document.removeEventListener('click', emOutside);
+  }
+}
+async function loadEmList() {
+  const list = document.getElementById('emList');
+  list.innerHTML = '<div class="em-loading"><span class="spin"></span></div>';
+  const { data } = await db.from('authorized_editors').select('*').order('id', { ascending: true });
+  if (!data || !data.length) { list.innerHTML = '<div class="em-loading">No editors found.</div>'; return; }
+  const fid = data[0].id;
+  list.innerHTML = data.map(ed => {
+    const ini = ed.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    const isSelf = ed.name.toLowerCase() === editorName.toLowerCase();
+    const isFd = ed.id === fid;
+    return `<div class="em-row" id="em-row-${ed.id}">
+      <div class="em-name">
+        <div class="em-av ${isFd?'founder':''}">${ini}</div>
+        <span>${esc(ed.name)}${isFd?' 👑':''}${isSelf?' <span style="opacity:.4;font-size:.8em;">(you)</span>':''}</span>
+      </div>
+      ${(!isSelf && !isFd) ? `<button class="em-rmv" onclick="removeEditor(${ed.id},'${ed.name.replace(/'/g,"\\'")}',${isFd})">Remove</button>` : ''}
+    </div>`;
+  }).join('');
+}
+async function removeEditor(id, name, isFd) {
+  if (isFd) { alert('Cannot remove founding editor.'); return; }
+  if (!isFounder) { alert('Only the founding editor can remove others.'); return; }
+  if (!confirm(`Remove "${name}"?`)) return;
+  const { error } = await db.from('authorized_editors').delete().eq('id', id);
+  if (!error) { const r = document.getElementById(`em-row-${id}`); if(r){r.style.opacity='0';setTimeout(()=>r.remove(),300);} }
+  else alert('Failed to remove editor.');
+}
+async function addEditor() {
+  const n = prompt('Enter name of new Editor:');
+  if (n && n.trim()) {
+    const { error } = await db.from('authorized_editors').insert([{ name: n.trim() }]);
+    if (!error) { alert(`"${n.trim()}" added.`); loadEmList(); }
+    else alert('Failed to add editor.');
+  }
+}
+
+/* ══════════════════════════════════════════
+   THEME
+══════════════════════════════════════════ */
+function setTheme(t) { document.body.className = t === 'default' ? '' : 'theme-' + t; }
+
+/* ══════════════════════════════════════════
+   UTILITY
+══════════════════════════════════════════ */
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ══════════════════════════════════════════
+   ANALOG CLOCKS
+══════════════════════════════════════════ */
+(function buildTicks() {
+  ['IST','GMT','EST'].forEach(id => {
+    const g = document.getElementById('tk-'+id);
+    if (!g) return;
+    for (let i = 0; i < 60; i++) {
+      const isH = i%5===0, r1=isH?21:24, r2=27;
+      const rad = ((i/60)*360-90)*Math.PI/180;
+      const ln = document.createElementNS('http://www.w3.org/2000/svg','line');
+      ln.setAttribute('x1', 30+r1*Math.cos(rad)); ln.setAttribute('y1', 30+r1*Math.sin(rad));
+      ln.setAttribute('x2', 30+r2*Math.cos(rad)); ln.setAttribute('y2', 30+r2*Math.sin(rad));
+      ln.setAttribute('class', isH?'cth':'ct'); g.appendChild(ln);
+    }
+  });
+})();
+
+function rotateHand(el, deg) {
+  if (!el) return;
+  const rad=(deg-90)*Math.PI/180, cx=30, cy=30;
+  const isSec=el.classList.contains('hs'), isHour=el.classList.contains('hh');
+  const tip=isSec?23:isHour?14:21, tail=isSec?5:0;
+  el.setAttribute('x1',cx-tail*Math.cos(rad)); el.setAttribute('y1',cy-tail*Math.sin(rad));
+  el.setAttribute('x2',cx+tip*Math.cos(rad));  el.setAttribute('y2',cy+tip*Math.sin(rad));
+}
+
+const TZC = [{id:'IST',tz:'Asia/Kolkata'},{id:'GMT',tz:'Etc/GMT'},{id:'EST',tz:'America/New_York'}];
+function tickClocks() {
+  const now = new Date();
+  TZC.forEach(c => {
+    const fmt = u => parseInt(new Intl.DateTimeFormat('en-US',{timeZone:c.tz,[u]:'numeric',hour12:false}).format(now),10);
+    const h24=fmt('hour'),m=fmt('minute'),s=fmt('second'),h=h24%12;
+    rotateHand(document.getElementById(c.id+'-h'), h*30+m*.5);
+    rotateHand(document.getElementById(c.id+'-m'), m*6+s*.1);
+    rotateHand(document.getElementById(c.id+'-s'), s*6);
+    const d = document.getElementById('dig-'+c.id);
+    if (d) d.textContent = String(h24).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  });
+}
+tickClocks(); setInterval(tickClocks, 1000);
+
+/* ══════════════════════════════════════════
+   KEYBOARD
+══════════════════════════════════════════ */
+document.getElementById('authPassInput').addEventListener('keydown', e => { if(e.key==='Enter') submitPass(); });
+document.getElementById('authNameInput').addEventListener('keydown', e => { if(e.key==='Enter') submitName(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') { closeModal(); closeUpdateView(); } });
+
+/* ══════════════════════════════════════════
+   SESSION RESTORE
+══════════════════════════════════════════ */
+(function() {
+  if (sessionStorage.getItem('ch_role') === 'viewer') {
+    role = 'viewer'; enterDashboard();
+  }
+})();
+</script>
 </body>
 </html>
