@@ -256,10 +256,10 @@
     #liveToast.show{opacity:1;transform:translateY(0);}
 
     /* ─── TZ CLOCKS ─── */
-    #tzPanel{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:90;display:flex;align-items:center;background:var(--card);border:1px solid var(--text);border-bottom:none;border-radius:16px 16px 0 0;padding:11px 26px;backdrop-filter:blur(14px);box-shadow:0 -6px 30px var(--glow);}
-    .tz-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 20px;}
+    #tzPanel{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:90;display:flex;align-items:center;background:var(--card);border:1px solid var(--text);border-bottom:none;border-radius:16px 16px 0 0;padding:16px 36px;backdrop-filter:blur(14px);box-shadow:0 -6px 30px var(--glow);}
+    .tz-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 32px;}
     .tz-wrap+.tz-wrap{border-left:1px solid rgba(197,160,89,.16);}
-    .aclock{width:46px;height:46px;flex-shrink:0;}
+    .aclock{width:92px;height:92px;flex-shrink:0;}
     .cf{fill:none;stroke:var(--text);stroke-width:1.5;opacity:.28;}
     .ct{stroke:var(--text);stroke-width:1;opacity:.2;}
     .cth{stroke:var(--text);stroke-width:1.8;opacity:.38;}
@@ -267,8 +267,8 @@
     .hm{stroke:var(--text);stroke-width:1.8;stroke-linecap:round;}
     .hs{stroke:#e74c3c;stroke-width:1;stroke-linecap:round;}
     .cc{fill:var(--accent);}
-    .tz-lbl{font-family:'Cinzel',serif;font-size:.56em;letter-spacing:3px;opacity:.45;text-transform:uppercase;text-align:center;}
-    .tz-dig{font-family:'Raleway',sans-serif;font-size:.72em;font-weight:600;color:var(--accent);letter-spacing:1px;text-align:center;}
+    .tz-lbl{font-family:'Cinzel',serif;font-size:.72em;letter-spacing:3px;opacity:.45;text-transform:uppercase;text-align:center;}
+    .tz-dig{font-family:'Raleway',sans-serif;font-size:.96em;font-weight:600;color:var(--accent);letter-spacing:1px;text-align:center;}
 
     /* ─── DEV CREDIT ─── */
     #devCredit{position:fixed;bottom:9px;right:16px;z-index:50;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:2px;opacity:.55;color:var(--accent);pointer-events:none;user-select:none;}
@@ -1041,12 +1041,39 @@ function startRealtime() {
 function startViewerAutoRefresh() {
   if (viewerTimer) return;
   viewerTimer = setInterval(async () => {
+    // Always refresh updates
     const { data } = await db.from('posts').select('*').order('created_at', { ascending: false });
-    if (!data) return;
-    const a = JSON.stringify(data.map(n=>({id:n.id,title:n.title}))),
-          b = JSON.stringify(allUpdates.map(n=>({id:n.id,title:n.title})));
-    if (a !== b) { allUpdates = data; renderUpdates(); }
-  }, 7000);
+    if (data) {
+      const a = JSON.stringify(data.map(n=>({id:n.id,title:n.title,content:n.content}))),
+            b = JSON.stringify(allUpdates.map(n=>({id:n.id,title:n.title,content:n.content})));
+      if (a !== b) { allUpdates = data; renderUpdates(); }
+    }
+
+    // Refresh whichever notes screen is currently visible
+    if (document.getElementById('screenDash').classList.contains('active')) {
+      const { data: hData } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
+      if (hData) renderHeadings(hData);
+    } else if (document.getElementById('screenSub').classList.contains('active') && currentHeading) {
+      const { data: sData } = await db.from('note_subheadings').select('*').eq('heading_id', currentHeading.id).order('created_at', { ascending: true });
+      if (sData) renderSubheadings(sData);
+    } else if (document.getElementById('screenSubSub').classList.contains('active') && currentSubheading) {
+      const { data: ssData } = await db.from('note_subsubheadings').select('*').eq('subheading_id', currentSubheading.id).order('created_at', { ascending: true });
+      if (ssData) renderSubSubheadings(ssData);
+    } else if (document.getElementById('screenNote').classList.contains('active')) {
+      // Note body screen — re-fetch the current sub-sub-heading's body and update if changed
+      if (currentSubheading) {
+        const title = document.getElementById('noteBodyTitle').textContent;
+        const { data: nbData } = await db.from('note_subsubheadings').select('*').eq('subheading_id', currentSubheading.id).order('created_at', { ascending: true });
+        if (nbData) {
+          const current = nbData.find(ss => ss.title === title);
+          if (current) {
+            const existing = document.getElementById('noteBodyText').textContent;
+            if (current.body !== existing) document.getElementById('noteBodyText').textContent = current.body || '(No content yet.)';
+          }
+        }
+      }
+    }
+  }, 1500);
 }
 
 /* ══════════════════════════════════════════
