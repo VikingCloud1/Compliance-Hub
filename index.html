@@ -7,17 +7,72 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:#0a192f; --text:#c5a059; --accent:#d4af37;
+      --bg:#0a192f; --text:#e8c97a; --accent:#f0c93a;
       --card:rgba(10,25,47,0.9); --glow:rgba(197,160,89,0.28);
-      --bg-img:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=2072');
+      /* Dark Navy: deep space / star-map feel */
+      --bg-img:url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=2013');
     }
-    .theme-forest{--bg:#0b1a0e;--text:#708238;--accent:#bab86c;--card:rgba(11,26,14,0.9);--glow:rgba(112,130,56,0.35);--bg-img:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=2071');}
-    .theme-cream{--bg:#d2b48c;--text:#3d2b1f;--accent:#8b4513;--card:rgba(210,180,140,0.92);--glow:rgba(61,43,31,0.18);--bg-img:url('https://images.unsplash.com/photo-1505330622279-bf7d7fc918f4?auto=format&fit=crop&q=80&w=2070');}
-    .theme-ocean{--bg:#002b36;--text:#93a1a1;--accent:#2aa198;--card:rgba(0,43,54,0.9);--glow:rgba(42,161,152,0.35);--bg-img:url('https://images.unsplash.com/photo-1518467166778-b88f373ffec7?auto=format&fit=crop&q=80&w=2070');}
+    .theme-forest{
+      --bg:#0b1a0e;--text:#708238;--accent:#bab86c;
+      --card:rgba(11,26,14,0.9);--glow:rgba(112,130,56,0.35);
+      /* Forest: misty ancient woodland */
+      --bg-img:url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80&w=2070');
+    }
+
+    /* ── LIGHT THEME ── */
+    .theme-light{
+      --bg:#f5f5f5;
+      --text:#1a1a2e;
+      --accent:#1565c0;
+      --card:rgba(255,255,255,0.95);
+      --glow:rgba(21,101,192,0.18);
+    }
+    .theme-light .topbar{background:#ffffff;border-bottom:1px solid #dde3ee;}
+    .theme-light .sticky-note.sc0{background:#e3eaf8;}
+    .theme-light .sticky-note.sc1{background:#d7e4f5;}
+    .theme-light .sticky-note.sc2{background:#dce8f7;}
+    .theme-light .sticky-note.sc3{background:#e8edf8;}
+    .theme-light .sticky-note.sc4{background:#d4dff4;}
+    .theme-light .sticky-note-title{color:#1a1a2e;}
+    .theme-light .sticky-note-body{color:#3a3a5e;}
+    .theme-light .sticky-note-date{color:#5a6a8a;}
+    .theme-light .sticky-note-actions span{color:#1a1a2e;}
+    .theme-light .sticky-note::after{background:linear-gradient(225deg,rgba(0,0,0,.10) 50%,transparent 50%);}
+    .theme-light .auth-field input,.theme-light .ff input,.theme-light .ff textarea{background:#ffffff;border-color:#b0bce0;color:#1a1a2e;}
+    .theme-light select.theme-sel{background:#ffffff;color:#1a1a2e;border-color:#b0bce0;}
+    .theme-light .modal-box,.theme-light .auth-box{background:#ffffff;}
+    .theme-light .tab-btn{color:#1a1a2e;}
+    .theme-light #tzPanel{background:rgba(255,255,255,0.97);border-color:#dde3ee;}
+
+    /* ── DARK THEME ── */
+    .theme-dark{
+      --bg:#121212;
+      --text:#e0e0e0;
+      --accent:#bb86fc;
+      --card:rgba(30,30,30,0.95);
+      --glow:rgba(187,134,252,0.20);
+    }
+    .theme-dark .topbar{background:#1e1e1e;border-bottom:1px solid #333;}
+    .theme-dark .sticky-note.sc0{background:#2c2c3e;}
+    .theme-dark .sticky-note.sc1{background:#28283a;}
+    .theme-dark .sticky-note.sc2{background:#302d40;}
+    .theme-dark .sticky-note.sc3{background:#2a2840;}
+    .theme-dark .sticky-note.sc4{background:#262638;}
+    .theme-dark .sticky-note-title{color:#e0d0ff;}
+    .theme-dark .sticky-note-body{color:#b0a8c8;}
+    .theme-dark .sticky-note-date{color:#7a6fa0;}
+    .theme-dark .sticky-note-actions span{color:#e0d0ff;}
+    .theme-dark .sticky-note::after{background:linear-gradient(225deg,rgba(0,0,0,.35) 50%,transparent 50%);}
+    .theme-dark .auth-field input,.theme-dark .ff input,.theme-dark .ff textarea{background:#1e1e1e;border-color:#444;color:#e0e0e0;}
+    .theme-dark select.theme-sel{background:#1e1e1e;color:#e0e0e0;border-color:#444;}
+    .theme-dark .modal-box,.theme-dark .auth-box{background:#1e1e1e;}
+    .theme-dark #tzPanel{background:rgba(30,30,30,0.97);border-color:#333;}
 
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;font-family:'Raleway',sans-serif;}
-    body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background-color .5s,color .5s;}
-    .bg-layer{position:fixed;inset:0;background-image:var(--bg-img);background-size:cover;background-position:center;opacity:.15;z-index:-1;pointer-events:none;}
+    body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background-color .5s,color .5s;font-weight:500;}
+    .bg-layer{position:fixed;inset:0;background-image:var(--bg-img);background-size:cover;background-position:center;opacity:.09;z-index:-1;pointer-events:none;transition:opacity .5s;}
+    /* Light & Dark themes have no background image */
+    .theme-light .bg-layer,.theme-dark .bg-layer{opacity:0;}
     .hidden{display:none!important;}
 
     /* ─── SPLASH ─── */
@@ -101,7 +156,17 @@
     /* ─── DASHBOARD ─── */
     #screenDash{padding-top:68px;}
 
-    /* Updates band — top ~35% */
+    /* ── TAB SWITCHER ── */
+    .dash-tabs{display:flex;gap:0;padding:20px 40px 0;border-bottom:1px solid rgba(197,160,89,.15);}
+    .tab-btn{font-family:'Cinzel',serif;font-size:.78em;letter-spacing:3px;text-transform:uppercase;padding:10px 28px;cursor:pointer;border:none;background:transparent;color:var(--text);opacity:.45;border-bottom:2px solid transparent;transition:all .25s;position:relative;top:1px;}
+    .tab-btn.active{opacity:1;color:var(--accent);border-bottom:2px solid var(--accent);}
+    .tab-btn:hover{opacity:.8;}
+
+    /* Tab panels */
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;}
+
+    /* Updates band */
     .updates-band{padding:28px 40px 0;}
     .sec-hdr{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
     .sec-label{font-family:'Cinzel',serif;font-size:.68em;letter-spacing:5px;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
@@ -109,48 +174,19 @@
     .sec-action{font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2px;text-transform:uppercase;color:var(--accent);opacity:.5;cursor:pointer;padding:4px 10px;border:1px solid transparent;border-radius:5px;transition:all .2s;white-space:nowrap;}
     .sec-action:hover{opacity:1;border-color:var(--accent);}
 
-    /* ─── STICKY NOTE GRID (updates) ─── */
+    /* ─── STICKY NOTE GRID ─── */
     .sticky-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;padding-bottom:24px;}
-    .sticky-note{
-      position:relative;
-      background:#d4af37;
-      border-radius:2px 2px 2px 18px;
-      padding:18px 16px 36px;
-      cursor:pointer;
-      min-height:160px;
-      box-shadow:3px 4px 14px rgba(0,0,0,.35),inset 0 -3px 6px rgba(0,0,0,.12);
-      transition:transform .25s,box-shadow .25s;
-      overflow:hidden;
-    }
-    /* colour variants — cycle through these */
+    .sticky-note{position:relative;background:#d4af37;border-radius:2px 2px 2px 18px;padding:18px 16px 36px;cursor:pointer;min-height:160px;box-shadow:3px 4px 14px rgba(0,0,0,.35),inset 0 -3px 6px rgba(0,0,0,.12);transition:transform .25s,box-shadow .25s;overflow:hidden;}
     .sticky-note.sc0{background:#d4af37;}
     .sticky-note.sc1{background:#c9a227;}
     .sticky-note.sc2{background:#bfa035;}
     .sticky-note.sc3{background:#cba830;}
     .sticky-note.sc4{background:#d6b84a;}
-    /* folded corner */
-    .sticky-note::after{
-      content:'';position:absolute;bottom:0;right:0;
-      width:22px;height:22px;
-      background:linear-gradient(225deg,rgba(0,0,0,.22) 50%,transparent 50%);
-      border-radius:0 0 2px 0;
-    }
+    .sticky-note::after{content:'';position:absolute;bottom:0;right:0;width:22px;height:22px;background:linear-gradient(225deg,rgba(0,0,0,.22) 50%,transparent 50%);border-radius:0 0 2px 0;}
     .sticky-note:hover{transform:translateY(-4px) rotate(-1deg);box-shadow:5px 8px 22px rgba(0,0,0,.45);}
-    .sticky-note-title{
-      font-family:'Cinzel',serif;font-size:.8em;letter-spacing:1.5px;
-      color:rgba(10,25,47,.85);font-weight:700;line-height:1.35;
-      margin-bottom:10px;
-      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-    }
-    .sticky-note-body{
-      font-size:.76em;color:rgba(10,25,47,.68);line-height:1.6;
-      display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;
-    }
-    .sticky-note-footer{
-      position:absolute;bottom:10px;left:16px;right:26px;
-      display:flex;justify-content:space-between;align-items:center;
-      opacity:0;transition:opacity .2s;
-    }
+    .sticky-note-title{font-family:'Cinzel',serif;font-size:.8em;letter-spacing:1.5px;color:rgba(10,25,47,.85);font-weight:700;line-height:1.35;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .sticky-note-body{font-size:.76em;color:rgba(10,25,47,.68);line-height:1.6;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
+    .sticky-note-footer{position:absolute;bottom:10px;left:16px;right:26px;display:flex;justify-content:space-between;align-items:center;opacity:0;transition:opacity .2s;}
     .sticky-note:hover .sticky-note-footer{opacity:1;}
     .sticky-note-date{font-size:.6em;color:rgba(10,25,47,.45);font-family:'Cinzel',serif;letter-spacing:1px;}
     .sticky-note-actions{display:flex;gap:10px;}
@@ -159,10 +195,8 @@
     .sticky-note-actions span.del{color:rgba(160,30,30,.7);}
     .sticky-note-actions span.del:hover{color:rgba(160,30,30,1);}
 
-    /* Divider between updates and notes */
     .dash-divider{margin:0 40px;height:1px;background:linear-gradient(to right,transparent,var(--text),transparent);opacity:.12;}
 
-    /* Notes band — bottom ~65% */
     .notes-band{padding:24px 40px 100px;}
     .headings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
     .heading-chip{background:var(--card);border:1px solid var(--text);border-radius:10px;padding:16px 20px;cursor:pointer;backdrop-filter:blur(10px);transition:border-color .3s,box-shadow .25s,transform .25s;display:flex;align-items:center;gap:12px;}
@@ -176,27 +210,21 @@
     .heading-chip:hover .hc-actions span:hover{opacity:1;}
     .hc-actions span.del{color:#e74c3c;}
 
-    /* ─── NOTE DRILL SCREENS (shared styles) ─── */
+    /* ─── DRILL SCREENS ─── */
     .drill-screen{padding:36px 40px 100px;}
-
-    /* Breadcrumb */
     .breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:32px;flex-wrap:wrap;}
     .bc-item{font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;text-transform:uppercase;opacity:.4;cursor:pointer;transition:opacity .2s;}
     .bc-item:hover{opacity:.85;}
     .bc-item.current{opacity:.85;color:var(--accent);cursor:default;}
     .bc-sep{opacity:.25;font-size:.7em;}
-
-    /* Drill section header */
     .drill-title{font-family:'Cinzel',serif;font-size:1.5em;letter-spacing:2px;color:var(--accent);margin-bottom:8px;}
     .drill-subtitle{font-size:.8em;opacity:.45;margin-bottom:28px;letter-spacing:.5px;}
-
-    /* Pointer list (sub-headings, sub-sub-headings) */
     .pointer-list{display:flex;flex-direction:column;gap:0;}
     .pointer-row{display:flex;align-items:center;padding:13px 8px;border-bottom:1px solid rgba(197,160,89,.1);cursor:pointer;border-radius:6px;transition:background .2s;}
     .pointer-row:hover{background:rgba(212,175,55,.06);}
     .pointer-row:last-child{border-bottom:none;}
     .pr-bullet{width:6px;height:6px;border-radius:50%;border:1px solid var(--accent);flex-shrink:0;margin:0 14px;opacity:.5;}
-    .pr-title{flex:1;font-family:'Cinzel',serif;font-size:.86em;letter-spacing:1.5px;color:var(--accent);opacity:.8;}
+    .pr-title{flex:1;font-family:'Cinzel',serif;font-size:.86em;letter-spacing:1.5px;color:var(--accent);opacity:1;}
     .pr-arrow{opacity:.25;font-size:.8em;margin-right:4px;transition:opacity .2s;}
     .pointer-row:hover .pr-arrow{opacity:.7;}
     .pr-actions{display:flex;gap:12px;margin-right:10px;}
@@ -205,14 +233,13 @@
     .pointer-row:hover .pr-actions span:hover{opacity:1;}
     .pr-actions span.del{color:#e74c3c;}
 
-    /* ─── NOTE BODY SCREEN ─── */
+    /* ─── NOTE BODY ─── */
     .note-body-inner{max-width:820px;}
     .nb-tag{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:4px;text-transform:uppercase;opacity:.38;margin-bottom:12px;}
     .nb-title{font-family:'Cinzel',serif;font-size:2.2em;letter-spacing:2px;color:var(--accent);margin-bottom:32px;line-height:1.25;}
     .nb-divider{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;margin-bottom:32px;}
-    .nb-body{font-size:1.05em;line-height:1.9;opacity:.82;white-space:pre-wrap;}
+    .nb-body{font-size:1.05em;line-height:1.9;opacity:1;white-space:pre-wrap;}
 
-    /* Empty states */
     .empty{padding:40px 0;opacity:.3;font-family:'Cinzel',serif;letter-spacing:3px;font-size:.76em;}
 
     /* ─── MODAL ─── */
@@ -233,7 +260,7 @@
     .msecondary{padding:12px 18px;border-radius:8px;background:transparent;border:1px solid var(--text);color:var(--text);cursor:pointer;font-family:'Raleway',sans-serif;font-size:.9em;transition:all .2s;}
     .msecondary:hover{border-color:var(--accent);color:var(--accent);}
 
-    /* ─── VIEW OVERLAY (updates full view) ─── */
+    /* ─── VIEW OVERLAY ─── */
     #viewOv{position:fixed;inset:0;z-index:2500;display:none;background:var(--bg);overflow-y:auto;}
     #viewOv.open{display:block;}
     .view-inner{max-width:820px;margin:0 auto;padding:50px 40px 80px;}
@@ -242,9 +269,9 @@
     .view-tag{font-family:'Cinzel',serif;font-size:.58em;letter-spacing:4px;text-transform:uppercase;opacity:.35;margin-bottom:12px;}
     .view-title{font-family:'Cinzel',serif;font-size:2.4em;letter-spacing:2px;color:var(--accent);margin-bottom:28px;line-height:1.2;}
     .view-div{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;margin-bottom:30px;}
-    .view-body{font-size:1.05em;line-height:1.88;opacity:.82;white-space:pre-wrap;}
+    .view-body{font-size:1.05em;line-height:1.88;opacity:1;white-space:pre-wrap;}
 
-    /* ─── LIVE / TOAST ─── */
+    /* ─── LIVE BADGE + TOAST ─── */
     #liveBadge{position:fixed;bottom:22px;left:22px;z-index:300;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--text);border-radius:20px;padding:6px 13px;font-family:'Cinzel',serif;font-size:.58em;letter-spacing:2px;text-transform:uppercase;opacity:0;backdrop-filter:blur(10px);transition:opacity .5s,border-color .4s;pointer-events:none;}
     #liveBadge.connected{opacity:1;border-color:#27ae60;color:#27ae60;}
     #liveBadge.connecting{opacity:1;border-color:var(--accent);color:var(--accent);}
@@ -255,11 +282,28 @@
     #liveToast{position:fixed;bottom:66px;left:22px;z-index:300;background:var(--card);border:1px solid var(--accent);border-radius:10px;padding:10px 15px;font-size:.78em;letter-spacing:.5px;backdrop-filter:blur(12px);box-shadow:0 6px 24px var(--glow);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s;pointer-events:none;max-width:270px;}
     #liveToast.show{opacity:1;transform:translateY(0);}
 
-    /* ─── TZ CLOCKS ─── */
-    #tzPanel{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:90;display:flex;align-items:center;background:var(--card);border:1px solid var(--text);border-bottom:none;border-radius:16px 16px 0 0;padding:16px 36px;backdrop-filter:blur(14px);box-shadow:0 -6px 30px var(--glow);}
-    .tz-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 32px;}
-    .tz-wrap+.tz-wrap{border-left:1px solid rgba(197,160,89,.16);}
-    .aclock{width:92px;height:92px;flex-shrink:0;}
+    /* ─── TZ CLOCKS — VERTICAL PANEL on right ─── */
+    #tzPanel{
+      position:fixed;
+      right:0;
+      top:50%;
+      transform:translateY(-50%);
+      z-index:90;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      background:var(--card);
+      border:1px solid var(--text);
+      border-right:none;
+      border-radius:16px 0 0 16px;
+      padding:16px 12px;
+      backdrop-filter:blur(14px);
+      box-shadow:-6px 0 30px var(--glow);
+      gap:6px;
+    }
+    .tz-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;}
+    .tz-wrap+.tz-wrap{border-top:1px solid rgba(197,160,89,.16);border-left:none;}
+    .aclock{width:45px;height:45px;flex-shrink:0;}
     .cf{fill:none;stroke:var(--text);stroke-width:1.5;opacity:.28;}
     .ct{stroke:var(--text);stroke-width:1;opacity:.2;}
     .cth{stroke:var(--text);stroke-width:1.8;opacity:.38;}
@@ -267,8 +311,8 @@
     .hm{stroke:var(--text);stroke-width:1.8;stroke-linecap:round;}
     .hs{stroke:#e74c3c;stroke-width:1;stroke-linecap:round;}
     .cc{fill:var(--accent);}
-    .tz-lbl{font-family:'Cinzel',serif;font-size:.72em;letter-spacing:3px;opacity:.45;text-transform:uppercase;text-align:center;}
-    .tz-dig{font-family:'Raleway',sans-serif;font-size:.96em;font-weight:600;color:var(--accent);letter-spacing:1px;text-align:center;}
+    .tz-lbl{font-family:'Cinzel',serif;font-size:.65em;letter-spacing:3px;opacity:.45;text-transform:uppercase;text-align:center;}
+    .tz-dig{font-family:'Raleway',sans-serif;font-size:.82em;font-weight:600;color:var(--accent);letter-spacing:1px;text-align:center;}
 
     /* ─── DEV CREDIT ─── */
     #devCredit{position:fixed;bottom:9px;right:16px;z-index:50;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:2px;opacity:.55;color:var(--accent);pointer-events:none;user-select:none;}
@@ -359,8 +403,8 @@
     <select class="theme-sel" onchange="setTheme(this.value)">
       <option value="default">🌌 Dark Navy</option>
       <option value="forest">🌲 Forest</option>
-      <option value="cream">📜 Beige</option>
-      <option value="ocean">🌊 Ocean</option>
+      <option value="light">☀️ Light</option>
+      <option value="dark">🌑 Dark</option>
     </select>
     <div class="emgmt hidden" id="emgmtWrap">
       <button id="emBtn" onclick="toggleEmDrop()">Editors
@@ -380,27 +424,36 @@
 <!-- ══ SCREEN: DASHBOARD ══ -->
 <div class="screen" id="screenDash">
 
-  <!-- Updates band -->
-  <div class="updates-band">
-    <div class="sec-hdr">
-      <span class="sec-label">Updates</span>
-      <div class="sec-line"></div>
-      <span class="sec-action hidden" id="addUpdateBtn" onclick="openNewUpdateModal()">+ Add Update</span>
-    </div>
-    <div class="sticky-grid" id="updatesGrid"></div>
+  <!-- Tab buttons -->
+  <div class="dash-tabs">
+    <button class="tab-btn active" id="tabUpdatesBtn" onclick="switchTab('updates')">📋 Updates</button>
+    <button class="tab-btn" id="tabNotesBtn" onclick="switchTab('notes')">📝 Notes</button>
   </div>
 
-  <div class="dash-divider"></div>
-
-  <!-- Notes band -->
-  <div class="notes-band">
-    <div class="sec-hdr">
-      <span class="sec-label">Notes</span>
-      <div class="sec-line"></div>
-      <span class="sec-action hidden" id="addHeadingBtn" onclick="openNewHeadingModal()">+ Add Heading</span>
+  <!-- UPDATES TAB -->
+  <div class="tab-panel active" id="tabUpdates">
+    <div class="updates-band">
+      <div class="sec-hdr">
+        <span class="sec-label">Updates</span>
+        <div class="sec-line"></div>
+        <span class="sec-action hidden" id="addUpdateBtn" onclick="openNewUpdateModal()">+ Add Update</span>
+      </div>
+      <div class="sticky-grid" id="updatesGrid"></div>
     </div>
-    <div class="headings-grid" id="headingsGrid"></div>
   </div>
+
+  <!-- NOTES TAB -->
+  <div class="tab-panel" id="tabNotes">
+    <div class="notes-band">
+      <div class="sec-hdr">
+        <span class="sec-label">Notes</span>
+        <div class="sec-line"></div>
+        <span class="sec-action hidden" id="addHeadingBtn" onclick="openNewHeadingModal()">+ Add Heading</span>
+      </div>
+      <div class="headings-grid" id="headingsGrid"></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ══ SCREEN: SUB-HEADINGS ══ -->
@@ -471,7 +524,7 @@
 <div id="liveBadge" class="connecting"><div class="live-dot"></div><span id="liveBadgeText">Connecting…</span></div>
 <div id="liveToast"><span id="toastIcon">⚡</span> <span id="toastMsg"></span></div>
 
-<!-- ══ TZ CLOCKS ══ -->
+<!-- ══ TZ CLOCKS (vertical, right side) ══ -->
 <div id="tzPanel">
   <div class="tz-wrap">
     <svg class="aclock" viewBox="0 0 60 60"><g id="tk-IST"></g><circle cx="30" cy="30" r="27" class="cf"/><line id="IST-h" x1="30" y1="30" x2="30" y2="15" class="hh"/><line id="IST-m" x1="30" y1="30" x2="30" y2="8" class="hm"/><line id="IST-s" x1="30" y1="34" x2="30" y2="6" class="hs"/><circle cx="30" cy="30" r="2.5" class="cc"/></svg>
@@ -490,16 +543,10 @@
 <div id="devCredit">Developed by Kedar &amp; Tirth</div>
 
 <script>
-/* ══════════════════════════════════════════
-   SUPABASE
-══════════════════════════════════════════ */
 const _U = "https://rspfzjybkicxgvcfqdzh.supabase.co";
 const _K = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
 const db = supabase.createClient(_U, _K);
 
-/* ══════════════════════════════════════════
-   STATE
-══════════════════════════════════════════ */
 let role = 'viewer';
 let editorName = '';
 let founderEditorId = null;
@@ -507,21 +554,25 @@ let isFounder = false;
 let allUpdates = [];
 let realtimeChannel = null;
 let toastTimer = null;
-let viewerTimer = null;
-
-// Navigation state
-let currentHeading = null;   // { id, title }
-let currentSubheading = null; // { id, title }
-
-// Modal context
+let autoRefreshTimer = null;
+let currentHeading = null;
+let currentSubheading = null;
 let modalCtx = null;
-// { mode: 'new-update'|'edit-update'|'new-heading'|'edit-heading'|
-//          'new-sub'|'edit-sub'|'new-subsub'|'edit-subsub',
-//   item: existing item if editing }
+let activeTab = 'updates';
 
-/* ══════════════════════════════════════════
-   LANDING / AUTH
-══════════════════════════════════════════ */
+/* ── TAB SWITCHER ── */
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabUpdatesBtn').classList.toggle('active', tab === 'updates');
+  document.getElementById('tabNotesBtn').classList.toggle('active', tab === 'notes');
+  document.getElementById('tabUpdates').classList.toggle('active', tab === 'updates');
+  document.getElementById('tabNotes').classList.toggle('active', tab === 'notes');
+
+  const newBtn = document.getElementById('newBtn');
+  if (tab === 'updates') newBtn.textContent = '+ New Update';
+  else newBtn.textContent = '+ New Heading';
+}
+
 function startEditorLogin() {
   document.getElementById('authPassInput').value = '';
   document.getElementById('authNameInput').value = '';
@@ -532,11 +583,8 @@ function startEditorLogin() {
   document.getElementById('authModal').classList.add('open');
   setTimeout(() => document.getElementById('authPassInput').focus(), 80);
 }
-
 function startViewerLogin() { role = 'viewer'; enterDashboard(); }
-
 function closeAuthModal() { document.getElementById('authModal').classList.remove('open'); }
-
 function toggleEye(id, btn) {
   const inp = document.getElementById(id);
   const isP = inp.type === 'password';
@@ -545,7 +593,6 @@ function toggleEye(id, btn) {
     ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
     : '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 }
-
 function submitPass() {
   const pass = document.getElementById('authPassInput').value;
   if (pass === 'viking2026') {
@@ -558,7 +605,6 @@ function submitPass() {
     document.getElementById('authPassInput').focus();
   }
 }
-
 async function submitName() {
   const n = document.getElementById('authNameInput').value.trim();
   if (!n) { document.getElementById('nameError').textContent = 'Please enter your name.'; return; }
@@ -574,13 +620,11 @@ async function submitName() {
     document.getElementById('authNameInput').select();
   }
 }
-
 function showSplash(msg) {
   const s = document.getElementById('splash');
   s.textContent = msg; s.style.display = 'flex';
   setTimeout(() => { s.style.display = 'none'; enterDashboard(); }, 1800);
 }
-
 function enterDashboard() {
   closeAuthModal();
   document.getElementById('landingPage').classList.add('hidden');
@@ -594,48 +638,37 @@ function enterDashboard() {
   }
   sessionStorage.setItem('ch_role', role);
   navTo('dash');
+  switchTab('updates');
   loadUpdates();
   loadHeadings();
   startRealtime();
-  if (role === 'viewer') startViewerAutoRefresh();
+  startAutoRefresh(); // 1-second refresh for all users
 }
+function logout() { sessionStorage.removeItem('ch_role'); location.reload(); }
 
-function logout() {
-  sessionStorage.removeItem('ch_role');
-  location.reload();
-}
-
-/* ══════════════════════════════════════════
-   NAVIGATION
-══════════════════════════════════════════ */
 function navTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen' + screen.charAt(0).toUpperCase() + screen.slice(1)).classList.add('active');
-  // Update "+ New" button label based on screen
   const newBtn = document.getElementById('newBtn');
-  if (screen === 'dash') newBtn.textContent = '+ New';
-  else if (screen === 'sub') newBtn.textContent = '+ New Sub-Heading';
-  else if (screen === 'subSub') newBtn.textContent = '+ New Topic';
-  else if (screen === 'note') newBtn.style.display = 'none';
-  if (screen !== 'note') newBtn.style.display = '';
+  if (screen === 'dash') {
+    newBtn.textContent = activeTab === 'notes' ? '+ New Heading' : '+ New Update';
+    newBtn.style.display = '';
+  } else if (screen === 'sub') { newBtn.textContent = '+ New Sub-Heading'; newBtn.style.display = ''; }
+  else if (screen === 'subSub') { newBtn.textContent = '+ New Topic'; newBtn.style.display = ''; }
+  else if (screen === 'note') { newBtn.style.display = 'none'; }
   window.scrollTo(0, 0);
 }
-
 function openNewModal() {
-  // context-sensitive: figure out which screen we're on
   const screens = { screenDash: 'dash', screenSub: 'sub', screenSubSub: 'subSub', screenNote: 'note' };
   let current = 'dash';
   document.querySelectorAll('.screen').forEach(s => { if (s.classList.contains('active')) current = screens[s.id] || 'dash'; });
-  if (current === 'dash') openNewUpdateModal();
-  else if (current === 'sub') openNewSubModal();
+  if (current === 'dash') {
+    if (activeTab === 'notes') openNewHeadingModal();
+    else openNewUpdateModal();
+  } else if (current === 'sub') openNewSubModal();
   else if (current === 'subSub') openNewSubSubModal();
 }
-
-/* ══════════════════════════════════════════
-   BREADCRUMBS
-══════════════════════════════════════════ */
 function renderBreadcrumb(containerId, items) {
-  // items: [{label, onClick, current}]
   const el = document.getElementById(containerId);
   el.innerHTML = items.map((item, i) => {
     const sep = i < items.length - 1 ? '<span class="bc-sep">›</span>' : '';
@@ -644,24 +677,15 @@ function renderBreadcrumb(containerId, items) {
   }).join('');
 }
 
-/* ══════════════════════════════════════════
-   UPDATES (Supabase posts table)
-══════════════════════════════════════════ */
 async function loadUpdates() {
   const { data } = await db.from('posts').select('*').order('created_at', { ascending: false });
   allUpdates = data || [];
   renderUpdates();
 }
-
 function renderUpdates() {
   const grid = document.getElementById('updatesGrid');
   grid.innerHTML = '';
-
-  if (!allUpdates.length) {
-    grid.innerHTML = '<div class="empty">No updates yet.</div>';
-    return;
-  }
-
+  if (!allUpdates.length) { grid.innerHTML = '<div class="empty">No updates yet.</div>'; return; }
   const colors = ['sc0','sc1','sc2','sc3','sc4'];
   allUpdates.forEach((u, i) => {
     const d = u.created_at ? new Date(u.created_at).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'}) : '';
@@ -685,20 +709,17 @@ function renderUpdates() {
     grid.appendChild(note);
   });
 }
-
 function openUpdateView(u) {
   document.getElementById('viewTitle').textContent = u.title;
   document.getElementById('viewBody').textContent = u.content;
   document.getElementById('viewOv').classList.add('open');
 }
 function closeUpdateView() { document.getElementById('viewOv').classList.remove('open'); }
-
 async function deleteUpdate(id) {
   if (!confirm('Delete this update?')) return;
   await db.from('posts').delete().eq('id', id);
   await loadUpdates();
 }
-
 function openNewUpdateModal() {
   modalCtx = { mode: 'new-update' };
   document.getElementById('modalTitle').textContent = 'New Update';
@@ -709,7 +730,6 @@ function openNewUpdateModal() {
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
-
 function openEditUpdateModal(u) {
   modalCtx = { mode: 'edit-update', item: u };
   document.getElementById('modalTitle').textContent = 'Edit Update';
@@ -721,21 +741,14 @@ function openEditUpdateModal(u) {
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
-/* ══════════════════════════════════════════
-   HEADINGS (note_headings table)
-══════════════════════════════════════════ */
 async function loadHeadings() {
   const { data } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
   renderHeadings(data || []);
 }
-
 function renderHeadings(list) {
   const grid = document.getElementById('headingsGrid');
   grid.innerHTML = '';
-  if (!list.length) {
-    grid.innerHTML = '<div class="empty">No headings yet.</div>';
-    return;
-  }
+  if (!list.length) { grid.innerHTML = '<div class="empty">No headings yet.</div>'; return; }
   list.forEach(h => {
     const chip = document.createElement('div');
     chip.className = 'heading-chip';
@@ -751,13 +764,11 @@ function renderHeadings(list) {
     grid.appendChild(chip);
   });
 }
-
 async function deleteHeading(id) {
   if (!confirm('Delete this heading and all its contents?')) return;
   await db.from('note_headings').delete().eq('id', id);
   await loadHeadings();
 }
-
 function openNewHeadingModal() {
   modalCtx = { mode: 'new-heading' };
   document.getElementById('modalTitle').textContent = 'New Heading';
@@ -767,7 +778,6 @@ function openNewHeadingModal() {
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
-
 function openEditHeadingModal(h) {
   modalCtx = { mode: 'edit-heading', item: h };
   document.getElementById('modalTitle').textContent = 'Edit Heading';
@@ -778,13 +788,8 @@ function openEditHeadingModal(h) {
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
-/* ══════════════════════════════════════════
-   SUB-HEADINGS (note_subheadings table)
-══════════════════════════════════════════ */
 async function openSubScreen(heading) {
-  currentHeading = heading;
-  currentSubheading = null;
-
+  currentHeading = heading; currentSubheading = null;
   renderBreadcrumb('bcSub', [
     { label: 'Dashboard', onClick: "navTo('dash')" },
     { label: heading.title, current: true }
@@ -794,19 +799,14 @@ async function openSubScreen(heading) {
   navTo('sub');
   await loadSubheadings(heading.id);
 }
-
 async function loadSubheadings(headingId) {
   const { data } = await db.from('note_subheadings').select('*').eq('heading_id', headingId).order('created_at', { ascending: true });
   renderSubheadings(data || []);
 }
-
 function renderSubheadings(list) {
   const el = document.getElementById('subList');
   el.innerHTML = '';
-  if (!list.length) {
-    el.innerHTML = '<div class="empty">No sub-headings yet.</div>';
-    return;
-  }
+  if (!list.length) { el.innerHTML = '<div class="empty">No sub-headings yet.</div>'; return; }
   list.forEach(sub => {
     const row = document.createElement('div');
     row.className = 'pointer-row';
@@ -822,13 +822,11 @@ function renderSubheadings(list) {
     el.appendChild(row);
   });
 }
-
 async function deleteSubheading(id) {
   if (!confirm('Delete this sub-heading and all its topics?')) return;
   await db.from('note_subheadings').delete().eq('id', id);
   await loadSubheadings(currentHeading.id);
 }
-
 function openNewSubModal() {
   modalCtx = { mode: 'new-sub' };
   document.getElementById('modalTitle').textContent = 'New Sub-Heading';
@@ -838,7 +836,6 @@ function openNewSubModal() {
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
-
 function openEditSubModal(sub) {
   modalCtx = { mode: 'edit-sub', item: sub };
   document.getElementById('modalTitle').textContent = 'Edit Sub-Heading';
@@ -849,12 +846,8 @@ function openEditSubModal(sub) {
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
-/* ══════════════════════════════════════════
-   SUB-SUB-HEADINGS (note_subsubheadings table)
-══════════════════════════════════════════ */
 async function openSubSubScreen(subheading) {
   currentSubheading = subheading;
-
   renderBreadcrumb('bcSubSub', [
     { label: 'Dashboard', onClick: "navTo('dash')" },
     { label: currentHeading.title, onClick: "openSubScreen(currentHeading)" },
@@ -865,19 +858,14 @@ async function openSubSubScreen(subheading) {
   navTo('subSub');
   await loadSubSubheadings(subheading.id);
 }
-
 async function loadSubSubheadings(subheadingId) {
   const { data } = await db.from('note_subsubheadings').select('*').eq('subheading_id', subheadingId).order('created_at', { ascending: true });
   renderSubSubheadings(data || []);
 }
-
 function renderSubSubheadings(list) {
   const el = document.getElementById('subsubList');
   el.innerHTML = '';
-  if (!list.length) {
-    el.innerHTML = '<div class="empty">No topics yet.</div>';
-    return;
-  }
+  if (!list.length) { el.innerHTML = '<div class="empty">No topics yet.</div>'; return; }
   list.forEach(ss => {
     const row = document.createElement('div');
     row.className = 'pointer-row';
@@ -893,13 +881,11 @@ function renderSubSubheadings(list) {
     el.appendChild(row);
   });
 }
-
 async function deleteSubSubheading(id) {
   if (!confirm('Delete this topic?')) return;
   await db.from('note_subsubheadings').delete().eq('id', id);
   await loadSubSubheadings(currentSubheading.id);
 }
-
 function openNewSubSubModal() {
   modalCtx = { mode: 'new-subsub' };
   document.getElementById('modalTitle').textContent = 'New Topic';
@@ -910,7 +896,6 @@ function openNewSubSubModal() {
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
-
 function openEditSubSubModal(ss) {
   modalCtx = { mode: 'edit-subsub', item: ss };
   document.getElementById('modalTitle').textContent = 'Edit Topic';
@@ -922,9 +907,6 @@ function openEditSubSubModal(ss) {
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
-/* ══════════════════════════════════════════
-   NOTE BODY SCREEN
-══════════════════════════════════════════ */
 function openNoteScreen(ss) {
   renderBreadcrumb('bcNote', [
     { label: 'Dashboard', onClick: "navTo('dash')" },
@@ -937,29 +919,22 @@ function openNoteScreen(ss) {
   navTo('note');
 }
 
-/* ══════════════════════════════════════════
-   MODAL SAVE
-══════════════════════════════════════════ */
 async function saveModal() {
   const title = document.getElementById('mTitle').value.trim();
   const body  = document.getElementById('mBody').value.trim();
   if (!title) { alert('Title is required.'); return; }
   const ctx = modalCtx;
-
   if (ctx.mode === 'new-update') {
     if (!body) { alert('Body is required.'); return; }
     await db.from('posts').insert([{ title, content: body }]);
     await loadUpdates();
-
   } else if (ctx.mode === 'edit-update') {
     if (!body) { alert('Body is required.'); return; }
     await db.from('posts').update({ title, content: body }).eq('id', ctx.item.id);
     await loadUpdates();
-
   } else if (ctx.mode === 'new-heading') {
     await db.from('note_headings').insert([{ title }]);
     await loadHeadings();
-
   } else if (ctx.mode === 'edit-heading') {
     await db.from('note_headings').update({ title }).eq('id', ctx.item.id);
     await loadHeadings();
@@ -967,42 +942,29 @@ async function saveModal() {
       currentHeading.title = title;
       document.getElementById('subDrillTitle').textContent = title;
     }
-
   } else if (ctx.mode === 'new-sub') {
     await db.from('note_subheadings').insert([{ heading_id: currentHeading.id, title }]);
     await loadSubheadings(currentHeading.id);
-
   } else if (ctx.mode === 'edit-sub') {
     await db.from('note_subheadings').update({ title }).eq('id', ctx.item.id);
     await loadSubheadings(currentHeading.id);
-
   } else if (ctx.mode === 'new-subsub') {
     if (!body) { alert('Body is required.'); return; }
     await db.from('note_subsubheadings').insert([{ subheading_id: currentSubheading.id, title, body }]);
     await loadSubSubheadings(currentSubheading.id);
-
   } else if (ctx.mode === 'edit-subsub') {
     if (!body) { alert('Body is required.'); return; }
     await db.from('note_subsubheadings').update({ title, body }).eq('id', ctx.item.id);
     await loadSubSubheadings(currentSubheading.id);
   }
-
   closeModal();
 }
+function closeModal() { document.getElementById('modal').classList.remove('open'); modalCtx = null; }
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-  modalCtx = null;
-}
-
-/* ══════════════════════════════════════════
-   REALTIME (updates)
-══════════════════════════════════════════ */
 function setLiveBadge(s, t) {
   const b = document.getElementById('liveBadge');
   b.className = s; document.getElementById('liveBadgeText').textContent = t;
 }
-
 function showToast(icon, msg) {
   document.getElementById('toastIcon').textContent = icon;
   document.getElementById('toastMsg').textContent = msg;
@@ -1011,7 +973,6 @@ function showToast(icon, msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
-
 function startRealtime() {
   if (realtimeChannel) db.removeChannel(realtimeChannel);
   realtimeChannel = db.channel('posts-live')
@@ -1038,10 +999,11 @@ function startRealtime() {
     });
 }
 
-function startViewerAutoRefresh() {
-  if (viewerTimer) return;
-  viewerTimer = setInterval(async () => {
-    // Always refresh updates
+/* ── AUTO REFRESH every 1 second (all users) ── */
+function startAutoRefresh() {
+  if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+  autoRefreshTimer = setInterval(async () => {
+    // Updates
     const { data } = await db.from('posts').select('*').order('created_at', { ascending: false });
     if (data) {
       const a = JSON.stringify(data.map(n=>({id:n.id,title:n.title,content:n.content}))),
@@ -1049,36 +1011,33 @@ function startViewerAutoRefresh() {
       if (a !== b) { allUpdates = data; renderUpdates(); }
     }
 
-    // Refresh whichever notes screen is currently visible
-    if (document.getElementById('screenDash').classList.contains('active')) {
+    const activeScrEl = document.querySelector('.screen.active');
+    if (!activeScrEl) return;
+    const scrId = activeScrEl.id;
+
+    if (scrId === 'screenDash') {
       const { data: hData } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
       if (hData) renderHeadings(hData);
-    } else if (document.getElementById('screenSub').classList.contains('active') && currentHeading) {
+    } else if (scrId === 'screenSub' && currentHeading) {
       const { data: sData } = await db.from('note_subheadings').select('*').eq('heading_id', currentHeading.id).order('created_at', { ascending: true });
       if (sData) renderSubheadings(sData);
-    } else if (document.getElementById('screenSubSub').classList.contains('active') && currentSubheading) {
+    } else if (scrId === 'screenSubSub' && currentSubheading) {
       const { data: ssData } = await db.from('note_subsubheadings').select('*').eq('subheading_id', currentSubheading.id).order('created_at', { ascending: true });
       if (ssData) renderSubSubheadings(ssData);
-    } else if (document.getElementById('screenNote').classList.contains('active')) {
-      // Note body screen — re-fetch the current sub-sub-heading's body and update if changed
-      if (currentSubheading) {
-        const title = document.getElementById('noteBodyTitle').textContent;
-        const { data: nbData } = await db.from('note_subsubheadings').select('*').eq('subheading_id', currentSubheading.id).order('created_at', { ascending: true });
-        if (nbData) {
-          const current = nbData.find(ss => ss.title === title);
-          if (current) {
-            const existing = document.getElementById('noteBodyText').textContent;
-            if (current.body !== existing) document.getElementById('noteBodyText').textContent = current.body || '(No content yet.)';
-          }
+    } else if (scrId === 'screenNote' && currentSubheading) {
+      const title = document.getElementById('noteBodyTitle').textContent;
+      const { data: nbData } = await db.from('note_subsubheadings').select('*').eq('subheading_id', currentSubheading.id).order('created_at', { ascending: true });
+      if (nbData) {
+        const current = nbData.find(ss => ss.title === title);
+        if (current) {
+          const existing = document.getElementById('noteBodyText').textContent;
+          if (current.body !== existing) document.getElementById('noteBodyText').textContent = current.body || '(No content yet.)';
         }
       }
     }
-  }, 1500);
+  }, 1000);
 }
 
-/* ══════════════════════════════════════════
-   EDITOR MANAGEMENT
-══════════════════════════════════════════ */
 let emOpen = false;
 function toggleEmDrop() {
   emOpen = !emOpen;
@@ -1131,21 +1090,11 @@ async function addEditor() {
   }
 }
 
-/* ══════════════════════════════════════════
-   THEME
-══════════════════════════════════════════ */
 function setTheme(t) { document.body.className = t === 'default' ? '' : 'theme-' + t; }
-
-/* ══════════════════════════════════════════
-   UTILITY
-══════════════════════════════════════════ */
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ══════════════════════════════════════════
-   ANALOG CLOCKS
-══════════════════════════════════════════ */
 (function buildTicks() {
   ['IST','GMT','EST'].forEach(id => {
     const g = document.getElementById('tk-'+id);
@@ -1185,20 +1134,12 @@ function tickClocks() {
 }
 tickClocks(); setInterval(tickClocks, 1000);
 
-/* ══════════════════════════════════════════
-   KEYBOARD
-══════════════════════════════════════════ */
 document.getElementById('authPassInput').addEventListener('keydown', e => { if(e.key==='Enter') submitPass(); });
 document.getElementById('authNameInput').addEventListener('keydown', e => { if(e.key==='Enter') submitName(); });
 document.addEventListener('keydown', e => { if(e.key==='Escape') { closeModal(); closeUpdateView(); } });
 
-/* ══════════════════════════════════════════
-   SESSION RESTORE
-══════════════════════════════════════════ */
 (function() {
-  if (sessionStorage.getItem('ch_role') === 'viewer') {
-    role = 'viewer'; enterDashboard();
-  }
+  if (sessionStorage.getItem('ch_role') === 'viewer') { role = 'viewer'; enterDashboard(); }
 })();
 </script>
 </body>
