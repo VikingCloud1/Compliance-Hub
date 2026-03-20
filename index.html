@@ -364,6 +364,30 @@
     .tz-dig{font-family:'Raleway',sans-serif;font-size:.82em;font-weight:600;color:var(--accent);letter-spacing:1px;text-align:center;}
 
     #devCredit{position:fixed;bottom:9px;right:16px;z-index:50;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:2px;opacity:.55;color:var(--accent);pointer-events:none;user-select:none;}
+
+    /* ── PROTOCOL FULL VIEW ── */
+    #screenProtocol .drill-screen{padding:36px 40px 100px;}
+    .protocol-view-inner{max-width:820px;}
+    .protocol-view-icon{font-size:3em;margin-bottom:18px;line-height:1;}
+    .protocol-view-title{font-family:'Cinzel',serif;font-size:2.2em;letter-spacing:2px;color:var(--accent);margin-bottom:10px;line-height:1.25;}
+    .protocol-view-meta{display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
+    .protocol-view-tag{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:4px;text-transform:uppercase;opacity:.38;}
+    .protocol-view-updated{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:2px;text-transform:uppercase;
+      color:var(--accent);opacity:.55;padding:3px 10px;border:1px solid rgba(197,160,89,.3);border-radius:20px;}
+    .theme-light .protocol-view-updated{border-color:rgba(21,101,192,.3);color:#1565c0;}
+    .protocol-view-divider{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;margin-bottom:28px;}
+    .protocol-view-desc{font-size:1.05em;line-height:1.9;opacity:.85;white-space:pre-wrap;word-wrap:break-word;}
+    .protocol-view-actions{display:flex;gap:8px;margin-top:6px;}
+
+    /* ── LAST UPDATED TAG on sticky notes ── */
+    .update-last-tag{
+      display:inline-block;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:1.5px;
+      text-transform:uppercase;padding:2px 8px;border-radius:20px;
+      border:1px solid rgba(10,25,47,.25);color:rgba(10,25,47,.55);
+      background:rgba(0,0,0,.06);margin-top:8px;
+    }
+    .theme-light .update-last-tag{border-color:rgba(26,26,46,.2);color:rgba(26,26,46,.5);}
+    .theme-dark .update-last-tag{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.45);}
   </style>
 </head>
 <body>
@@ -568,6 +592,29 @@
   </div>
 </div>
 
+<!-- ══ SCREEN: PROTOCOL FULL VIEW ══ -->
+<div class="screen" id="screenProtocol">
+  <div class="drill-screen">
+    <div class="breadcrumb" id="bcProtocol"></div>
+    <div class="protocol-view-inner">
+      <div class="protocol-view-icon" id="pvIcon">📋</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:4px;">
+        <div class="protocol-view-title" id="pvTitle"></div>
+        <div class="protocol-view-actions" id="pvEditorActions" style="display:none;flex-shrink:0;margin-top:8px;">
+          <button onclick="editCurrentProtocol()" style="padding:7px 16px;border-radius:6px;background:transparent;border:1px solid var(--accent);color:var(--accent);cursor:pointer;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">Edit</button>
+          <button onclick="deleteCurrentProtocol()" style="padding:7px 16px;border-radius:6px;background:transparent;border:1px solid #e74c3c;color:#e74c3c;cursor:pointer;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.background='#e74c3c';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#e74c3c'">Delete</button>
+        </div>
+      </div>
+      <div class="protocol-view-meta">
+        <span class="protocol-view-tag">Protocol</span>
+        <span class="protocol-view-updated" id="pvUpdated"></span>
+      </div>
+      <div class="protocol-view-divider"></div>
+      <div class="protocol-view-desc" id="pvDesc"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ UPDATE FULL VIEW ══ -->
 <div id="viewOv">
   <div class="view-inner">
@@ -764,7 +811,9 @@ async function logout() {
 
 function navTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen' + screen.charAt(0).toUpperCase() + screen.slice(1)).classList.add('active');
+  // screenProtocol maps to 'protocol', others follow camelCase
+  const screenId = screen === 'protocol' ? 'screenProtocol' : 'screen' + screen.charAt(0).toUpperCase() + screen.slice(1);
+  document.getElementById(screenId).classList.add('active');
   const newBtn = document.getElementById('newBtn');
   if (role !== 'editor') { window.scrollTo(0,0); return; }
   if (screen === 'dash') {
@@ -772,6 +821,8 @@ function navTo(screen) {
     else { newBtn.textContent = activeTab === 'notes' ? '+ New Heading' : '+ New Update'; newBtn.classList.remove('hidden'); newBtn.style.display = ''; }
     const addProtBtn = document.getElementById('addProtocolBtn');
     if (addProtBtn) addProtBtn.classList.toggle('hidden', !(activeTab === 'protocol' && role === 'editor'));
+  } else if (screen === 'protocol') {
+    newBtn.style.display = 'none';
   } else if (screen === 'sub') {
     newBtn.textContent = '+ New Sub-Heading';
     newBtn.classList.remove('hidden'); newBtn.style.display = '';
@@ -808,13 +859,33 @@ async function loadUpdates() {
   allUpdates = data || [];
   renderUpdates();
 }
+function fmtDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+}
+function fmtUpdated(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const now = new Date();
+  const diffMs = now - d;
+  const diffMins = Math.floor(diffMs/60000);
+  const diffHrs = Math.floor(diffMins/60);
+  const diffDays = Math.floor(diffHrs/24);
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return diffMins + 'm ago';
+  if (diffHrs < 24) return diffHrs + 'h ago';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return diffDays + 'd ago';
+  return d.toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+}
 function renderUpdates() {
   const grid = document.getElementById('updatesGrid');
   grid.innerHTML = '';
   if (!allUpdates.length) { grid.innerHTML = '<div class="empty">No updates yet.</div>'; return; }
   const colors = ['sc0','sc1','sc2','sc3','sc4'];
   allUpdates.forEach((u, i) => {
-    const d = u.created_at ? new Date(u.created_at).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'}) : '';
+    const d = fmtDate(u.created_at);
+    const upd = u.updated_at && u.updated_at !== u.created_at ? fmtUpdated(u.updated_at) : null;
     let actions = '';
     if (role === 'editor') {
       actions = `<div class="sticky-note-actions">
@@ -827,6 +898,7 @@ function renderUpdates() {
     note.innerHTML = `
       <div class="sticky-note-title">${esc(u.title)}</div>
       <div class="sticky-note-body">${esc(u.content)}</div>
+      ${upd ? `<div class="update-last-tag">Updated ${upd}</div>` : ''}
       <div class="sticky-note-footer">
         <span class="sticky-note-date">${d}</span>
         ${actions}
@@ -838,6 +910,20 @@ function renderUpdates() {
 function openUpdateView(u) {
   document.getElementById('viewTitle').textContent = u.title;
   document.getElementById('viewBody').textContent = u.content;
+  // last updated tag in view
+  const existing = document.getElementById('viewUpdatedTag');
+  if (existing) existing.remove();
+  const upd = u.updated_at && u.updated_at !== u.created_at ? u.updated_at : null;
+  const divEl = document.getElementById('viewOv').querySelector('.view-div');
+  if (upd && divEl) {
+    const tag = document.createElement('span');
+    tag.id = 'viewUpdatedTag';
+    tag.className = 'protocol-view-updated';
+    tag.style.display = 'inline-block';
+    tag.style.marginBottom = '18px';
+    tag.textContent = 'Updated ' + fmtUpdated(upd);
+    divEl.before(tag);
+  }
   document.getElementById('viewOv').classList.add('open');
 }
 function closeUpdateView() { document.getElementById('viewOv').classList.remove('open'); }
@@ -1200,6 +1286,15 @@ async function saveModal() {
     const desc = document.getElementById('mDesc').value.trim();
     const icon = document.getElementById('mIcon').value || '📋';
     await db.from('protocols').update({ title, description: desc, icon }).eq('id', ctx.item.id);
+    // If we're currently viewing this protocol, refresh the view
+    if (currentProtocol && currentProtocol.id === ctx.item.id) {
+      const upd = new Date().toISOString();
+      currentProtocol = { ...currentProtocol, title, description: desc, icon, updated_at: upd };
+      document.getElementById('pvIcon').textContent = icon;
+      document.getElementById('pvTitle').textContent = title;
+      document.getElementById('pvDesc').textContent = desc || '(No description yet.)';
+      document.getElementById('pvUpdated').textContent = 'Updated ' + fmtUpdated(upd);
+    }
     await loadProtocols();
   }
   closeModal();
@@ -1235,19 +1330,27 @@ function renderProtocols(list) {
     grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">No protocols yet.${role==='editor'?' Use "+ Add Protocol" to create one.':''}</div>`;
     return;
   }
-  grid.innerHTML = list.map(p => {
+  grid.innerHTML = '';
+  list.forEach(p => {
+    const upd = p.updated_at && p.updated_at !== p.created_at ? p.updated_at : (p.created_at || null);
+    const updLabel = upd ? 'Updated ' + fmtUpdated(upd) : '';
     const actions = role === 'editor' ? `
       <div class="protocol-card-actions">
         <button class="pc-action" onclick="event.stopPropagation();openEditProtocolModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">Edit</button>
         <button class="pc-action del" onclick="event.stopPropagation();deleteProtocol(${p.id})">Delete</button>
       </div>` : '';
-    return `<div class="protocol-card">
+    const card = document.createElement('div');
+    card.className = 'protocol-card';
+    card.style.cursor = 'pointer';
+    card.innerHTML = `
       <div class="protocol-card-icon">${esc(p.icon||'📋')}</div>
       <div class="protocol-card-title">${esc(p.title)}</div>
       <div class="protocol-card-desc">${esc(p.description||'')}</div>
-      ${actions}
-    </div>`;
-  }).join('');
+      ${updLabel ? `<div class="protocol-view-updated" style="margin-top:12px;">${updLabel}</div>` : ''}
+      ${actions}`;
+    card.addEventListener('click', () => openProtocolView(p));
+    grid.appendChild(card);
+  });
 }
 
 function buildIconPicker(selected) {
@@ -1295,6 +1398,39 @@ function openEditProtocolModal(p) {
 async function deleteProtocol(id) {
   if (!confirm('Delete this protocol?')) return;
   await db.from('protocols').delete().eq('id', id);
+  await loadProtocols();
+}
+
+let currentProtocol = null;
+
+function openProtocolView(p) {
+  currentProtocol = p;
+  renderBreadcrumb('bcProtocol', [
+    { label: 'Dashboard', onClick: "navTo('dash');switchTab('protocol');" },
+    { label: p.title, current: true }
+  ]);
+  document.getElementById('pvIcon').textContent = p.icon || '📋';
+  document.getElementById('pvTitle').textContent = p.title;
+  document.getElementById('pvDesc').textContent = p.description || '(No description yet.)';
+  const upd = p.updated_at || p.created_at;
+  document.getElementById('pvUpdated').textContent = upd ? 'Updated ' + fmtUpdated(upd) : '';
+  const actions = document.getElementById('pvEditorActions');
+  if (role === 'editor') actions.style.display = 'flex'; else actions.style.display = 'none';
+  navTo('protocol');
+}
+
+function editCurrentProtocol() {
+  if (!currentProtocol) return;
+  openEditProtocolModal(currentProtocol);
+}
+
+async function deleteCurrentProtocol() {
+  if (!currentProtocol) return;
+  if (!confirm('Delete this protocol?')) return;
+  await db.from('protocols').delete().eq('id', currentProtocol.id);
+  currentProtocol = null;
+  navTo('dash');
+  switchTab('protocol');
   await loadProtocols();
 }
 
