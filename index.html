@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>VikingCloud Update Hub</title>
+  <title>VikingCloud Compliance Hub</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='16' fill='%230a192f'/%3E%3Cpath d='M12 48 Q40 56 68 48' stroke='%23d4af37' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cline x1='40' y1='48' x2='40' y2='16' stroke='%23d4af37' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M40 18 L60 30 L40 46 Z' fill='%23d4af37'/%3E%3C/svg%3E">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
@@ -10,6 +10,7 @@
       --bg:#0a192f; --text:#e8c97a; --accent:#f0c93a;
       --card:rgba(10,25,47,0.9); --glow:rgba(197,160,89,0.28);
       --bg-img:url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=2013');
+      --viewer-fs: 1.05em;
     }
     .theme-forest{
       --bg:#0b1a0e;--text:#708238;--accent:#bab86c;
@@ -33,16 +34,21 @@
     .theme-light .sticky-note::after{background:linear-gradient(225deg,rgba(0,0,0,.10) 50%,transparent 50%);}
     .theme-light .auth-field input,.theme-light .ff input,.theme-light .ff textarea{background:#ffffff;border-color:#b0bce0;color:#1a1a2e;}
     .theme-light select.theme-sel{background:#ffffff;color:#1a1a2e;border-color:#b0bce0;}
-    .theme-light .modal-box,.theme-light .auth-box{background:#ffffff;}
+    .theme-light .modal-box,.theme-light .auth-box,.theme-light .name-box{background:#ffffff;}
     .theme-light .tab-btn{color:#1a1a2e;}
     .theme-light #tzPanel{background:rgba(255,255,255,0.97);border-color:#dde3ee;}
-    /* CHANGE 3: Light theme active users panel */
     .theme-light #activeUsersPanel{background:rgba(255,255,255,0.97);border-color:#dde3ee;color:#1a1a2e;}
     .theme-light #activeUsersPanel .aup-label{color:#5a6a8a;}
-    /* CHANGE 1: Light theme protocol cards */
     .theme-light .protocol-card{background:#ffffff;border-color:#dde3ee;}
     .theme-light .protocol-card:hover{border-color:#1565c0;}
     .theme-light .protocol-hero{background:linear-gradient(135deg,#e8edf8,#d7e4f5);}
+    .theme-light .viewer-font-ctrl{background:#fff;border-color:#dde3ee;color:#1a1a2e;}
+    .theme-light .vfc-btn{border-color:#b0bce0;color:#1a1a2e;}
+    .theme-light .vfc-btn:hover{border-color:#1565c0;color:#1565c0;}
+    .theme-light .editor-toolbar{background:#f0f4ff;border-color:#b0bce0;}
+    .theme-light .etb-btn{color:#1a1a2e;border-color:#b0bce0;}
+    .theme-light .etb-btn:hover,.theme-light .etb-btn.active{background:#1565c0;color:#fff;border-color:#1565c0;}
+    .theme-light .etb-divider{background:#b0bce0;}
 
     .theme-dark{
       --bg:#121212;--text:#e0e0e0;--accent:#bb86fc;
@@ -61,8 +67,33 @@
     .theme-dark .sticky-note::after{background:linear-gradient(225deg,rgba(0,0,0,.35) 50%,transparent 50%);}
     .theme-dark .auth-field input,.theme-dark .ff input,.theme-dark .ff textarea{background:#1e1e1e;border-color:#444;color:#e0e0e0;}
     .theme-dark select.theme-sel{background:#1e1e1e;color:#e0e0e0;border-color:#444;}
-    .theme-dark .modal-box,.theme-dark .auth-box{background:#1e1e1e;}
+    .theme-dark .modal-box,.theme-dark .auth-box,.theme-dark .name-box{background:#1e1e1e;}
     .theme-dark #tzPanel{background:rgba(30,30,30,0.97);border-color:#333;}
+    .theme-dark .viewer-font-ctrl{background:#1e1e1e;border-color:#444;color:#e0e0e0;}
+    .theme-dark .vfc-btn{border-color:#555;color:#e0e0e0;}
+    .theme-dark .vfc-btn:hover{border-color:#bb86fc;color:#bb86fc;}
+    .theme-dark .editor-toolbar{background:rgba(30,30,30,0.95);border-color:#444;}
+    .theme-dark .etb-btn{color:#e0e0e0;border-color:#555;}
+    .theme-dark .etb-btn:hover,.theme-dark .etb-btn.active{background:#bb86fc;color:#121212;border-color:#bb86fc;}
+    .theme-dark .etb-divider{background:#444;}
+
+    /* ── BACKUP MODAL THEME OVERRIDES ── */
+    .theme-light .backup-modal-box{background:#ffffff;}
+    .theme-dark .backup-modal-box{background:#1e1e1e;}
+    .theme-light .backup-drop-zone{background:#f0f4ff;border-color:#b0bce0;}
+    .theme-light .backup-drop-zone:hover,.theme-light .backup-drop-zone.drag-over{border-color:#1565c0;background:#e8edf8;}
+    .theme-dark .backup-drop-zone{background:rgba(255,255,255,.04);border-color:#444;}
+    .theme-dark .backup-drop-zone:hover,.theme-dark .backup-drop-zone.drag-over{border-color:#bb86fc;background:rgba(187,134,252,.06);}
+    .theme-light .backup-file-info{background:#e8edf8;border-color:#b0bce0;}
+    .theme-dark .backup-file-info{background:rgba(255,255,255,.06);border-color:#444;}
+    .theme-light .backup-summary-item{background:#f0f4ff;border-color:#dde3ee;}
+    .theme-dark .backup-summary-item{background:rgba(255,255,255,.05);border-color:#333;}
+    .theme-light .backup-option-card{background:#f8faff;border-color:#dde3ee;}
+    .theme-light .backup-option-card:hover{border-color:#1565c0;background:#eef2ff;}
+    .theme-dark .backup-option-card{background:rgba(255,255,255,.04);border-color:#333;}
+    .theme-dark .backup-option-card:hover{border-color:#bb86fc;background:rgba(187,134,252,.06);}
+    .theme-light .backup-section-title{color:#1a1a2e;}
+    .theme-dark .backup-section-title{color:#e0e0e0;}
 
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;font-family:'Raleway',sans-serif;}
     body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background-color .5s,color .5s;font-weight:500;}
@@ -70,7 +101,34 @@
     .theme-light .bg-layer,.theme-dark .bg-layer{opacity:0;}
     .hidden{display:none!important;}
 
-    #splash{position:fixed;inset:0;background:#000;z-index:9000;display:none;justify-content:center;align-items:center;font-family:'Cinzel',serif;font-size:2em;color:var(--accent);letter-spacing:4px;}
+    #splash{position:fixed;inset:0;background:#000;z-index:9000;display:none;flex-direction:column;justify-content:center;align-items:center;font-family:'Cinzel',serif;color:var(--accent);letter-spacing:4px;gap:12px;}
+    #splash .splash-title{font-size:1.5em;text-align:center;max-width:500px;line-height:1.5;}
+    #splash .splash-sub{font-size:.7em;opacity:.5;letter-spacing:6px;}
+
+    /* ═══════════════════════════════════
+       NAME PROMPT MODAL (all users)
+    ═══════════════════════════════════ */
+    #nameModal{position:fixed;inset:0;z-index:8500;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);}
+    #nameModal.hidden{display:none!important;}
+    .name-box{background:var(--bg);border:1px solid var(--accent);border-radius:20px;padding:48px 52px;width:420px;max-width:95vw;box-shadow:0 0 80px var(--glow);animation:fadeUp .3s ease;text-align:center;}
+    .name-box-logo{font-size:2.2em;margin-bottom:16px;}
+    .name-box-title{font-family:'Cinzel',serif;font-size:1em;letter-spacing:4px;color:var(--accent);text-transform:uppercase;margin-bottom:6px;}
+    .name-box-sub{font-size:.7em;opacity:.4;letter-spacing:2px;margin-bottom:32px;}
+    .name-field{position:relative;margin-bottom:20px;text-align:left;}
+    .name-field label{display:block;font-size:.68em;letter-spacing:2px;text-transform:uppercase;opacity:.48;margin-bottom:7px;font-family:'Cinzel',serif;}
+    .name-field input{width:100%;padding:13px 16px;background:var(--card);border:1px solid var(--text);border-radius:10px;color:var(--text);font-size:.95em;outline:none;transition:border-color .2s,box-shadow .2s;font-family:'Raleway',sans-serif;}
+    .name-field input:focus{border-color:var(--accent);box-shadow:0 0 16px var(--glow);}
+    .name-continue-btn{width:100%;padding:14px;border-radius:10px;background:var(--accent);color:#fff;border:none;font-weight:700;cursor:pointer;font-family:'Cinzel',serif;font-size:.85em;letter-spacing:3px;text-transform:uppercase;transition:opacity .2s,transform .15s;}
+    .name-continue-btn:hover{opacity:.88;transform:translateY(-1px);}
+    .name-continue-btn:active{transform:translateY(0);}
+    .name-error{color:#e74c3c;font-size:.72em;text-align:center;margin-top:10px;min-height:16px;letter-spacing:.5px;}
+    .name-role-tabs{display:flex;gap:8px;margin-bottom:28px;}
+    .name-role-tab{flex:1;padding:10px;border-radius:8px;border:1px solid var(--text);background:transparent;color:var(--text);cursor:pointer;font-family:'Cinzel',serif;font-size:.68em;letter-spacing:2px;text-transform:uppercase;transition:all .2s;opacity:.5;}
+    .name-role-tab.active{opacity:1;border-color:var(--accent);color:var(--accent);background:rgba(197,160,89,.08);}
+    .name-pass-field{margin-bottom:20px;display:none;}
+    .name-pass-field.show{display:block;}
+    .name-pass-field input{width:100%;padding:13px 16px;background:var(--card);border:1px solid var(--text);border-radius:10px;color:var(--text);font-size:.95em;outline:none;transition:border-color .2s,box-shadow .2s;font-family:'Raleway',sans-serif;}
+    .name-pass-field input:focus{border-color:var(--accent);box-shadow:0 0 16px var(--glow);}
 
     #authModal{position:fixed;inset:0;z-index:8000;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);}
     #authModal.open{display:flex;}
@@ -88,27 +146,14 @@
     .auth-cancel{padding:12px 18px;border-radius:8px;background:transparent;border:1px solid var(--text);color:var(--text);cursor:pointer;transition:all .2s;}
     .auth-cancel:hover{border-color:var(--accent);color:var(--accent);}
     .auth-error{color:#e74c3c;font-size:.76em;text-align:center;margin-top:10px;min-height:16px;letter-spacing:.5px;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-    #landingPage{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;padding:40px 20px;}
-    .landing-logo{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:16px;}
-    .landing-logo-icon{width:70px;height:70px;}
-    .landing-logo-icon svg{width:100%;height:100%;filter:drop-shadow(0 0 18px var(--glow));}
-    /* CHANGE 2: Renamed to VikingCloud Update Hub */
-    .landing-title{font-family:'Cinzel',serif;font-size:2.6em;letter-spacing:4px;font-weight:900;color:var(--accent);text-shadow:0 0 40px var(--glow);text-align:center;}
-    .landing-sub{letter-spacing:6px;font-size:.7em;text-transform:uppercase;opacity:.45;margin-top:6px;margin-bottom:52px;font-weight:300;}
-    .role-cards{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;}
-    .role-card{background:var(--card);border:1px solid var(--text);border-radius:20px;padding:50px 68px;cursor:pointer;text-align:center;backdrop-filter:blur(12px);transition:border-color .3s,box-shadow .3s,transform .3s;}
-    .role-card:hover{border-color:var(--accent);box-shadow:0 0 40px var(--glow);transform:translateY(-5px);}
-    .role-card .rc-icon{font-size:2em;margin-bottom:14px;}
-    .role-card h2{font-family:'Cinzel',serif;font-size:1.15em;letter-spacing:3px;color:var(--accent);}
-    .role-card p{font-size:.65em;opacity:.4;margin-top:8px;letter-spacing:3px;text-transform:uppercase;}
+    #landingPage{min-height:100vh;display:none;}
 
     .topbar{position:fixed;top:0;width:100%;padding:13px 36px;display:flex;justify-content:space-between;align-items:center;z-index:200;background:var(--bg);border-bottom:1px solid rgba(197,160,89,.2);backdrop-filter:blur(12px);}
     .logo-mark{display:flex;align-items:center;gap:10px;cursor:pointer;color:var(--accent);text-decoration:none;}
     .logo-icon{width:32px;height:32px;flex-shrink:0;}
     .logo-icon svg{width:100%;height:100%;}
-    /* CHANGE 2: Renamed logo text */
     .logo-text{font-family:'Cinzel',serif;font-size:1em;letter-spacing:3px;font-weight:700;color:var(--accent);line-height:1;}
     .logo-text span{display:block;font-size:.4em;letter-spacing:5px;opacity:.5;font-weight:400;margin-top:2px;text-transform:uppercase;}
     .topbar-right{display:flex;align-items:center;gap:10px;}
@@ -117,6 +162,8 @@
     .tbtn:hover{border-color:var(--accent);color:var(--accent);}
     .tbtn-accent{background:var(--accent);color:#fff;border:none;}
     .tbtn-accent:hover{opacity:.88;color:#fff;border:none;}
+    .tbtn-backup{border-color:rgba(197,160,89,.45);color:var(--accent);background:rgba(197,160,89,.07);}
+    .tbtn-backup:hover{border-color:var(--accent);background:rgba(197,160,89,.14);color:var(--accent);}
 
     .emgmt{position:relative;}
     #emBtn{display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:6px;border:1px solid var(--text);background:transparent;color:var(--text);cursor:pointer;font-weight:600;font-family:'Raleway',sans-serif;font-size:.8em;transition:all .2s;}
@@ -197,76 +244,34 @@
     .heading-chip:hover .hc-actions span.del{border-color:rgba(231,76,60,.3);}
     .heading-chip:hover .hc-actions span.del:hover{border-color:#e74c3c;background:rgba(231,76,60,.08);}
 
-    /* ── CHANGE 1: PROTOCOL TAB STYLES ── */
+    /* ── PROTOCOL TAB ── */
     .protocol-band{padding:28px 40px 100px;}
-    .protocol-hero{
-      background:linear-gradient(135deg,rgba(197,160,89,.08),rgba(197,160,89,.03));
-      border:1px solid rgba(197,160,89,.2);
-      border-radius:16px;
-      padding:40px 48px;
-      margin-bottom:32px;
-      display:flex;align-items:center;gap:32px;
-    }
+    .protocol-hero{background:linear-gradient(135deg,rgba(197,160,89,.08),rgba(197,160,89,.03));border:1px solid rgba(197,160,89,.2);border-radius:16px;padding:40px 48px;margin-bottom:32px;display:flex;align-items:center;gap:32px;}
     .protocol-hero-icon{font-size:3em;flex-shrink:0;opacity:.8;}
-    .protocol-hero-content{}
     .protocol-hero-title{font-family:'Cinzel',serif;font-size:1.4em;letter-spacing:3px;color:var(--accent);margin-bottom:8px;}
     .protocol-hero-desc{font-size:.85em;opacity:.55;line-height:1.7;max-width:520px;}
     .protocol-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
-    .protocol-card{
-      background:var(--card);border:1px solid rgba(197,160,89,.18);
-      border-radius:12px;padding:28px 24px;
-      backdrop-filter:blur(10px);
-      transition:border-color .3s,box-shadow .25s,transform .25s;
-      cursor:default;
-    }
+    .protocol-card{background:var(--card);border:1px solid rgba(197,160,89,.18);border-radius:12px;padding:28px 24px;backdrop-filter:blur(10px);transition:border-color .3s,box-shadow .25s,transform .25s;cursor:default;}
     .protocol-card:hover{border-color:var(--accent);box-shadow:0 4px 24px var(--glow);transform:translateY(-3px);}
     .protocol-card-icon{font-size:1.6em;margin-bottom:14px;}
     .protocol-card-title{font-family:'Cinzel',serif;font-size:.82em;letter-spacing:2px;color:var(--accent);margin-bottom:8px;}
     .protocol-card-desc{font-size:.74em;opacity:.45;line-height:1.6;}
-    .protocol-badge{
-      display:inline-block;font-family:'Cinzel',serif;font-size:.56em;
-      letter-spacing:2px;text-transform:uppercase;
-      padding:3px 9px;border-radius:20px;
-      border:1px solid rgba(197,160,89,.35);
-      color:var(--accent);opacity:.6;
-      margin-top:14px;
-    }
+    .protocol-badge{display:inline-block;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid rgba(197,160,89,.35);color:var(--accent);opacity:.6;margin-top:14px;}
     .protocol-card-actions{display:flex;gap:6px;margin-top:14px;opacity:0;transition:opacity .2s;}
     .protocol-card:hover .protocol-card-actions{opacity:1;}
-    .pc-action{font-family:'Cinzel',serif;font-size:.58em;letter-spacing:1px;cursor:pointer;
-      color:var(--accent);padding:3px 9px;border:1px solid rgba(197,160,89,.35);border-radius:4px;
-      background:transparent;transition:all .2s;}
+    .pc-action{font-family:'Cinzel',serif;font-size:.58em;letter-spacing:1px;cursor:pointer;color:var(--accent);padding:3px 9px;border:1px solid rgba(197,160,89,.35);border-radius:4px;background:transparent;transition:all .2s;}
     .pc-action:hover{border-color:var(--accent);background:rgba(197,160,89,.1);}
     .pc-action.del{color:#e74c3c;border-color:rgba(231,76,60,.3);}
     .pc-action.del:hover{border-color:#e74c3c;background:rgba(231,76,60,.1);}
     .theme-light .pc-action{color:#1565c0;border-color:rgba(21,101,192,.3);}
     .theme-light .pc-action:hover{border-color:#1565c0;background:rgba(21,101,192,.08);}
-    /* Icon picker in modal */
     .icon-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
     .icon-opt{font-size:1.4em;padding:6px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .2s;line-height:1;}
     .icon-opt:hover{background:rgba(197,160,89,.12);border-color:rgba(197,160,89,.4);}
     .icon-opt.selected{background:rgba(197,160,89,.18);border-color:var(--accent);}
 
-    /* ── CHANGE 3: ACTIVE USERS PANEL ── */
-    #activeUsersPanel{
-      position:fixed;
-      bottom:60px; /* sits just above the live badge */
-      left:22px;
-      z-index:300;
-      background:var(--card);
-      border:1px solid rgba(197,160,89,.3);
-      border-radius:12px;
-      padding:10px 14px;
-      font-family:'Cinzel',serif;
-      font-size:.6em;
-      letter-spacing:1.5px;
-      backdrop-filter:blur(12px);
-      opacity:0;
-      transform:translateY(6px);
-      transition:opacity .4s,transform .4s;
-      pointer-events:none;
-      min-width:170px;
-    }
+    /* ── ACTIVE USERS PANEL ── */
+    #activeUsersPanel{position:fixed;bottom:60px;left:22px;z-index:300;background:var(--card);border:1px solid rgba(197,160,89,.3);border-radius:12px;padding:10px 14px;font-family:'Cinzel',serif;font-size:.6em;letter-spacing:1.5px;backdrop-filter:blur(12px);opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s;pointer-events:none;min-width:170px;}
     #activeUsersPanel.visible{opacity:1;transform:translateY(0);}
     .aup-label{opacity:.45;text-transform:uppercase;letter-spacing:2px;margin-bottom:5px;font-size:.9em;}
     .aup-total{color:var(--accent);font-size:1.2em;letter-spacing:2px;margin-bottom:4px;}
@@ -298,17 +303,35 @@
     .pr-arrow{opacity:.25;font-size:.8em;margin-right:4px;transition:opacity .2s;flex-shrink:0;}
     .pointer-row:hover .pr-arrow{opacity:.7;}
 
+    /* ── NOTE BODY ── */
     .note-body-inner{max-width:820px;}
     .nb-tag{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:4px;text-transform:uppercase;opacity:.38;margin-bottom:12px;}
     .nb-title{font-family:'Cinzel',serif;font-size:2.2em;letter-spacing:2px;color:var(--accent);margin-bottom:32px;line-height:1.25;}
     .nb-divider{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;margin-bottom:32px;}
-    .nb-body{font-size:1.05em;line-height:1.9;opacity:1;white-space:pre-wrap;word-wrap:break-word;font-family:'Raleway',sans-serif;margin:0;background:transparent;border:none;padding:0;color:inherit;}
+    .nb-body{font-size:var(--viewer-fs);line-height:1.9;opacity:1;white-space:pre-wrap;word-wrap:break-word;font-family:'Raleway',sans-serif;margin:0;background:transparent;border:none;padding:0;color:inherit;transition:font-size .2s;}
 
     .empty{padding:40px 0;opacity:.3;font-family:'Cinzel',serif;letter-spacing:3px;font-size:.76em;}
 
+    /* ═══════════════════════════════════
+       EDITOR RICH TEXT TOOLBAR
+    ═══════════════════════════════════ */
+    .editor-toolbar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(197,160,89,.08);border:1px solid rgba(197,160,89,.25);border-radius:10px;margin-bottom:10px;flex-wrap:wrap;}
+    .etb-btn{font-family:'Cinzel',serif;font-size:.68em;letter-spacing:1.5px;padding:5px 11px;border:1px solid rgba(197,160,89,.3);border-radius:6px;background:transparent;color:var(--accent);cursor:pointer;transition:all .2s;line-height:1.2;}
+    .etb-btn:hover,.etb-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .etb-divider{width:1px;height:20px;background:rgba(197,160,89,.25);margin:0 4px;flex-shrink:0;}
+    .etb-size-wrap{display:flex;align-items:center;gap:5px;}
+    .etb-size-label{font-family:'Cinzel',serif;font-size:.62em;letter-spacing:1px;opacity:.5;}
+    .etb-size-select{background:var(--card);border:1px solid rgba(197,160,89,.3);color:var(--text);border-radius:6px;padding:4px 8px;font-size:.78em;outline:none;cursor:pointer;font-family:'Raleway',sans-serif;}
+    .etb-size-select:focus{border-color:var(--accent);}
+
+    /* ── RICH EDITOR TEXTAREA (contenteditable for formatting) ── */
+    .rich-editor{width:100%;min-height:180px;padding:14px 16px;background:var(--card);border:1px solid var(--text);border-radius:8px;color:var(--text);font-size:.94em;font-family:'Raleway',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;resize:vertical;line-height:1.7;}
+    .rich-editor:focus{border-color:var(--accent);box-shadow:0 0 12px var(--glow);}
+    .rich-editor[contenteditable="true"]{min-height:180px;overflow-y:auto;}
+
     .modal-ov{position:fixed;inset:0;z-index:3000;display:none;justify-content:center;align-items:flex-start;padding:60px 20px;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);overflow-y:auto;}
     .modal-ov.open{display:flex;}
-    .modal-box{background:var(--bg);border:1px solid var(--accent);border-radius:18px;padding:38px 44px;width:100%;max-width:580px;box-shadow:0 0 60px var(--glow);animation:fadeUp .22s ease;position:relative;}
+    .modal-box{background:var(--bg);border:1px solid var(--accent);border-radius:18px;padding:38px 44px;width:100%;max-width:600px;box-shadow:0 0 60px var(--glow);animation:fadeUp .22s ease;position:relative;}
     .modal-box h2{font-family:'Cinzel',serif;letter-spacing:3px;font-size:.95em;color:var(--accent);margin-bottom:26px;text-transform:uppercase;}
     .mclose{position:absolute;top:15px;right:17px;background:none;border:1px solid var(--text);color:var(--text);cursor:pointer;border-radius:6px;padding:4px 11px;font-size:.72em;font-family:'Raleway',sans-serif;transition:all .2s;}
     .mclose:hover{border-color:var(--accent);color:var(--accent);}
@@ -331,7 +354,14 @@
     .view-tag{font-family:'Cinzel',serif;font-size:.58em;letter-spacing:4px;text-transform:uppercase;opacity:.35;margin-bottom:12px;}
     .view-title{font-family:'Cinzel',serif;font-size:2.4em;letter-spacing:2px;color:var(--accent);margin-bottom:28px;line-height:1.2;}
     .view-div{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;margin-bottom:30px;}
-    .view-body{font-size:1.05em;line-height:1.88;opacity:1;white-space:pre-wrap;}
+    .view-body{font-size:var(--viewer-fs);line-height:1.88;opacity:1;white-space:pre-wrap;transition:font-size .2s;}
+
+    /* ── VIEWER FONT CONTROL ── */
+    .viewer-font-ctrl{position:fixed;bottom:22px;right:22px;z-index:400;background:var(--card);border:1px solid rgba(197,160,89,.3);border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:8px;backdrop-filter:blur(12px);box-shadow:0 4px 20px var(--glow);font-family:'Cinzel',serif;font-size:.62em;letter-spacing:1.5px;}
+    .vfc-label{opacity:.45;text-transform:uppercase;white-space:nowrap;}
+    .vfc-btn{background:transparent;border:1px solid rgba(197,160,89,.3);color:var(--accent);border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:.9em;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;}
+    .vfc-btn:hover{border-color:var(--accent);background:rgba(197,160,89,.12);}
+    .vfc-size-display{color:var(--accent);min-width:30px;text-align:center;font-size:1em;}
 
     #liveBadge{position:fixed;bottom:22px;left:22px;z-index:300;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--text);border-radius:20px;padding:6px 13px;font-family:'Cinzel',serif;font-size:.58em;letter-spacing:2px;text-transform:uppercase;opacity:0;backdrop-filter:blur(10px);transition:opacity .5s,border-color .4s;pointer-events:none;}
     #liveBadge.connected{opacity:1;border-color:#27ae60;color:#27ae60;}
@@ -343,15 +373,9 @@
     #liveToast{position:fixed;bottom:66px;left:22px;z-index:300;background:var(--card);border:1px solid var(--accent);border-radius:10px;padding:10px 15px;font-size:.78em;letter-spacing:.5px;backdrop-filter:blur(12px);box-shadow:0 6px 24px var(--glow);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s;pointer-events:none;max-width:270px;}
     #liveToast.show{opacity:1;transform:translateY(0);}
 
-    #tzPanel{
-      position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:90;
-      display:flex;flex-direction:column;align-items:center;
-      background:var(--card);border:1px solid var(--text);border-right:none;
-      border-radius:16px 0 0 16px;padding:16px 12px;backdrop-filter:blur(14px);
-      box-shadow:-6px 0 30px var(--glow);gap:6px;
-    }
+    #tzPanel{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;align-items:center;background:var(--card);border:1px solid var(--text);border-right:none;border-radius:16px 0 0 16px;padding:16px 12px;backdrop-filter:blur(14px);box-shadow:-6px 0 30px var(--glow);gap:6px;}
     .tz-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;}
-    .tz-wrap+.tz-wrap{border-top:1px solid rgba(197,160,89,.16);border-left:none;}
+    .tz-wrap+.tz-wrap{border-top:1px solid rgba(197,160,89,.16);}
     .aclock{width:45px;height:45px;flex-shrink:0;}
     .cf{fill:none;stroke:var(--text);stroke-width:1.5;opacity:.28;}
     .ct{stroke:var(--text);stroke-width:1;opacity:.2;}
@@ -366,95 +390,145 @@
     #devCredit{position:fixed;bottom:9px;right:16px;z-index:50;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:2px;opacity:.55;color:var(--accent);pointer-events:none;user-select:none;}
 
     /* ── PROTOCOL FULL VIEW ── */
-    #screenProtocol .drill-screen{padding:36px 40px 100px;}
     .protocol-view-inner{max-width:820px;}
     .protocol-view-icon{font-size:3em;margin-bottom:18px;line-height:1;}
     .protocol-view-title{font-family:'Cinzel',serif;font-size:2.2em;letter-spacing:2px;color:var(--accent);margin-bottom:10px;line-height:1.25;}
     .protocol-view-meta{display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
     .protocol-view-tag{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:4px;text-transform:uppercase;opacity:.38;}
-    .protocol-view-updated{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:2px;text-transform:uppercase;
-      color:var(--accent);opacity:.55;padding:3px 10px;border:1px solid rgba(197,160,89,.3);border-radius:20px;}
+    .protocol-view-updated{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:2px;text-transform:uppercase;color:var(--accent);opacity:.55;padding:3px 10px;border:1px solid rgba(197,160,89,.3);border-radius:20px;}
     .theme-light .protocol-view-updated{border-color:rgba(21,101,192,.3);color:#1565c0;}
     .protocol-view-divider{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;margin-bottom:28px;}
-    .protocol-view-desc{font-size:1.05em;line-height:1.9;opacity:.85;white-space:pre-wrap;word-wrap:break-word;}
+    .protocol-view-desc{font-size:var(--viewer-fs);line-height:1.9;opacity:.85;white-space:pre-wrap;word-wrap:break-word;transition:font-size .2s;}
     .protocol-view-actions{display:flex;gap:8px;margin-top:6px;}
 
-    /* ── LAST UPDATED TAG on sticky notes ── */
-    .update-last-tag{
-      display:inline-block;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:1.5px;
-      text-transform:uppercase;padding:2px 8px;border-radius:20px;
-      border:1px solid rgba(10,25,47,.25);color:rgba(10,25,47,.55);
-      background:rgba(0,0,0,.06);margin-top:8px;
-    }
-    .theme-light .update-last-tag{border-color:rgba(26,26,46,.2);color:rgba(26,26,46,.5);}
-    .theme-dark .update-last-tag{border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.45);}
+    .update-last-tag{display:inline-block;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:20px;border:1px solid rgba(10,25,47,.25);color:rgba(10,25,47,.55);background:rgba(0,0,0,.06);margin-top:8px;}
+
+    /* ════════════════════ BACKUP MODAL ════════════════════ */
+    #backupModal{position:fixed;inset:0;z-index:6000;display:none;justify-content:center;align-items:flex-start;padding:50px 20px;background:rgba(0,0,0,.80);backdrop-filter:blur(8px);overflow-y:auto;}
+    #backupModal.open{display:flex;}
+    .backup-modal-box{background:var(--bg);border:1px solid var(--accent);border-radius:20px;padding:40px 44px;width:100%;max-width:580px;box-shadow:0 0 80px var(--glow);animation:fadeUp .25s ease;position:relative;}
+    .backup-modal-title{font-family:'Cinzel',serif;letter-spacing:4px;font-size:1em;color:var(--accent);margin-bottom:6px;text-transform:uppercase;}
+    .backup-modal-sub{font-size:.72em;opacity:.4;letter-spacing:1px;margin-bottom:30px;}
+    .backup-close{position:absolute;top:15px;right:17px;background:none;border:1px solid var(--text);color:var(--text);cursor:pointer;border-radius:6px;padding:4px 11px;font-size:.72em;font-family:'Raleway',sans-serif;transition:all .2s;}
+    .backup-close:hover{border-color:var(--accent);color:var(--accent);}
+    .backup-section-title{font-family:'Cinzel',serif;font-size:.65em;letter-spacing:3px;text-transform:uppercase;color:var(--accent);opacity:.7;margin-bottom:12px;}
+    .backup-divider{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.15;margin:24px 0;}
+    .backup-option-card{border:1px solid rgba(197,160,89,.2);border-radius:12px;padding:20px 22px;background:rgba(197,160,89,.04);transition:border-color .25s,background .25s;cursor:pointer;display:flex;align-items:center;gap:16px;margin-bottom:10px;}
+    .backup-option-card:hover{border-color:var(--accent);background:rgba(197,160,89,.09);}
+    .backup-opt-icon{font-size:1.8em;flex-shrink:0;}
+    .backup-opt-title{font-family:'Cinzel',serif;font-size:.82em;letter-spacing:2px;color:var(--accent);margin-bottom:4px;}
+    .backup-opt-desc{font-size:.72em;opacity:.45;line-height:1.5;}
+    .backup-opt-arrow{margin-left:auto;opacity:.3;font-size:.9em;flex-shrink:0;}
+    .backup-option-card:hover .backup-opt-arrow{opacity:.8;}
+    .backup-drop-zone{border:2px dashed rgba(197,160,89,.35);border-radius:12px;padding:30px 24px;text-align:center;cursor:pointer;transition:border-color .25s,background .25s;background:rgba(197,160,89,.03);position:relative;}
+    .backup-drop-zone:hover,.backup-drop-zone.drag-over{border-color:var(--accent);background:rgba(197,160,89,.08);}
+    .backup-drop-icon{font-size:2em;margin-bottom:10px;display:block;}
+    .backup-drop-label{font-family:'Cinzel',serif;font-size:.75em;letter-spacing:2px;color:var(--accent);margin-bottom:6px;}
+    .backup-drop-sub{font-size:.68em;opacity:.4;letter-spacing:.5px;}
+    #backupFileInput{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .backup-file-info{border:1px solid rgba(197,160,89,.25);border-radius:10px;padding:14px 18px;margin-top:14px;display:none;align-items:center;gap:12px;background:rgba(197,160,89,.05);}
+    .backup-file-info.show{display:flex;}
+    .bfi-icon{font-size:1.4em;flex-shrink:0;}
+    .bfi-details{flex:1;min-width:0;}
+    .bfi-name{font-family:'Cinzel',serif;font-size:.75em;letter-spacing:1px;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .bfi-size{font-size:.65em;opacity:.4;margin-top:2px;}
+    .bfi-clear{background:none;border:none;cursor:pointer;color:var(--text);opacity:.4;font-size:1.1em;padding:2px;transition:opacity .2s;flex-shrink:0;}
+    .bfi-clear:hover{opacity:.9;}
+    .backup-summary{margin-top:14px;display:none;}
+    .backup-summary.show{display:block;}
+    .backup-summary-label{font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2px;text-transform:uppercase;opacity:.45;margin-bottom:8px;}
+    .backup-summary-items{display:flex;gap:8px;flex-wrap:wrap;}
+    .backup-summary-item{font-family:'Cinzel',serif;font-size:.65em;letter-spacing:1.5px;color:var(--accent);padding:4px 12px;border:1px solid rgba(197,160,89,.25);border-radius:20px;background:rgba(197,160,89,.06);}
+    .backup-import-actions{display:flex;gap:10px;margin-top:18px;}
+    .backup-import-btn{flex:1;padding:12px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-weight:700;cursor:pointer;font-family:'Raleway',sans-serif;font-size:.88em;letter-spacing:1px;transition:opacity .2s;display:none;}
+    .backup-import-btn.show{display:block;}
+    .backup-import-btn:hover{opacity:.87;}
+    .backup-import-btn:disabled{opacity:.45;cursor:not-allowed;}
+    .backup-progress{margin-top:16px;display:none;}
+    .backup-progress.show{display:block;}
+    .backup-progress-bar-wrap{height:6px;border-radius:3px;background:rgba(197,160,89,.15);overflow:hidden;margin-bottom:8px;}
+    .backup-progress-bar{height:100%;border-radius:3px;background:var(--accent);width:0%;transition:width .3s ease;}
+    .backup-progress-label{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:2px;opacity:.5;text-transform:uppercase;}
+    .backup-status{font-family:'Cinzel',serif;font-size:.68em;letter-spacing:1.5px;text-align:center;margin-top:14px;min-height:18px;transition:color .3s;}
+    .backup-status.success{color:#27ae60;}
+    .backup-status.error{color:#e74c3c;}
+    .backup-status.info{color:var(--accent);}
   </style>
 </head>
 <body>
 <div class="bg-layer"></div>
-<div id="splash" style="display:none;justify-content:center;align-items:center;"></div>
+<div id="splash" style="display:none;"></div>
 
-<!-- ══ AUTH MODAL ══ -->
-<div id="authModal">
-  <div class="auth-box">
-    <h2>Editor Login</h2>
-    <div id="authStepPass">
-      <div class="auth-field">
-        <label>Password</label>
-        <input type="password" id="authPassInput" placeholder="Enter editor password" autocomplete="current-password">
-        <button class="eye-btn" type="button" onclick="toggleEye('authPassInput',this)" tabindex="-1">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </button>
-      </div>
-      <div class="auth-actions">
-        <button class="auth-submit" onclick="submitPass()">Continue</button>
-        <button class="auth-cancel" onclick="closeAuthModal()">Cancel</button>
-      </div>
-      <div class="auth-error" id="passError"></div>
+<!-- ══ NAME PROMPT MODAL (all users) ══ -->
+<div id="nameModal">
+  <div class="name-box">
+    <div class="name-box-logo">⚓</div>
+    <div class="name-box-title">VikingCloud Compliance Hub</div>
+    <div class="name-box-sub">Please identify yourself to continue</div>
+
+    <div class="name-role-tabs">
+      <button class="name-role-tab active" id="roleTabViewer" onclick="selectRoleTab('viewer')">👁️ Viewer</button>
+      <button class="name-role-tab" id="roleTabEditor" onclick="selectRoleTab('editor')">✍️ Editor</button>
     </div>
-    <div id="authStepName" style="display:none;">
-      <div class="auth-field">
-        <label>Your Name</label>
-        <input type="text" id="authNameInput" placeholder="Enter your full name" autocomplete="name">
-      </div>
-      <div class="auth-actions">
-        <button class="auth-submit" onclick="submitName()">Login</button>
-        <button class="auth-cancel" onclick="closeAuthModal()">Cancel</button>
-      </div>
-      <div class="auth-error" id="nameError"></div>
+
+    <div class="name-field">
+      <label>Your Name</label>
+      <input type="text" id="nameInput" placeholder="Enter your full name…" autocomplete="name">
     </div>
+
+    <div class="name-pass-field" id="namePassField">
+      <div class="name-field" style="margin-bottom:0;">
+        <label>Editor Password</label>
+        <input type="password" id="namePassInput" placeholder="Enter editor password…" autocomplete="current-password">
+      </div>
+    </div>
+
+    <button class="name-continue-btn" onclick="submitNameModal()">Continue →</button>
+    <div class="name-error" id="nameModalError"></div>
   </div>
 </div>
 
-<!-- ══ LANDING ══ -->
-<div id="landingPage">
-  <div class="landing-logo">
-    <div class="landing-logo-icon">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="40" cy="40" r="38" stroke="var(--accent)" stroke-width="1.5" opacity=".3"/>
-        <path d="M12 48 Q40 56 68 48" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <path d="M16 48 Q40 62 64 48" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".45"/>
-        <line x1="40" y1="48" x2="40" y2="18" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="M40 20 L58 30 L40 44 Z" fill="var(--accent)" opacity=".85"/>
-        <line x1="40" y1="24" x2="40" y2="42" stroke="var(--bg)" stroke-width="1.5"/>
-        <line x1="42" y1="32" x2="56" y2="32" stroke="var(--bg)" stroke-width="1.5"/>
-      </svg>
+<!-- ══ BACKUP MODAL ══ -->
+<div id="backupModal">
+  <div class="backup-modal-box">
+    <button class="backup-close" onclick="closeBackupModal()">✕</button>
+    <div class="backup-modal-title">Backup &amp; Restore</div>
+    <div class="backup-modal-sub">Save a full snapshot or restore from a previous backup</div>
+    <div class="backup-section-title">💾 Save Backup</div>
+    <div class="backup-option-card" onclick="downloadBackup()">
+      <div class="backup-opt-icon">📦</div>
+      <div class="backup-opt-content">
+        <div class="backup-opt-title">Download Backup File</div>
+        <div class="backup-opt-desc">Exports all headings, sub-headings, topics, and notes as a structured JSON file.</div>
+      </div>
+      <div class="backup-opt-arrow">›</div>
     </div>
-    <!-- CHANGE 2: Renamed from "Compliance Update Hub" to "VikingCloud Update Hub" -->
-    <div class="landing-title">VikingCloud Update Hub</div>
-    <div class="landing-sub">Choose your access level</div>
-  </div>
-  <div class="role-cards">
-    <div class="role-card" onclick="startEditorLogin()">
-      <div class="rc-icon">✍️</div>
-      <h2>EDITOR</h2>
-      <p>Manage content</p>
+    <div id="saveStatus" class="backup-status"></div>
+    <div class="backup-divider"></div>
+    <div class="backup-section-title">📂 Import Backup</div>
+    <div class="backup-drop-zone" id="dropZone">
+      <input type="file" id="backupFileInput" accept=".json" onchange="handleFileSelect(event)">
+      <span class="backup-drop-icon">🗂️</span>
+      <div class="backup-drop-label">Drop backup file here</div>
+      <div class="backup-drop-sub">or click to browse · .json only</div>
     </div>
-    <div class="role-card" onclick="startViewerLogin()">
-      <div class="rc-icon">👁️</div>
-      <h2>VIEWER</h2>
-      <p>Read access</p>
+    <div class="backup-file-info" id="backupFileInfo">
+      <div class="bfi-icon">📄</div>
+      <div class="bfi-details"><div class="bfi-name" id="bfiName">—</div><div class="bfi-size" id="bfiSize">—</div></div>
+      <button class="bfi-clear" onclick="clearBackupFile()">✕</button>
     </div>
+    <div class="backup-summary" id="backupSummary">
+      <div class="backup-summary-label">Contents detected</div>
+      <div class="backup-summary-items" id="backupSummaryItems"></div>
+    </div>
+    <div class="backup-progress" id="backupProgress">
+      <div class="backup-progress-bar-wrap"><div class="backup-progress-bar" id="backupProgressBar"></div></div>
+      <div class="backup-progress-label" id="backupProgressLabel">Importing…</div>
+    </div>
+    <div class="backup-import-actions">
+      <button class="backup-import-btn" id="importBtn" onclick="importBackup()">Import &amp; Restore</button>
+    </div>
+    <div class="backup-status" id="importStatus"></div>
   </div>
 </div>
 
@@ -470,7 +544,6 @@
         <line x1="42" y1="32" x2="56" y2="32" stroke="var(--bg)" stroke-width="1.5"/>
       </svg>
     </div>
-    <!-- CHANGE 2: Renamed logo text -->
     <div class="logo-text">VikingCloud Hub<span id="welcomeMsg">Viewer</span></div>
   </div>
   <div class="topbar-right">
@@ -480,6 +553,7 @@
       <option value="default">🌌 Dark Navy</option>
       <option value="forest">🌲 Forest</option>
     </select>
+    <button class="tbtn tbtn-backup hidden" id="backupBtn" onclick="openBackupModal()">🗄️ Backup</button>
     <div class="emgmt hidden" id="emgmtWrap">
       <button id="emBtn" onclick="toggleEmDrop()">Editors
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -497,15 +571,12 @@
 
 <!-- ══ SCREEN: DASHBOARD ══ -->
 <div class="screen" id="screenDash">
-
-  <!-- CHANGE 1: Added Protocol tab button -->
   <div class="dash-tabs">
     <button class="tab-btn active" id="tabUpdatesBtn" onclick="switchTab('updates')">📋 Updates</button>
     <button class="tab-btn" id="tabNotesBtn" onclick="switchTab('notes')">📝 Notes</button>
     <button class="tab-btn" id="tabProtocolBtn" onclick="switchTab('protocol')">📜 Protocol</button>
   </div>
 
-  <!-- UPDATES TAB -->
   <div class="tab-panel active" id="tabUpdates">
     <div class="updates-band">
       <div class="sec-hdr">
@@ -517,7 +588,6 @@
     </div>
   </div>
 
-  <!-- NOTES TAB -->
   <div class="tab-panel" id="tabNotes">
     <div class="notes-band">
       <div class="sec-hdr">
@@ -529,7 +599,6 @@
     </div>
   </div>
 
-  <!-- PROTOCOL TAB — dynamic, editor-editable -->
   <div class="tab-panel" id="tabProtocol">
     <div class="protocol-band">
       <div class="sec-hdr">
@@ -540,7 +609,6 @@
       <div class="protocol-cards" id="protocolGrid"></div>
     </div>
   </div>
-
 </div>
 
 <!-- ══ SCREEN: SUB-HEADINGS ══ -->
@@ -557,7 +625,7 @@
   </div>
 </div>
 
-<!-- ══ SCREEN: SUB-SUB-HEADINGS ══ -->
+<!-- ══ SCREEN: TOPICS ══ -->
 <div class="screen" id="screenSubSub">
   <div class="drill-screen">
     <div class="breadcrumb" id="bcSubSub"></div>
@@ -635,14 +703,52 @@
       <label id="ffTitleLabel">Title</label>
       <input type="text" id="mTitle" placeholder="Enter title…" spellcheck="true">
     </div>
+    <!-- Rich editor for body (editor only) -->
     <div class="ff hidden" id="ffBody">
       <label>Body</label>
-      <textarea id="mBody" placeholder="Enter note content…" spellcheck="true" autocorrect="on" rows="8"></textarea>
+      <div class="editor-toolbar" id="editorToolbar">
+        <button class="etb-btn" id="etbBold" onclick="execFmt('bold')" title="Bold"><b>B</b></button>
+        <button class="etb-btn" id="etbUnderline" onclick="execFmt('underline')" title="Underline"><u>U</u></button>
+        <div class="etb-divider"></div>
+        <div class="etb-size-wrap">
+          <span class="etb-size-label">Size</span>
+          <select class="etb-size-select" id="etbFontSize" onchange="applyFontSize(this.value)">
+            <option value="">Default</option>
+            <option value="12px">12</option>
+            <option value="14px">14</option>
+            <option value="16px">16</option>
+            <option value="18px">18</option>
+            <option value="20px">20</option>
+            <option value="24px">24</option>
+            <option value="28px">28</option>
+          </select>
+        </div>
+      </div>
+      <div class="rich-editor" id="mBodyRich" contenteditable="true" spellcheck="true" data-placeholder="Enter note content…"></div>
+      <!-- Hidden textarea synced from rich editor for backward compat -->
+      <textarea id="mBody" style="display:none;"></textarea>
     </div>
-    <!-- Protocol-only fields -->
     <div class="ff hidden" id="ffDesc">
       <label>Description</label>
-      <textarea id="mDesc" placeholder="Brief description…" spellcheck="true" rows="3" style="min-height:70px;"></textarea>
+      <div class="editor-toolbar" id="editorToolbarDesc">
+        <button class="etb-btn" onclick="execFmtEl('descRich','bold')" title="Bold"><b>B</b></button>
+        <button class="etb-btn" onclick="execFmtEl('descRich','underline')" title="Underline"><u>U</u></button>
+        <div class="etb-divider"></div>
+        <div class="etb-size-wrap">
+          <span class="etb-size-label">Size</span>
+          <select class="etb-size-select" id="etbFontSizeDesc" onchange="applyFontSizeEl('descRich',this.value)">
+            <option value="">Default</option>
+            <option value="12px">12</option>
+            <option value="14px">14</option>
+            <option value="16px">16</option>
+            <option value="18px">18</option>
+            <option value="20px">20</option>
+            <option value="24px">24</option>
+          </select>
+        </div>
+      </div>
+      <div class="rich-editor" id="descRich" contenteditable="true" spellcheck="true" style="min-height:90px;" data-placeholder="Brief description…"></div>
+      <textarea id="mDesc" style="display:none;"></textarea>
     </div>
     <div class="ff hidden" id="ffIcon">
       <label>Icon</label>
@@ -660,14 +766,22 @@
 <div id="liveBadge" class="connecting"><div class="live-dot"></div><span id="liveBadgeText">Connecting…</span></div>
 <div id="liveToast"><span id="toastIcon">⚡</span> <span id="toastMsg"></span></div>
 
-<!-- CHANGE 3: Active Users Panel — sits above the live badge -->
+<!-- ══ ACTIVE USERS ══ -->
 <div id="activeUsersPanel">
   <div class="aup-label">Currently Viewing</div>
   <div class="aup-total"><span class="aup-dot"></span><span id="aupTotal">0</span> users</div>
   <div class="aup-split">Editors: <span id="aupEditors">0</span> | Viewers: <span id="aupViewers">0</span></div>
 </div>
 
-<!-- ══ TZ CLOCKS (vertical, right side) ══ -->
+<!-- ══ VIEWER FONT CONTROL (all users, positioned bottom-right) ══ -->
+<div class="viewer-font-ctrl hidden" id="viewerFontCtrl">
+  <span class="vfc-label">Font</span>
+  <button class="vfc-btn" onclick="adjustViewerFont(-1)" title="Decrease font size">A−</button>
+  <span class="vfc-size-display" id="vfcDisplay">M</span>
+  <button class="vfc-btn" onclick="adjustViewerFont(1)" title="Increase font size">A+</button>
+</div>
+
+<!-- ══ TZ CLOCKS ══ -->
 <div id="tzPanel">
   <div class="tz-wrap">
     <svg class="aclock" viewBox="0 0 60 60"><g id="tk-IST"></g><circle cx="30" cy="30" r="27" class="cf"/><line id="IST-h" x1="30" y1="30" x2="30" y2="15" class="hh"/><line id="IST-m" x1="30" y1="30" x2="30" y2="8" class="hm"/><line id="IST-s" x1="30" y1="34" x2="30" y2="6" class="hs"/><circle cx="30" cy="30" r="2.5" class="cc"/></svg>
@@ -685,6 +799,11 @@
 
 <div id="devCredit">Developed by Kedar &amp; Tirth</div>
 
+<style>
+  /* Rich editor placeholder */
+  .rich-editor:empty:before{content:attr(data-placeholder);opacity:.35;pointer-events:none;}
+</style>
+
 <script>
 const _U = "https://rspfzjybkicxgvcfqdzh.supabase.co";
 const _K = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzcGZ6anlia2ljeGd2Y2ZxZHpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjU3ODksImV4cCI6MjA4NzYwMTc4OX0.kVazGMs9wsgw8Beuii06TVx6hxhVbAWWabfal3pVh-w";
@@ -692,6 +811,8 @@ const db = supabase.createClient(_U, _K);
 
 let role = 'viewer';
 let editorName = '';
+let viewerName = '';
+let userName = '';
 let founderEditorId = null;
 let isFounder = false;
 let allUpdates = [];
@@ -702,94 +823,201 @@ let currentHeading = null;
 let currentSubheading = null;
 let modalCtx = null;
 let activeTab = 'updates';
-
-// CHANGE 3: Presence tracking state
 let presenceChannel = null;
 const sessionId = 'sess_' + Math.random().toString(36).substr(2, 9);
 
+// Viewer font sizing
+const FONT_SIZES = ['0.82em','0.92em','1.05em','1.18em','1.32em','1.48em'];
+const FONT_LABELS = ['XS','S','M','L','XL','XXL'];
+let viewerFontIdx = 2; // default M
+
+let pendingBackupData = null;
+let selectedBackupFile = null;
+
+// ═══════════════════════════════════════
+// NAME PROMPT MODAL
+// ═══════════════════════════════════════
+let pendingRole = 'viewer';
+
+function selectRoleTab(r) {
+  pendingRole = r;
+  document.getElementById('roleTabViewer').classList.toggle('active', r === 'viewer');
+  document.getElementById('roleTabEditor').classList.toggle('active', r === 'editor');
+  const passField = document.getElementById('namePassField');
+  passField.classList.toggle('show', r === 'editor');
+  if (r === 'editor') setTimeout(() => document.getElementById('namePassInput').focus(), 80);
+}
+
+async function submitNameModal() {
+  const name = document.getElementById('nameInput').value.trim();
+  const errEl = document.getElementById('nameModalError');
+  errEl.textContent = '';
+
+  if (!name) { errEl.textContent = 'Please enter your name to continue.'; return; }
+
+  if (pendingRole === 'editor') {
+    const pass = document.getElementById('namePassInput').value;
+    if (pass !== 'viking2026') { errEl.textContent = 'Incorrect editor password.'; document.getElementById('namePassInput').value = ''; document.getElementById('namePassInput').focus(); return; }
+
+    // Verify name in authorized_editors
+    const { data } = await db.from('authorized_editors').select('*').ilike('name', name).single();
+    if (!data) { errEl.textContent = 'This name is not on the authorized editor list.'; return; }
+
+    editorName = data.name;
+    userName = data.name;
+    role = 'editor';
+
+    const { data: fr } = await db.from('authorized_editors').select('id').order('id',{ascending:true}).limit(1).single();
+    if (fr) { founderEditorId = fr.id; isFounder = (data.id === fr.id); }
+  } else {
+    viewerName = name;
+    userName = name;
+    role = 'viewer';
+  }
+
+  document.getElementById('nameModal').classList.add('hidden');
+  showWelcomeSplash(userName);
+}
+
+function showWelcomeSplash(name) {
+  const s = document.getElementById('splash');
+  s.innerHTML = `
+    <div class="splash-title">Welcome to VikingCloud Compliance Hub</div>
+    <div class="splash-sub">${esc(name)}</div>
+  `;
+  s.style.display = 'flex';
+  setTimeout(() => { s.style.display = 'none'; enterDashboard(); }, 2200);
+}
+
+document.getElementById('nameInput').addEventListener('keydown', e => { if(e.key==='Enter') submitNameModal(); });
+document.getElementById('namePassInput').addEventListener('keydown', e => { if(e.key==='Enter') submitNameModal(); });
+
+// ═══════════════════════════════════════
+// VIEWER FONT CONTROL
+// ═══════════════════════════════════════
+function applyViewerFont() {
+  const size = FONT_SIZES[viewerFontIdx];
+  document.documentElement.style.setProperty('--viewer-fs', size);
+  document.getElementById('vfcDisplay').textContent = FONT_LABELS[viewerFontIdx];
+}
+
+function adjustViewerFont(delta) {
+  viewerFontIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, viewerFontIdx + delta));
+  applyViewerFont();
+}
+
+// ═══════════════════════════════════════
+// EDITOR RICH TEXT TOOLBAR
+// ═══════════════════════════════════════
+function execFmt(cmd) {
+  const el = document.getElementById('mBodyRich');
+  el.focus();
+  document.execCommand(cmd, false, null);
+  updateToolbarState();
+}
+
+function execFmtEl(elId, cmd) {
+  const el = document.getElementById(elId);
+  el.focus();
+  document.execCommand(cmd, false, null);
+}
+
+function applyFontSize(size) {
+  if (!size) return;
+  const el = document.getElementById('mBodyRich');
+  el.focus();
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+  const range = sel.getRangeAt(0);
+  if (range.collapsed) return;
+  const span = document.createElement('span');
+  span.style.fontSize = size;
+  range.surroundContents(span);
+}
+
+function applyFontSizeEl(elId, size) {
+  if (!size) return;
+  const el = document.getElementById(elId);
+  el.focus();
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+  const range = sel.getRangeAt(0);
+  if (range.collapsed) return;
+  const span = document.createElement('span');
+  span.style.fontSize = size;
+  try { range.surroundContents(span); } catch(e) {}
+}
+
+function updateToolbarState() {
+  document.getElementById('etbBold').classList.toggle('active', document.queryCommandState('bold'));
+  document.getElementById('etbUnderline').classList.toggle('active', document.queryCommandState('underline'));
+}
+
+document.addEventListener('selectionchange', () => {
+  if (document.activeElement && document.activeElement.id === 'mBodyRich') updateToolbarState();
+});
+
+function getRichHtml(elId) {
+  const el = document.getElementById(elId);
+  return el ? el.innerHTML : '';
+}
+
+function setRichHtml(elId, html) {
+  const el = document.getElementById(elId);
+  if (el) el.innerHTML = html || '';
+}
+
+// Convert stored content to display: if it's HTML, use innerHTML; if plain text, set as text
+function contentToDisplay(content) {
+  if (!content) return '(No content yet.)';
+  // detect HTML
+  if (/<[a-z][\s\S]*>/i.test(content)) return content;
+  return content;
+}
+
+// ═══════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════
 function switchTab(tab) {
   activeTab = tab;
-  document.getElementById('tabUpdatesBtn').classList.toggle('active', tab === 'updates');
-  document.getElementById('tabNotesBtn').classList.toggle('active', tab === 'notes');
-  document.getElementById('tabProtocolBtn').classList.toggle('active', tab === 'protocol');
-  document.getElementById('tabUpdates').classList.toggle('active', tab === 'updates');
-  document.getElementById('tabNotes').classList.toggle('active', tab === 'notes');
-  document.getElementById('tabProtocol').classList.toggle('active', tab === 'protocol');
-  if (tab === 'protocol' && role === 'editor') loadProtocols();
+  ['updates','notes','protocol'].forEach(t => {
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)+'Btn').classList.toggle('active', t===tab);
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
+  });
+  if (tab === 'protocol') loadProtocols();
 
   const newBtn = document.getElementById('newBtn');
   const addProtBtn = document.getElementById('addProtocolBtn');
-  if (tab === 'updates') { newBtn.textContent = '+ New Update'; newBtn.classList.remove('hidden'); newBtn.style.display = ''; }
-  else if (tab === 'notes') { newBtn.textContent = '+ New Heading'; newBtn.classList.remove('hidden'); newBtn.style.display = ''; }
-  else { newBtn.style.display = 'none'; }
+  if (role === 'editor') {
+    if (tab === 'updates') { newBtn.textContent = '+ New Update'; newBtn.classList.remove('hidden'); newBtn.style.display = ''; }
+    else if (tab === 'notes') { newBtn.textContent = '+ New Heading'; newBtn.classList.remove('hidden'); newBtn.style.display = ''; }
+    else { newBtn.style.display = 'none'; }
+  }
   if (addProtBtn) addProtBtn.classList.toggle('hidden', !(tab === 'protocol' && role === 'editor'));
 }
 
-function startEditorLogin() {
-  document.getElementById('authPassInput').value = '';
-  document.getElementById('authNameInput').value = '';
-  document.getElementById('passError').textContent = '';
-  document.getElementById('nameError').textContent = '';
-  document.getElementById('authStepPass').style.display = 'block';
-  document.getElementById('authStepName').style.display = 'none';
-  document.getElementById('authModal').classList.add('open');
-  setTimeout(() => document.getElementById('authPassInput').focus(), 80);
-}
-function startViewerLogin() { role = 'viewer'; enterDashboard(); }
-function closeAuthModal() { document.getElementById('authModal').classList.remove('open'); }
-function toggleEye(id, btn) {
-  const inp = document.getElementById(id);
-  const isP = inp.type === 'password';
-  inp.type = isP ? 'text' : 'password';
-  btn.innerHTML = isP
-    ? '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
-    : '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-}
-function submitPass() {
-  const pass = document.getElementById('authPassInput').value;
-  if (pass === 'viking2026') {
-    document.getElementById('authStepPass').style.display = 'none';
-    document.getElementById('authStepName').style.display = 'block';
-    setTimeout(() => document.getElementById('authNameInput').focus(), 80);
-  } else {
-    document.getElementById('passError').textContent = 'Incorrect password.';
-    document.getElementById('authPassInput').value = '';
-    document.getElementById('authPassInput').focus();
-  }
-}
-async function submitName() {
-  const n = document.getElementById('authNameInput').value.trim();
-  if (!n) { document.getElementById('nameError').textContent = 'Please enter your name.'; return; }
-  const { data } = await db.from('authorized_editors').select('*').ilike('name', n).single();
-  if (data) {
-    editorName = data.name; role = 'editor';
-    closeAuthModal();
-    const { data: fr } = await db.from('authorized_editors').select('id').order('id',{ascending:true}).limit(1).single();
-    if (fr) { founderEditorId = fr.id; isFounder = (data.id === fr.id); }
-    showSplash('Welcome, ' + editorName);
-  } else {
-    document.getElementById('nameError').textContent = 'Name not found.';
-    document.getElementById('authNameInput').select();
-  }
-}
-function showSplash(msg) {
-  const s = document.getElementById('splash');
-  s.textContent = msg; s.style.display = 'flex';
-  setTimeout(() => { s.style.display = 'none'; enterDashboard(); }, 1800);
-}
+// ═══════════════════════════════════════
+// ENTER DASHBOARD
+// ═══════════════════════════════════════
 function enterDashboard() {
-  closeAuthModal();
-  document.getElementById('landingPage').classList.add('hidden');
   document.getElementById('topbar').classList.remove('hidden');
-  document.getElementById('welcomeMsg').textContent = role === 'editor' ? 'Editor: ' + editorName : 'Viewer';
+  document.getElementById('welcomeMsg').textContent = role === 'editor' ? 'Editor: ' + editorName : 'Viewer: ' + viewerName;
+
   if (role === 'editor') {
     document.getElementById('emgmtWrap').classList.remove('hidden');
     document.getElementById('newBtn').classList.remove('hidden');
     document.getElementById('addUpdateBtn').classList.remove('hidden');
     document.getElementById('addHeadingBtn').classList.remove('hidden');
     document.getElementById('addSubBtn').classList.remove('hidden');
+    document.getElementById('backupBtn').classList.remove('hidden');
   }
+
+  // Font control visible for everyone
+  document.getElementById('viewerFontCtrl').classList.remove('hidden');
+  applyViewerFont();
+
   sessionStorage.setItem('ch_role', role);
+  sessionStorage.setItem('ch_name', userName);
   navTo('dash');
   switchTab('updates');
   loadUpdates();
@@ -797,87 +1025,73 @@ function enterDashboard() {
   loadProtocols();
   startRealtime();
   startAutoRefresh();
-  // Active users panel: only editors can see who is viewing
-  if (role === 'editor') {
-    startPresenceTracking();
-  }
+  startPresenceTracking();
 }
 
 async function logout() {
   sessionStorage.removeItem('ch_role');
-  if (role === 'editor') await stopPresenceTracking().catch(() => {});
+  sessionStorage.removeItem('ch_name');
+  await stopPresenceTracking().catch(()=>{});
   location.reload();
 }
 
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
 function navTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  // screenProtocol maps to 'protocol', others follow camelCase
-  const screenId = screen === 'protocol' ? 'screenProtocol' : 'screen' + screen.charAt(0).toUpperCase() + screen.slice(1);
-  document.getElementById(screenId).classList.add('active');
+  const map = { dash:'screenDash', sub:'screenSub', subSub:'screenSubSub', note:'screenNote', protocol:'screenProtocol' };
+  const id = map[screen] || ('screen' + screen.charAt(0).toUpperCase() + screen.slice(1));
+  document.getElementById(id).classList.add('active');
+
   const newBtn = document.getElementById('newBtn');
   if (role !== 'editor') { window.scrollTo(0,0); return; }
   if (screen === 'dash') {
     if (activeTab === 'protocol') { newBtn.style.display = 'none'; }
     else { newBtn.textContent = activeTab === 'notes' ? '+ New Heading' : '+ New Update'; newBtn.classList.remove('hidden'); newBtn.style.display = ''; }
     const addProtBtn = document.getElementById('addProtocolBtn');
-    if (addProtBtn) addProtBtn.classList.toggle('hidden', !(activeTab === 'protocol' && role === 'editor'));
-  } else if (screen === 'protocol') {
-    newBtn.style.display = 'none';
-  } else if (screen === 'sub') {
-    newBtn.textContent = '+ New Sub-Heading';
-    newBtn.classList.remove('hidden'); newBtn.style.display = '';
-  } else if (screen === 'subSub' || screen === 'note') {
-    newBtn.style.display = 'none';
-  }
+    if (addProtBtn) addProtBtn.classList.toggle('hidden', !(activeTab === 'protocol'));
+  } else if (screen === 'protocol') { newBtn.style.display = 'none'; }
+  else if (screen === 'sub') { newBtn.textContent = '+ New Sub-Heading'; newBtn.classList.remove('hidden'); newBtn.style.display = ''; }
+  else { newBtn.style.display = 'none'; }
   window.scrollTo(0, 0);
 }
 
 function openNewModal() {
   const activeScr = document.querySelector('.screen.active');
   if (!activeScr) return;
-  const id = activeScr.id;
-  if (id === 'screenDash') {
+  if (activeScr.id === 'screenDash') {
     if (activeTab === 'notes') openNewHeadingModal();
     else if (activeTab === 'updates') openNewUpdateModal();
-    // Protocol tab has no modal action yet
-  } else if (id === 'screenSub') {
-    openNewSubModal();
-  }
+  } else if (activeScr.id === 'screenSub') openNewSubModal();
 }
 
 function renderBreadcrumb(containerId, items) {
   const el = document.getElementById(containerId);
   el.innerHTML = items.map((item, i) => {
     const sep = i < items.length - 1 ? '<span class="bc-sep">›</span>' : '';
-    const cls = 'bc-item' + (item.current ? ' current' : '');
-    return `<span class="${cls}" onclick="${item.onClick || ''}">${esc(item.label)}</span>${sep}`;
+    return `<span class="bc-item${item.current?' current':''}" onclick="${item.onClick||''}">${esc(item.label)}</span>${sep}`;
   }).join('');
 }
 
+// ═══════════════════════════════════════
+// UPDATES
+// ═══════════════════════════════════════
 async function loadUpdates() {
   const { data } = await db.from('posts').select('*').order('created_at', { ascending: false });
   allUpdates = data || [];
   renderUpdates();
 }
-function fmtDate(iso) {
-  if (!iso) return '';
-  return new Date(iso).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
-}
+
+function fmtDate(iso) { if(!iso)return''; return new Date(iso).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'}); }
 function fmtUpdated(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  const now = new Date();
-  const diffMs = now - d;
-  const diffMins = Math.floor(diffMs/60000);
-  const diffHrs = Math.floor(diffMins/60);
-  const diffDays = Math.floor(diffHrs/24);
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return diffMins + 'm ago';
-  if (diffHrs < 24) return diffHrs + 'h ago';
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return diffDays + 'd ago';
+  if(!iso)return'';
+  const d=new Date(iso), now=new Date(), dm=Math.floor((now-d)/60000), dh=Math.floor(dm/60), dd=Math.floor(dh/24);
+  if(dm<1)return'Just now'; if(dm<60)return dm+'m ago'; if(dh<24)return dh+'h ago';
+  if(dd===1)return'Yesterday'; if(dd<7)return dd+'d ago';
   return d.toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
 }
+
 function renderUpdates() {
   const grid = document.getElementById('updatesGrid');
   grid.innerHTML = '';
@@ -894,10 +1108,12 @@ function renderUpdates() {
       </div>`;
     }
     const note = document.createElement('div');
-    note.className = `sticky-note ${colors[i % colors.length]}`;
+    note.className = `sticky-note ${colors[i%colors.length]}`;
+    // Strip HTML for card preview
+    const previewContent = u.content ? u.content.replace(/<[^>]+>/g,' ').trim() : '';
     note.innerHTML = `
       <div class="sticky-note-title">${esc(u.title)}</div>
-      <div class="sticky-note-body">${esc(u.content)}</div>
+      <div class="sticky-note-body">${esc(previewContent)}</div>
       ${upd ? `<div class="update-last-tag">Updated ${upd}</div>` : ''}
       <div class="sticky-note-footer">
         <span class="sticky-note-date">${d}</span>
@@ -907,22 +1123,15 @@ function renderUpdates() {
     grid.appendChild(note);
   });
 }
+
 function openUpdateView(u) {
   document.getElementById('viewTitle').textContent = u.title;
-  document.getElementById('viewBody').textContent = u.content;
-  // last updated tag in view
-  const existing = document.getElementById('viewUpdatedTag');
-  if (existing) existing.remove();
-  const upd = u.updated_at && u.updated_at !== u.created_at ? u.updated_at : null;
-  const divEl = document.getElementById('viewOv').querySelector('.view-div');
-  if (upd && divEl) {
-    const tag = document.createElement('span');
-    tag.id = 'viewUpdatedTag';
-    tag.className = 'protocol-view-updated';
-    tag.style.display = 'inline-block';
-    tag.style.marginBottom = '18px';
-    tag.textContent = 'Updated ' + fmtUpdated(upd);
-    divEl.before(tag);
+  const vb = document.getElementById('viewBody');
+  // Render HTML content properly
+  if (u.content && /<[a-z][\s\S]*>/i.test(u.content)) {
+    vb.innerHTML = u.content;
+  } else {
+    vb.textContent = u.content || '';
   }
   document.getElementById('viewOv').classList.add('open');
 }
@@ -932,31 +1141,37 @@ async function deleteUpdate(id) {
   await db.from('posts').delete().eq('id', id);
   await loadUpdates();
 }
+
 function openNewUpdateModal() {
   modalCtx = { mode: 'new-update' };
   document.getElementById('modalTitle').textContent = 'New Update';
   document.getElementById('ffTitleLabel').textContent = 'Title';
   document.getElementById('mTitle').value = '';
-  document.getElementById('mBody').value = '';
-  document.getElementById('ffBody').classList.remove('hidden');
-  document.getElementById('modal').classList.add('open');
-  setTimeout(() => document.getElementById('mTitle').focus(), 80);
-}
-function openEditUpdateModal(u) {
-  modalCtx = { mode: 'edit-update', item: u };
-  document.getElementById('modalTitle').textContent = 'Edit Update';
-  document.getElementById('ffTitleLabel').textContent = 'Title';
-  document.getElementById('mTitle').value = u.title || '';
-  document.getElementById('mBody').value = u.content || '';
+  setRichHtml('mBodyRich', '');
   document.getElementById('ffBody').classList.remove('hidden');
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
+function openEditUpdateModal(u) {
+  modalCtx = { mode: 'edit-update', item: u };
+  document.getElementById('modalTitle').textContent = 'Edit Update';
+  document.getElementById('ffTitleLabel').textContent = 'Title';
+  document.getElementById('mTitle').value = u.title || '';
+  setRichHtml('mBodyRich', u.content || '');
+  document.getElementById('ffBody').classList.remove('hidden');
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('mTitle').focus(), 80);
+}
+
+// ═══════════════════════════════════════
+// HEADINGS
+// ═══════════════════════════════════════
 async function loadHeadings() {
   const { data } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
   renderHeadings(data || []);
 }
+
 function renderHeadings(list) {
   const grid = document.getElementById('headingsGrid');
   grid.innerHTML = '';
@@ -976,6 +1191,7 @@ function renderHeadings(list) {
     grid.appendChild(chip);
   });
 }
+
 async function deleteHeading(id) {
   if (!confirm('Delete this heading and all its contents?')) return;
   await db.from('note_headings').delete().eq('id', id);
@@ -1000,6 +1216,9 @@ function openEditHeadingModal(h) {
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
+// ═══════════════════════════════════════
+// SUB-HEADINGS
+// ═══════════════════════════════════════
 async function openSubScreen(heading) {
   currentHeading = heading; currentSubheading = null;
   renderBreadcrumb('bcSub', [
@@ -1046,12 +1265,11 @@ function openEditSubBodyModal(sub) {
   document.getElementById('modalTitle').textContent = hasBody ? 'Edit Body' : 'Add Body';
   document.getElementById('ffTitleLabel').textContent = 'Title';
   document.getElementById('mTitle').value = sub.title || '';
-  document.getElementById('mBody').value = sub.body || '';
+  setRichHtml('mBodyRich', sub.body || '');
   document.getElementById('ffBody').classList.remove('hidden');
   document.getElementById('modal').classList.add('open');
-  setTimeout(() => document.getElementById('mBody').focus(), 80);
+  setTimeout(() => document.getElementById('mBodyRich').focus(), 80);
 }
-
 function openNewSubModal() {
   modalCtx = { mode: 'new-sub' };
   document.getElementById('modalTitle').textContent = 'New Sub-Heading';
@@ -1066,12 +1284,15 @@ function openEditSubModal(sub) {
   document.getElementById('modalTitle').textContent = 'Edit Sub-Heading';
   document.getElementById('ffTitleLabel').textContent = 'Title';
   document.getElementById('mTitle').value = sub.title || '';
-  document.getElementById('mBody').value = sub.body || '';
+  setRichHtml('mBodyRich', sub.body || '');
   document.getElementById('ffBody').classList.remove('hidden');
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
+// ═══════════════════════════════════════
+// TOPICS (sub-sub-headings)
+// ═══════════════════════════════════════
 async function openSubSubScreen(subheading) {
   currentSubheading = subheading;
   renderBreadcrumb('bcSubSub', [
@@ -1103,6 +1324,7 @@ function renderSubSubheadings(list) {
       </div>`;
     }
     row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(ss.title)}</span>${actions}<span class="pr-spacer"></span><span class="pr-arrow">›</span>`;
+    row.addEventListener('click', () => openNoteScreen(ss));
     el.appendChild(row);
   });
 }
@@ -1116,7 +1338,7 @@ function openNewSubSubModal() {
   document.getElementById('modalTitle').textContent = 'New Topic';
   document.getElementById('ffTitleLabel').textContent = 'Topic Title';
   document.getElementById('mTitle').value = '';
-  document.getElementById('mBody').value = '';
+  setRichHtml('mBodyRich', '');
   document.getElementById('ffBody').classList.remove('hidden');
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
@@ -1126,21 +1348,31 @@ function openEditSubSubModal(ss) {
   document.getElementById('modalTitle').textContent = 'Edit Topic';
   document.getElementById('ffTitleLabel').textContent = 'Topic Title';
   document.getElementById('mTitle').value = ss.title || '';
-  document.getElementById('mBody').value = ss.body || '';
+  setRichHtml('mBodyRich', ss.body || '');
   document.getElementById('ffBody').classList.remove('hidden');
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
+// ═══════════════════════════════════════
+// NOTE SCREEN
+// ═══════════════════════════════════════
 let currentNote = null;
 let noteSource = null;
+
+function renderNoteBody(content) {
+  const el = document.getElementById('noteBodyText');
+  if (content && /<[a-z][\s\S]*>/i.test(content)) {
+    el.innerHTML = content;
+  } else {
+    el.textContent = content || '(No content yet.)';
+  }
+}
 
 async function openSubNoteScreen(sub) {
   const { data: fresh } = await db.from('note_subheadings').select('*').eq('id', sub.id).single();
   const latest = fresh || sub;
-  currentSubheading = latest;
-  currentNote = latest;
-  noteSource = 'sub';
+  currentSubheading = latest; currentNote = latest; noteSource = 'sub';
   renderBreadcrumb('bcNote', [
     { label: 'Dashboard', onClick: "navTo('dash')" },
     { label: currentHeading.title, onClick: "openSubScreen(currentHeading)" },
@@ -1148,17 +1380,15 @@ async function openSubNoteScreen(sub) {
   ]);
   document.getElementById('noteBodyTag').textContent = 'Sub-Heading';
   document.getElementById('noteBodyTitle').textContent = latest.title;
-  document.getElementById('noteBodyText').textContent = latest.body || '(No content yet.)';
-  const actions = document.getElementById('noteEditorActions');
-  if (role === 'editor') { actions.style.display = 'flex'; } else { actions.style.display = 'none'; }
+  renderNoteBody(latest.body);
+  document.getElementById('noteEditorActions').style.display = role === 'editor' ? 'flex' : 'none';
   navTo('note');
 }
 
 async function openNoteScreen(ss) {
   const { data: fresh } = await db.from('note_subsubheadings').select('*').eq('id', ss.id).single();
   const latest = fresh || ss;
-  currentNote = latest;
-  noteSource = 'subsub';
+  currentNote = latest; noteSource = 'subsub';
   renderBreadcrumb('bcNote', [
     { label: 'Dashboard', onClick: "navTo('dash')" },
     { label: currentHeading.title, onClick: "openSubScreen(currentHeading)" },
@@ -1167,9 +1397,8 @@ async function openNoteScreen(ss) {
   ]);
   document.getElementById('noteBodyTag').textContent = 'Note';
   document.getElementById('noteBodyTitle').textContent = latest.title;
-  document.getElementById('noteBodyText').textContent = latest.body || '(No content yet.)';
-  const actions = document.getElementById('noteEditorActions');
-  if (role === 'editor') { actions.style.display = 'flex'; } else { actions.style.display = 'none'; }
+  renderNoteBody(latest.body);
+  document.getElementById('noteEditorActions').style.display = role === 'editor' ? 'flex' : 'none';
   navTo('note');
 }
 
@@ -1180,39 +1409,23 @@ function editCurrentNote() {
 }
 
 async function copyNoteBody() {
-  const text = document.getElementById('noteBodyText').textContent;
+  const el = document.getElementById('noteBodyText');
+  const text = el.innerText || el.textContent;
   if (!text || text === '(No content yet.)') return;
   try {
     await navigator.clipboard.writeText(text);
     const btn = document.getElementById('copyNoteBtn');
-    const orig = btn.textContent;
-    btn.textContent = 'Copied!';
-    btn.style.borderColor = '#27ae60';
-    btn.style.color = '#27ae60';
-    btn.style.opacity = '1';
-    setTimeout(() => {
-      btn.textContent = orig;
-      btn.style.borderColor = 'var(--text)';
-      btn.style.color = 'var(--text)';
-      btn.style.opacity = '.55';
-    }, 2000);
-  } catch(e) {
-    const range = document.createRange();
-    range.selectNodeContents(document.getElementById('noteBodyText'));
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    document.execCommand('copy');
-    sel.removeAllRanges();
-  }
+    btn.textContent = 'Copied!'; btn.style.borderColor = '#27ae60'; btn.style.color = '#27ae60'; btn.style.opacity = '1';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.borderColor = 'var(--text)'; btn.style.color = 'var(--text)'; btn.style.opacity = '.55'; }, 2000);
+  } catch(e) {}
 }
 
 async function deleteCurrentNote() {
   if (!currentNote) return;
   if (noteSource === 'sub') {
-    if (!confirm('Delete body content of this sub-heading?')) return;
+    if (!confirm('Delete body content?')) return;
     await db.from('note_subheadings').update({ body: '' }).eq('id', currentNote.id);
-    document.getElementById('noteBodyText').textContent = '(No content yet.)';
+    renderNoteBody('');
     currentNote = { ...currentNote, body: '' };
   } else {
     if (!confirm('Delete this topic?')) return;
@@ -1222,18 +1435,26 @@ async function deleteCurrentNote() {
   }
 }
 
+// ═══════════════════════════════════════
+// SAVE MODAL
+// ═══════════════════════════════════════
 async function saveModal() {
   const title = document.getElementById('mTitle').value.trim();
-  const body  = document.getElementById('mBody').value.trim();
+  // Get rich HTML from contenteditable
+  const bodyHtml = getRichHtml('mBodyRich');
+  const bodyText = bodyHtml.replace(/<[^>]+>/g,' ').trim();
+  const descHtml = getRichHtml('descRich');
+
   if (!title) { alert('Title is required.'); return; }
   const ctx = modalCtx;
+
   if (ctx.mode === 'new-update') {
-    if (!body) { alert('Body is required.'); return; }
-    await db.from('posts').insert([{ title, content: body }]);
+    if (!bodyText) { alert('Body is required.'); return; }
+    await db.from('posts').insert([{ title, content: bodyHtml }]);
     await loadUpdates();
   } else if (ctx.mode === 'edit-update') {
-    if (!body) { alert('Body is required.'); return; }
-    await db.from('posts').update({ title, content: body }).eq('id', ctx.item.id);
+    if (!bodyText) { alert('Body is required.'); return; }
+    await db.from('posts').update({ title, content: bodyHtml }).eq('id', ctx.item.id);
     await loadUpdates();
   } else if (ctx.mode === 'new-heading') {
     await db.from('note_headings').insert([{ title }]);
@@ -1249,91 +1470,84 @@ async function saveModal() {
     await db.from('note_subheadings').insert([{ heading_id: currentHeading.id, title }]);
     await loadSubheadings(currentHeading.id);
   } else if (ctx.mode === 'edit-sub') {
-    await db.from('note_subheadings').update({ title, body }).eq('id', ctx.item.id);
+    await db.from('note_subheadings').update({ title, body: bodyHtml }).eq('id', ctx.item.id);
     if (currentNote && currentNote.id === ctx.item.id) {
-      currentNote = { ...currentNote, title, body };
+      currentNote = { ...currentNote, title, body: bodyHtml };
       document.getElementById('noteBodyTitle').textContent = title;
-      document.getElementById('noteBodyText').textContent = body || '(No content yet.)';
+      renderNoteBody(bodyHtml);
     }
     await loadSubheadings(currentHeading.id);
   } else if (ctx.mode === 'edit-sub-body') {
-    await db.from('note_subheadings').update({ title, body }).eq('id', ctx.item.id);
+    await db.from('note_subheadings').update({ title, body: bodyHtml }).eq('id', ctx.item.id);
     if (currentNote && currentNote.id === ctx.item.id) {
-      currentNote = { ...currentNote, title, body };
+      currentNote = { ...currentNote, title, body: bodyHtml };
       document.getElementById('noteBodyTitle').textContent = title;
-      document.getElementById('noteBodyText').textContent = body || '(No content yet.)';
+      renderNoteBody(bodyHtml);
     }
   } else if (ctx.mode === 'new-subsub') {
-    if (!body) { alert('Body is required.'); return; }
-    await db.from('note_subsubheadings').insert([{ subheading_id: currentSubheading.id, title, body }]);
+    if (!bodyText) { alert('Body is required.'); return; }
+    await db.from('note_subsubheadings').insert([{ subheading_id: currentSubheading.id, title, body: bodyHtml }]);
     await loadSubSubheadings(currentSubheading.id);
   } else if (ctx.mode === 'edit-subsub') {
-    if (!body) { alert('Body is required.'); return; }
-    await db.from('note_subsubheadings').update({ title, body }).eq('id', ctx.item.id);
+    if (!bodyText) { alert('Body is required.'); return; }
+    await db.from('note_subsubheadings').update({ title, body: bodyHtml }).eq('id', ctx.item.id);
     if (currentNote && currentNote.id === ctx.item.id) {
-      currentNote = { ...currentNote, title, body };
+      currentNote = { ...currentNote, title, body: bodyHtml };
       document.getElementById('noteBodyTitle').textContent = title;
-      document.getElementById('noteBodyText').textContent = body || '(No content yet.)';
+      renderNoteBody(bodyHtml);
     } else {
       await loadSubSubheadings(currentSubheading.id);
     }
   } else if (ctx.mode === 'new-protocol') {
-    const desc = document.getElementById('mDesc').value.trim();
     const icon = document.getElementById('mIcon').value || '📋';
-    await db.from('protocols').insert([{ title, description: desc, icon }]);
+    await db.from('protocols').insert([{ title, description: descHtml, icon }]);
     await loadProtocols();
   } else if (ctx.mode === 'edit-protocol') {
-    const desc = document.getElementById('mDesc').value.trim();
     const icon = document.getElementById('mIcon').value || '📋';
-    await db.from('protocols').update({ title, description: desc, icon }).eq('id', ctx.item.id);
-    // If we're currently viewing this protocol, refresh the view
+    await db.from('protocols').update({ title, description: descHtml, icon }).eq('id', ctx.item.id);
     if (currentProtocol && currentProtocol.id === ctx.item.id) {
       const upd = new Date().toISOString();
-      currentProtocol = { ...currentProtocol, title, description: desc, icon, updated_at: upd };
+      currentProtocol = { ...currentProtocol, title, description: descHtml, icon, updated_at: upd };
       document.getElementById('pvIcon').textContent = icon;
       document.getElementById('pvTitle').textContent = title;
-      document.getElementById('pvDesc').textContent = desc || '(No description yet.)';
+      renderProtocolDesc(descHtml);
       document.getElementById('pvUpdated').textContent = 'Updated ' + fmtUpdated(upd);
     }
     await loadProtocols();
   }
   closeModal();
 }
+
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.getElementById('ffDesc').classList.add('hidden');
   document.getElementById('ffIcon').classList.add('hidden');
+  document.getElementById('ffBody').classList.add('hidden');
   modalCtx = null;
 }
 
-/* ══════════════════════════════════════════
-   PROTOCOL CRUD
-══════════════════════════════════════════ */
+// ═══════════════════════════════════════
+// PROTOCOLS
+// ═══════════════════════════════════════
 const PROTOCOL_ICONS = ['📋','🔐','🛡️','⚖️','📊','📜','🗂️','🔍','🔧','📝','✅','⚠️','🚨','🏛️','🔒','📌','💡','🎯','🔗','📣'];
 
 async function loadProtocols() {
   const grid = document.getElementById('protocolGrid');
   if (!grid) return;
   const { data, error } = await db.from('protocols').select('*').order('created_at', { ascending: true });
-  if (error) {
-    // Table may not exist yet — show a helpful placeholder
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">No protocols yet.${role==='editor'?' Use "+ Add Protocol" to create one.':''}</div>`;
-    return;
-  }
+  if (error) { grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">No protocols yet.</div>`; return; }
   renderProtocols(data || []);
 }
 
 function renderProtocols(list) {
   const grid = document.getElementById('protocolGrid');
   if (!grid) return;
-  if (!list.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">No protocols yet.${role==='editor'?' Use "+ Add Protocol" to create one.':''}</div>`;
-    return;
-  }
+  if (!list.length) { grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">No protocols yet.${role==='editor'?' Use "+ Add Protocol" to create one.':''}</div>`; return; }
   grid.innerHTML = '';
   list.forEach(p => {
     const upd = p.updated_at && p.updated_at !== p.created_at ? p.updated_at : (p.created_at || null);
     const updLabel = upd ? 'Updated ' + fmtUpdated(upd) : '';
+    const descPreview = p.description ? p.description.replace(/<[^>]+>/g,' ').trim().substring(0,100) : '';
     const actions = role === 'editor' ? `
       <div class="protocol-card-actions">
         <button class="pc-action" onclick="event.stopPropagation();openEditProtocolModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">Edit</button>
@@ -1345,7 +1559,7 @@ function renderProtocols(list) {
     card.innerHTML = `
       <div class="protocol-card-icon">${esc(p.icon||'📋')}</div>
       <div class="protocol-card-title">${esc(p.title)}</div>
-      <div class="protocol-card-desc">${esc(p.description||'')}</div>
+      <div class="protocol-card-desc">${esc(descPreview)}</div>
       ${updLabel ? `<div class="protocol-view-updated" style="margin-top:12px;">${updLabel}</div>` : ''}
       ${actions}`;
     card.addEventListener('click', () => openProtocolView(p));
@@ -1356,23 +1570,19 @@ function renderProtocols(list) {
 function buildIconPicker(selected) {
   const grid = document.getElementById('iconPickerGrid');
   if (!grid) return;
-  grid.innerHTML = PROTOCOL_ICONS.map(ic =>
-    `<span class="icon-opt${ic===selected?' selected':''}" onclick="selectIcon('${ic}')">${ic}</span>`
-  ).join('');
+  grid.innerHTML = PROTOCOL_ICONS.map(ic => `<span class="icon-opt${ic===selected?' selected':''}" onclick="selectIcon('${ic}')">${ic}</span>`).join('');
   document.getElementById('mIcon').value = selected || '📋';
 }
-
 function selectIcon(ic) {
   document.getElementById('mIcon').value = ic;
   document.querySelectorAll('.icon-opt').forEach(el => el.classList.toggle('selected', el.textContent === ic));
 }
-
 function openNewProtocolModal() {
   modalCtx = { mode: 'new-protocol' };
   document.getElementById('modalTitle').textContent = 'New Protocol';
   document.getElementById('ffTitleLabel').textContent = 'Title';
   document.getElementById('mTitle').value = '';
-  document.getElementById('mDesc').value = '';
+  setRichHtml('descRich', '');
   document.getElementById('ffBody').classList.add('hidden');
   document.getElementById('ffDesc').classList.remove('hidden');
   document.getElementById('ffIcon').classList.remove('hidden');
@@ -1380,13 +1590,12 @@ function openNewProtocolModal() {
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
-
 function openEditProtocolModal(p) {
   modalCtx = { mode: 'edit-protocol', item: p };
   document.getElementById('modalTitle').textContent = 'Edit Protocol';
   document.getElementById('ffTitleLabel').textContent = 'Title';
   document.getElementById('mTitle').value = p.title || '';
-  document.getElementById('mDesc').value = p.description || '';
+  setRichHtml('descRich', p.description || '');
   document.getElementById('ffBody').classList.add('hidden');
   document.getElementById('ffDesc').classList.remove('hidden');
   document.getElementById('ffIcon').classList.remove('hidden');
@@ -1394,7 +1603,6 @@ function openEditProtocolModal(p) {
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
-
 async function deleteProtocol(id) {
   if (!confirm('Delete this protocol?')) return;
   await db.from('protocols').delete().eq('id', id);
@@ -1402,6 +1610,15 @@ async function deleteProtocol(id) {
 }
 
 let currentProtocol = null;
+
+function renderProtocolDesc(content) {
+  const el = document.getElementById('pvDesc');
+  if (content && /<[a-z][\s\S]*>/i.test(content)) {
+    el.innerHTML = content;
+  } else {
+    el.textContent = content || '(No description yet.)';
+  }
+}
 
 function openProtocolView(p) {
   currentProtocol = p;
@@ -1411,287 +1628,279 @@ function openProtocolView(p) {
   ]);
   document.getElementById('pvIcon').textContent = p.icon || '📋';
   document.getElementById('pvTitle').textContent = p.title;
-  document.getElementById('pvDesc').textContent = p.description || '(No description yet.)';
+  renderProtocolDesc(p.description);
   const upd = p.updated_at || p.created_at;
   document.getElementById('pvUpdated').textContent = upd ? 'Updated ' + fmtUpdated(upd) : '';
-  const actions = document.getElementById('pvEditorActions');
-  if (role === 'editor') actions.style.display = 'flex'; else actions.style.display = 'none';
+  document.getElementById('pvEditorActions').style.display = role === 'editor' ? 'flex' : 'none';
   navTo('protocol');
 }
-
-function editCurrentProtocol() {
-  if (!currentProtocol) return;
-  openEditProtocolModal(currentProtocol);
-}
-
+function editCurrentProtocol() { if (currentProtocol) openEditProtocolModal(currentProtocol); }
 async function deleteCurrentProtocol() {
   if (!currentProtocol) return;
   if (!confirm('Delete this protocol?')) return;
   await db.from('protocols').delete().eq('id', currentProtocol.id);
   currentProtocol = null;
-  navTo('dash');
-  switchTab('protocol');
-  await loadProtocols();
+  navTo('dash'); switchTab('protocol'); await loadProtocols();
 }
 
-function setLiveBadge(s, t) {
-  const b = document.getElementById('liveBadge');
-  b.className = s; document.getElementById('liveBadgeText').textContent = t;
+// ═══════════════════════════════════════
+// BACKUP & RESTORE
+// ═══════════════════════════════════════
+function openBackupModal() {
+  if (role !== 'editor') return;
+  pendingBackupData = null; selectedBackupFile = null; clearBackupFileUI();
+  setBackupStatus('saveStatus', '', ''); setBackupStatus('importStatus', '', '');
+  document.getElementById('backupProgress').classList.remove('show');
+  document.getElementById('backupModal').classList.add('open');
 }
+function closeBackupModal() { document.getElementById('backupModal').classList.remove('open'); pendingBackupData = null; selectedBackupFile = null; }
+function setBackupStatus(id, msg, type) { const el = document.getElementById(id); el.textContent = msg; el.className = 'backup-status' + (type?' '+type:''); }
+function setBackupProgress(pct, label) {
+  const wrap = document.getElementById('backupProgress'); wrap.classList.add('show');
+  document.getElementById('backupProgressBar').style.width = pct + '%';
+  document.getElementById('backupProgressLabel').textContent = label;
+}
+async function downloadBackup() {
+  if (role !== 'editor') return;
+  setBackupStatus('saveStatus', 'Fetching data…', 'info');
+  try {
+    const { data: headings } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
+    const headingsWithChildren = await Promise.all((headings||[]).map(async h => {
+      const { data: subs } = await db.from('note_subheadings').select('*').eq('heading_id', h.id).order('created_at', { ascending: true });
+      const subsWithTopics = await Promise.all((subs||[]).map(async sub => {
+        const { data: topics } = await db.from('note_subsubheadings').select('*').eq('subheading_id', sub.id).order('created_at', { ascending: true });
+        return { title: sub.title, body: sub.body||'', topics: (topics||[]).map(t=>({title:t.title,body:t.body||''})) };
+      }));
+      return { title: h.title, subheadings: subsWithTopics };
+    }));
+    const backup = { version:1, exportedAt: new Date().toISOString(), exportedBy: editorName, headings: headingsWithChildren };
+    const blob = new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const ts = new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+    a.href = url; a.download = `vikingcloud-backup-${ts}.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    const hc=headingsWithChildren.length, sc=headingsWithChildren.reduce((s,h)=>s+h.subheadings.length,0), tc=headingsWithChildren.reduce((s,h)=>h.subheadings.reduce((ss,sub)=>ss+sub.topics.length,s),0);
+    setBackupStatus('saveStatus', `✓ Downloaded — ${hc} headings, ${sc} sub-headings, ${tc} topics`, 'success');
+  } catch(e) { setBackupStatus('saveStatus', '✕ Failed: ' + (e.message||e), 'error'); }
+}
+function handleFileSelect(e) { const file = e.target.files && e.target.files[0]; if (file) processBackupFile(file); }
+(function setupDragDrop() {
+  const zone = document.getElementById('dropZone'); if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file && file.name.endsWith('.json')) processBackupFile(file);
+    else setBackupStatus('importStatus', 'Please drop a .json backup file.', 'error');
+  });
+})();
+function processBackupFile(file) {
+  selectedBackupFile = file; setBackupStatus('importStatus','','');
+  document.getElementById('backupProgress').classList.remove('show');
+  document.getElementById('bfiName').textContent = file.name;
+  document.getElementById('bfiSize').textContent = (file.size/1024).toFixed(1)+' KB';
+  document.getElementById('backupFileInfo').classList.add('show');
+  document.getElementById('backupSummary').classList.remove('show');
+  document.getElementById('importBtn').classList.remove('show');
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!validateBackup(data)) { setBackupStatus('importStatus','✕ Invalid backup file.','error'); pendingBackupData=null; return; }
+      pendingBackupData = data;
+      const hc=(data.headings||[]).length, sc=(data.headings||[]).reduce((s,h)=>s+(h.subheadings||[]).length,0), tc=(data.headings||[]).reduce((s,h)=>(h.subheadings||[]).reduce((ss,sub)=>ss+(sub.topics||[]).length,s),0);
+      document.getElementById('backupSummaryItems').innerHTML = [
+        `<span class="backup-summary-item">📁 ${hc} Heading${hc!==1?'s':''}</span>`,
+        `<span class="backup-summary-item">📂 ${sc} Sub-heading${sc!==1?'s':''}</span>`,
+        `<span class="backup-summary-item">📄 ${tc} Topic${tc!==1?'s':''}</span>`,
+        data.exportedAt?`<span class="backup-summary-item">🕐 ${new Date(data.exportedAt).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'})}</span>`:'',
+        data.exportedBy?`<span class="backup-summary-item">👤 ${esc(data.exportedBy)}</span>`:''
+      ].filter(Boolean).join('');
+      document.getElementById('backupSummary').classList.add('show');
+      document.getElementById('importBtn').classList.add('show');
+      setBackupStatus('importStatus','Ready to import. This will ADD to existing data.','info');
+    } catch(err) { setBackupStatus('importStatus','✕ Could not parse: '+err.message,'error'); pendingBackupData=null; }
+  };
+  reader.readAsText(file);
+}
+function validateBackup(data) {
+  if (!data||typeof data!=='object') return false;
+  if (!Array.isArray(data.headings)) return false;
+  for (const h of data.headings) {
+    if (!h.title||typeof h.title!=='string') return false;
+    if (!Array.isArray(h.subheadings)) return false;
+    for (const sub of h.subheadings) { if (!sub.title||!Array.isArray(sub.topics)) return false; }
+  }
+  return true;
+}
+function clearBackupFile() { clearBackupFileUI(); pendingBackupData=null; selectedBackupFile=null; setBackupStatus('importStatus','',''); document.getElementById('backupProgress').classList.remove('show'); document.getElementById('backupFileInput').value=''; }
+function clearBackupFileUI() { document.getElementById('backupFileInfo').classList.remove('show'); document.getElementById('backupSummary').classList.remove('show'); document.getElementById('importBtn').classList.remove('show'); }
+async function importBackup() {
+  if (role!=='editor'||!pendingBackupData) return;
+  const headings = pendingBackupData.headings||[];
+  if (!headings.length) { setBackupStatus('importStatus','Backup is empty.','error'); return; }
+  const btn = document.getElementById('importBtn');
+  btn.disabled = true; btn.textContent = 'Importing…'; setBackupProgress(0,'Starting…');
+  let total=headings.length; headings.forEach(h=>{total+=(h.subheadings||[]).length;(h.subheadings||[]).forEach(sub=>{total+=(sub.topics||[]).length;});}); let done=0;
+  function tick(label){done++;setBackupProgress(Math.round(done/total*100),label);}
+  try {
+    for (const hd of headings) {
+      const {data:nh,error:he}=await db.from('note_headings').insert([{title:hd.title}]).select().single();
+      if(he)throw new Error(he.message); tick('Heading: '+hd.title);
+      for (const sd of (hd.subheadings||[])) {
+        const {data:ns,error:se}=await db.from('note_subheadings').insert([{heading_id:nh.id,title:sd.title,body:sd.body||''}]).select().single();
+        if(se)throw new Error(se.message); tick('Sub: '+sd.title);
+        for (const td of (sd.topics||[])) {
+          const {error:te}=await db.from('note_subsubheadings').insert([{subheading_id:ns.id,title:td.title,body:td.body||''}]);
+          if(te)throw new Error(te.message); tick('Topic: '+td.title);
+        }
+      }
+    }
+    setBackupProgress(100,'Complete!');
+    const hc=headings.length, sc=headings.reduce((s,h)=>s+(h.subheadings||[]).length,0), tc=headings.reduce((s,h)=>(h.subheadings||[]).reduce((ss,sub)=>ss+(sub.topics||[]).length,s),0);
+    setBackupStatus('importStatus',`✓ Imported ${hc} headings, ${sc} sub-headings, ${tc} topics!`,'success');
+    btn.textContent='✓ Done'; btn.style.background='#27ae60';
+    await loadHeadings();
+    setTimeout(()=>{closeBackupModal();btn.disabled=false;btn.textContent='Import & Restore';btn.style.background='';},2200);
+  } catch(err) {
+    setBackupStatus('importStatus','✕ '+err.message,'error');
+    document.getElementById('backupProgress').classList.remove('show');
+    btn.disabled=false; btn.textContent='Import & Restore';
+  }
+}
+
+// ═══════════════════════════════════════
+// REALTIME
+// ═══════════════════════════════════════
+function setLiveBadge(s, t) { const b=document.getElementById('liveBadge'); b.className=s; document.getElementById('liveBadgeText').textContent=t; }
 function showToast(icon, msg) {
-  document.getElementById('toastIcon').textContent = icon;
-  document.getElementById('toastMsg').textContent = msg;
-  const t = document.getElementById('liveToast');
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+  document.getElementById('toastIcon').textContent=icon; document.getElementById('toastMsg').textContent=msg;
+  const t=document.getElementById('liveToast'); t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
 }
 function startRealtime() {
   if (realtimeChannel) db.removeChannel(realtimeChannel);
   realtimeChannel = db.channel('posts-live')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, payload => {
-      const ev = payload.eventType;
-      if (ev === 'INSERT') {
-        if (!allUpdates.find(n => n.id === payload.new.id)) {
-          allUpdates.unshift(payload.new); renderUpdates();
-          showToast('📋', `New: "${payload.new.title.substring(0,40)}"`);
-        }
-      } else if (ev === 'UPDATE') {
-        const idx = allUpdates.findIndex(n => n.id === payload.new.id);
-        if (idx !== -1) allUpdates[idx] = payload.new; else allUpdates.unshift(payload.new);
-        renderUpdates(); showToast('✏️', `Updated: "${payload.new.title.substring(0,40)}"`);
-      } else if (ev === 'DELETE') {
-        allUpdates = allUpdates.filter(n => n.id !== payload.old.id);
-        renderUpdates(); showToast('🗑️', 'Update removed');
-      }
+    .on('postgres_changes',{event:'*',schema:'public',table:'posts'},payload=>{
+      const ev=payload.eventType;
+      if(ev==='INSERT'){if(!allUpdates.find(n=>n.id===payload.new.id)){allUpdates.unshift(payload.new);renderUpdates();showToast('📋',`New: "${payload.new.title.substring(0,40)}"`);}
+      }else if(ev==='UPDATE'){const i=allUpdates.findIndex(n=>n.id===payload.new.id);if(i!==-1)allUpdates[i]=payload.new;else allUpdates.unshift(payload.new);renderUpdates();showToast('✏️',`Updated: "${payload.new.title.substring(0,40)}"`);}
+      else if(ev==='DELETE'){allUpdates=allUpdates.filter(n=>n.id!==payload.old.id);renderUpdates();showToast('🗑️','Update removed');}
     })
-    .subscribe(status => {
-      if (status === 'SUBSCRIBED') setLiveBadge('connected', 'Live');
-      else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') { setLiveBadge('disconnected', 'Reconnecting…'); setTimeout(startRealtime, 5000); }
-      else setLiveBadge('connecting', 'Connecting…');
+    .subscribe(status=>{
+      if(status==='SUBSCRIBED')setLiveBadge('connected','Live');
+      else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setLiveBadge('disconnected','Reconnecting…');setTimeout(startRealtime,5000);}
+      else setLiveBadge('connecting','Connecting…');
     });
 }
 
-/* ── AUTO REFRESH every 1 second (all users) ── */
 function startAutoRefresh() {
   if (autoRefreshTimer) clearInterval(autoRefreshTimer);
-  autoRefreshTimer = setInterval(async () => {
-    const { data } = await db.from('posts').select('*').order('created_at', { ascending: false });
-    if (data) {
-      const a = JSON.stringify(data.map(n=>({id:n.id,title:n.title,content:n.content}))),
-            b = JSON.stringify(allUpdates.map(n=>({id:n.id,title:n.title,content:n.content})));
-      if (a !== b) { allUpdates = data; renderUpdates(); }
+  autoRefreshTimer = setInterval(async()=>{
+    const {data}=await db.from('posts').select('*').order('created_at',{ascending:false});
+    if(data){const a=JSON.stringify(data.map(n=>({id:n.id,title:n.title,content:n.content}))),b=JSON.stringify(allUpdates.map(n=>({id:n.id,title:n.title,content:n.content})));if(a!==b){allUpdates=data;renderUpdates();}}
+    const scrEl=document.querySelector('.screen.active'); if(!scrEl)return;
+    const scrId=scrEl.id;
+    if(scrId==='screenDash'){const{data:hData}=await db.from('note_headings').select('*').order('created_at',{ascending:true});if(hData)renderHeadings(hData);}
+    else if(scrId==='screenSub'&&currentHeading){const{data:sData}=await db.from('note_subheadings').select('*').eq('heading_id',currentHeading.id).order('created_at',{ascending:true});if(sData)renderSubheadings(sData);}
+    else if(scrId==='screenSubSub'&&currentSubheading){const{data:ssData}=await db.from('note_subsubheadings').select('*').eq('subheading_id',currentSubheading.id).order('created_at',{ascending:true});if(ssData)renderSubSubheadings(ssData);}
+    else if(scrId==='screenNote'&&currentNote){
+      const src=noteSource==='sub'?db.from('note_subheadings'):db.from('note_subsubheadings');
+      const{data:nd}=await src.select('*').eq('id',currentNote.id).single();
+      if(nd){currentNote=nd;renderNoteBody(nd.body);if(document.getElementById('noteBodyTitle').textContent!==nd.title)document.getElementById('noteBodyTitle').textContent=nd.title;}
     }
-    const activeScrEl = document.querySelector('.screen.active');
-    if (!activeScrEl) return;
-    const scrId = activeScrEl.id;
-    if (scrId === 'screenDash') {
-      const { data: hData } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
-      if (hData) renderHeadings(hData);
-    } else if (scrId === 'screenSub' && currentHeading) {
-      const { data: sData } = await db.from('note_subheadings').select('*').eq('heading_id', currentHeading.id).order('created_at', { ascending: true });
-      if (sData) renderSubheadings(sData);
-    } else if (scrId === 'screenSubSub' && currentSubheading) {
-      const { data: ssData } = await db.from('note_subsubheadings').select('*').eq('subheading_id', currentSubheading.id).order('created_at', { ascending: true });
-      if (ssData) renderSubSubheadings(ssData);
-    } else if (scrId === 'screenNote' && currentNote) {
-      if (noteSource === 'sub') {
-        const { data: nbData } = await db.from('note_subheadings').select('*').eq('id', currentNote.id).single();
-        if (nbData) {
-          currentNote = nbData;
-          const bodyEl = document.getElementById('noteBodyText');
-          const titleEl = document.getElementById('noteBodyTitle');
-          const newBody = nbData.body || '(No content yet.)';
-          if (bodyEl.textContent !== newBody) bodyEl.textContent = newBody;
-          if (titleEl.textContent !== nbData.title) titleEl.textContent = nbData.title;
-        }
-      } else {
-        const { data: nbData } = await db.from('note_subsubheadings').select('*').eq('id', currentNote.id).single();
-        if (nbData) {
-          currentNote = nbData;
-          const bodyEl = document.getElementById('noteBodyText');
-          const titleEl = document.getElementById('noteBodyTitle');
-          const newBody = nbData.body || '(No content yet.)';
-          if (bodyEl.textContent !== newBody) bodyEl.textContent = newBody;
-          if (titleEl.textContent !== nbData.title) titleEl.textContent = nbData.title;
-        }
-      }
-    }
-  }, 1000);
+  },1000);
 }
 
-/* ════════════════════════════════════════════
-   CHANGE 3: ACTIVE USER TRACKING
-   Uses Supabase Realtime Presence to track
-   editors vs viewers in real time.
-   Each session broadcasts its role and name.
-   The panel updates instantly on join/leave.
-════════════════════════════════════════════ */
+// ═══════════════════════════════════════
+// PRESENCE
+// ═══════════════════════════════════════
 function updateActiveUsersUI(state) {
-  const entries = Object.values(state).flat();
-  let editors = 0, viewers = 0;
-  entries.forEach(entry => {
-    if (entry.role === 'editor') editors++;
-    else viewers++;
-  });
-  const total = editors + viewers;
-  document.getElementById('aupTotal').textContent = total;
-  document.getElementById('aupEditors').textContent = editors;
-  document.getElementById('aupViewers').textContent = viewers;
+  const entries=Object.values(state).flat(); let ed=0,vw=0;
+  entries.forEach(e=>{ if(e.role==='editor')ed++; else vw++; });
+  document.getElementById('aupTotal').textContent=ed+vw;
+  document.getElementById('aupEditors').textContent=ed;
+  document.getElementById('aupViewers').textContent=vw;
 }
-
 function startPresenceTracking() {
   if (presenceChannel) db.removeChannel(presenceChannel);
-
-  presenceChannel = db.channel('active-users', {
-    config: { presence: { key: sessionId } }
-  });
-
+  presenceChannel = db.channel('active-users',{config:{presence:{key:sessionId}}});
   presenceChannel
-    .on('presence', { event: 'sync' }, () => {
-      const state = presenceChannel.presenceState();
-      updateActiveUsersUI(state);
-    })
-    .on('presence', { event: 'join' }, () => {
-      const state = presenceChannel.presenceState();
-      updateActiveUsersUI(state);
-    })
-    .on('presence', { event: 'leave' }, () => {
-      const state = presenceChannel.presenceState();
-      updateActiveUsersUI(state);
-    })
-    .subscribe(async (status) => {
-      if (status === 'SUBSCRIBED') {
-        // Broadcast this session's identity
-        await presenceChannel.track({
-          role: role,
-          name: role === 'editor' ? editorName : 'Viewer',
-          joinedAt: new Date().toISOString()
-        });
-        // Show the panel once connected
+    .on('presence',{event:'sync'},()=>updateActiveUsersUI(presenceChannel.presenceState()))
+    .on('presence',{event:'join'},()=>updateActiveUsersUI(presenceChannel.presenceState()))
+    .on('presence',{event:'leave'},()=>updateActiveUsersUI(presenceChannel.presenceState()))
+    .subscribe(async status=>{
+      if(status==='SUBSCRIBED'){
+        await presenceChannel.track({role,name:userName,joinedAt:new Date().toISOString()});
         document.getElementById('activeUsersPanel').classList.add('visible');
       }
     });
 }
-
 async function stopPresenceTracking() {
-  if (presenceChannel) {
-    await presenceChannel.untrack();
-    await db.removeChannel(presenceChannel);
-    presenceChannel = null;
-  }
+  if(presenceChannel){await presenceChannel.untrack();await db.removeChannel(presenceChannel);presenceChannel=null;}
   document.getElementById('activeUsersPanel').classList.remove('visible');
 }
-/* ════════════════════════════════════════════ */
 
-let emOpen = false;
-function toggleEmDrop() {
-  emOpen = !emOpen;
-  document.getElementById('emDrop').classList.toggle('open', emOpen);
-  document.getElementById('emBtn').classList.toggle('open', emOpen);
-  if (emOpen) { loadEmList(); setTimeout(() => document.addEventListener('click', emOutside), 10); }
-  else document.removeEventListener('click', emOutside);
-}
-function emOutside(e) {
-  if (!document.getElementById('emgmtWrap').contains(e.target)) {
-    emOpen = false;
-    document.getElementById('emDrop').classList.remove('open');
-    document.getElementById('emBtn').classList.remove('open');
-    document.removeEventListener('click', emOutside);
-  }
-}
-async function loadEmList() {
-  const list = document.getElementById('emList');
-  list.innerHTML = '<div class="em-loading"><span class="spin"></span></div>';
-  const { data } = await db.from('authorized_editors').select('*').order('id', { ascending: true });
-  if (!data || !data.length) { list.innerHTML = '<div class="em-loading">No editors found.</div>'; return; }
-  const fid = data[0].id;
-  list.innerHTML = data.map(ed => {
-    const ini = ed.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-    const isSelf = ed.name.toLowerCase() === editorName.toLowerCase();
-    const isFd = ed.id === fid;
-    return `<div class="em-row" id="em-row-${ed.id}">
-      <div class="em-name">
-        <div class="em-av ${isFd?'founder':''}">${ini}</div>
-        <span>${esc(ed.name)}${isFd?' 👑':''}${isSelf?' <span style="opacity:.4;font-size:.8em;">(you)</span>':''}</span>
-      </div>
-      ${(!isSelf && !isFd) ? `<button class="em-rmv" onclick="removeEditor(${ed.id},'${ed.name.replace(/'/g,"\\'")}',${isFd})">Remove</button>` : ''}
-    </div>`;
+// ═══════════════════════════════════════
+// EDITOR MANAGEMENT
+// ═══════════════════════════════════════
+let emOpen=false;
+function toggleEmDrop(){emOpen=!emOpen;document.getElementById('emDrop').classList.toggle('open',emOpen);document.getElementById('emBtn').classList.toggle('open',emOpen);if(emOpen){loadEmList();setTimeout(()=>document.addEventListener('click',emOutside),10);}else document.removeEventListener('click',emOutside);}
+function emOutside(e){if(!document.getElementById('emgmtWrap').contains(e.target)){emOpen=false;document.getElementById('emDrop').classList.remove('open');document.getElementById('emBtn').classList.remove('open');document.removeEventListener('click',emOutside);}}
+async function loadEmList(){
+  const list=document.getElementById('emList');list.innerHTML='<div class="em-loading"><span class="spin"></span></div>';
+  const{data}=await db.from('authorized_editors').select('*').order('id',{ascending:true});
+  if(!data||!data.length){list.innerHTML='<div class="em-loading">No editors found.</div>';return;}
+  const fid=data[0].id;
+  list.innerHTML=data.map(ed=>{
+    const ini=ed.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    const isSelf=ed.name.toLowerCase()===editorName.toLowerCase(), isFd=ed.id===fid;
+    return`<div class="em-row" id="em-row-${ed.id}"><div class="em-name"><div class="em-av ${isFd?'founder':''}">${ini}</div><span>${esc(ed.name)}${isFd?' 👑':''}${isSelf?' <span style="opacity:.4;font-size:.8em;">(you)</span>':''}</span></div>${(!isSelf&&!isFd)?`<button class="em-rmv" onclick="removeEditor(${ed.id},'${ed.name.replace(/'/g,"\\'")}',${isFd})">Remove</button>`:''}</div>`;
   }).join('');
 }
-async function removeEditor(id, name, isFd) {
-  if (isFd) { alert('Cannot remove founding editor.'); return; }
-  if (!isFounder) { alert('Only the founding editor can remove others.'); return; }
-  if (!confirm(`Remove "${name}"?`)) return;
-  const { error } = await db.from('authorized_editors').delete().eq('id', id);
-  if (!error) { const r = document.getElementById(`em-row-${id}`); if(r){r.style.opacity='0';setTimeout(()=>r.remove(),300);} }
-  else alert('Failed to remove editor.');
-}
-async function addEditor() {
-  const n = prompt('Enter name of new Editor:');
-  if (n && n.trim()) {
-    const { error } = await db.from('authorized_editors').insert([{ name: n.trim() }]);
-    if (!error) { alert(`"${n.trim()}" added.`); loadEmList(); }
-    else alert('Failed to add editor.');
-  }
-}
+async function removeEditor(id,name,isFd){if(isFd){alert('Cannot remove founding editor.');return;}if(!isFounder){alert('Only the founding editor can remove others.');return;}if(!confirm(`Remove "${name}"?`))return;const{error}=await db.from('authorized_editors').delete().eq('id',id);if(!error){const r=document.getElementById(`em-row-${id}`);if(r){r.style.opacity='0';setTimeout(()=>r.remove(),300);}}else alert('Failed.');}
+async function addEditor(){const n=prompt('Name of new Editor:');if(n&&n.trim()){const{error}=await db.from('authorized_editors').insert([{name:n.trim()}]);if(!error){alert(`"${n.trim()}" added.`);loadEmList();}else alert('Failed.');}}
 
-function setTheme(t) {
-  document.body.className = t === 'default' ? '' : 'theme-' + t;
-  document.getElementById('themeSel').value = t;
-}
-
+// ═══════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════
+function setTheme(t){document.body.className=t==='default'?'':'theme-'+t;document.getElementById('themeSel').value=t;}
 setTheme('light');
 
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-(function buildTicks() {
-  ['IST','GMT','EST'].forEach(id => {
-    const g = document.getElementById('tk-'+id);
-    if (!g) return;
-    for (let i = 0; i < 60; i++) {
-      const isH = i%5===0, r1=isH?21:24, r2=27;
-      const rad = ((i/60)*360-90)*Math.PI/180;
-      const ln = document.createElementNS('http://www.w3.org/2000/svg','line');
-      ln.setAttribute('x1', 30+r1*Math.cos(rad)); ln.setAttribute('y1', 30+r1*Math.sin(rad));
-      ln.setAttribute('x2', 30+r2*Math.cos(rad)); ln.setAttribute('y2', 30+r2*Math.sin(rad));
-      ln.setAttribute('class', isH?'cth':'ct'); g.appendChild(ln);
-    }
+// ═══════════════════════════════════════
+// CLOCKS
+// ═══════════════════════════════════════
+(function buildTicks(){
+  ['IST','GMT','EST'].forEach(id=>{
+    const g=document.getElementById('tk-'+id);if(!g)return;
+    for(let i=0;i<60;i++){const isH=i%5===0,r1=isH?21:24,r2=27,rad=((i/60)*360-90)*Math.PI/180;const ln=document.createElementNS('http://www.w3.org/2000/svg','line');ln.setAttribute('x1',30+r1*Math.cos(rad));ln.setAttribute('y1',30+r1*Math.sin(rad));ln.setAttribute('x2',30+r2*Math.cos(rad));ln.setAttribute('y2',30+r2*Math.sin(rad));ln.setAttribute('class',isH?'cth':'ct');g.appendChild(ln);}
   });
 })();
+function rotateHand(el,deg){if(!el)return;const rad=(deg-90)*Math.PI/180,cx=30,cy=30,isSec=el.classList.contains('hs'),isHour=el.classList.contains('hh'),tip=isSec?23:isHour?14:21,tail=isSec?5:0;el.setAttribute('x1',cx-tail*Math.cos(rad));el.setAttribute('y1',cy-tail*Math.sin(rad));el.setAttribute('x2',cx+tip*Math.cos(rad));el.setAttribute('y2',cy+tip*Math.sin(rad));}
+const TZC=[{id:'IST',tz:'Asia/Kolkata'},{id:'GMT',tz:'Etc/GMT'},{id:'EST',tz:'America/New_York'}];
+function tickClocks(){const now=new Date();TZC.forEach(c=>{const fmt=u=>parseInt(new Intl.DateTimeFormat('en-US',{timeZone:c.tz,[u]:'numeric',hour12:false}).format(now),10);const h24=fmt('hour'),m=fmt('minute'),s=fmt('second'),h=h24%12;rotateHand(document.getElementById(c.id+'-h'),h*30+m*.5);rotateHand(document.getElementById(c.id+'-m'),m*6+s*.1);rotateHand(document.getElementById(c.id+'-s'),s*6);const d=document.getElementById('dig-'+c.id);if(d)d.textContent=String(h24).padStart(2,'0')+':'+String(m).padStart(2,'0');});}
+tickClocks();setInterval(tickClocks,1000);
 
-function rotateHand(el, deg) {
-  if (!el) return;
-  const rad=(deg-90)*Math.PI/180, cx=30, cy=30;
-  const isSec=el.classList.contains('hs'), isHour=el.classList.contains('hh');
-  const tip=isSec?23:isHour?14:21, tail=isSec?5:0;
-  el.setAttribute('x1',cx-tail*Math.cos(rad)); el.setAttribute('y1',cy-tail*Math.sin(rad));
-  el.setAttribute('x2',cx+tip*Math.cos(rad));  el.setAttribute('y2',cy+tip*Math.sin(rad));
-}
+// ═══════════════════════════════════════
+// KEY BINDINGS
+// ═══════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal();closeUpdateView();if(document.getElementById('backupModal').classList.contains('open'))closeBackupModal();}
+});
 
-const TZC = [{id:'IST',tz:'Asia/Kolkata'},{id:'GMT',tz:'Etc/GMT'},{id:'EST',tz:'America/New_York'}];
-function tickClocks() {
-  const now = new Date();
-  TZC.forEach(c => {
-    const fmt = u => parseInt(new Intl.DateTimeFormat('en-US',{timeZone:c.tz,[u]:'numeric',hour12:false}).format(now),10);
-    const h24=fmt('hour'),m=fmt('minute'),s=fmt('second'),h=h24%12;
-    rotateHand(document.getElementById(c.id+'-h'), h*30+m*.5);
-    rotateHand(document.getElementById(c.id+'-m'), m*6+s*.1);
-    rotateHand(document.getElementById(c.id+'-s'), s*6);
-    const d = document.getElementById('dig-'+c.id);
-    if (d) d.textContent = String(h24).padStart(2,'0')+':'+String(m).padStart(2,'0');
-  });
-}
-tickClocks(); setInterval(tickClocks, 1000);
-
-document.getElementById('authPassInput').addEventListener('keydown', e => { if(e.key==='Enter') submitPass(); });
-document.getElementById('authNameInput').addEventListener('keydown', e => { if(e.key==='Enter') submitName(); });
-document.addEventListener('keydown', e => { if(e.key==='Escape') { closeModal(); closeUpdateView(); } });
-
-(function() {
-  if (sessionStorage.getItem('ch_role') === 'viewer') { role = 'viewer'; enterDashboard(); }
+// Auto-restore session
+(function(){
+  const r=sessionStorage.getItem('ch_role');
+  const n=sessionStorage.getItem('ch_name');
+  if(r&&n){
+    // We still need name — re-show prompt
+    sessionStorage.removeItem('ch_role');
+    sessionStorage.removeItem('ch_name');
+  }
 })();
 </script>
 </body>
