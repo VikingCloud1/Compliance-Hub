@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>VikingCloud Compliance Hub</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='16' fill='%230a192f'/%3E%3Cpath d='M12 48 Q40 56 68 48' stroke='%23d4af37' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cline x1='40' y1='48' x2='40' y2='16' stroke='%23d4af37' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M40 18 L60 30 L40 46 Z' fill='%23d4af37'/%3E%3C/svg%3E">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -77,7 +78,7 @@
     .theme-dark .etb-btn:hover,.theme-dark .etb-btn.active{background:#bb86fc;color:#121212;border-color:#bb86fc;}
     .theme-dark .etb-divider{background:#444;}
 
-    /* ── BACKUP MODAL THEME OVERRIDES ── */
+    /* BACKUP MODAL THEME OVERRIDES */
     .theme-light .backup-modal-box{background:#ffffff;}
     .theme-dark .backup-modal-box{background:#1e1e1e;}
     .theme-light .backup-drop-zone{background:#f0f4ff;border-color:#b0bce0;}
@@ -105,9 +106,7 @@
     #splash .splash-title{font-size:1.5em;text-align:center;max-width:500px;line-height:1.5;}
     #splash .splash-sub{font-size:.7em;opacity:.5;letter-spacing:6px;}
 
-    /* ═══════════════════════════════════
-       NAME PROMPT MODAL (all users)
-    ═══════════════════════════════════ */
+    /* NAME PROMPT MODAL */
     #nameModal{position:fixed;inset:0;z-index:8500;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);}
     #nameModal.hidden{display:none!important;}
     .name-box{background:var(--bg);border:1px solid var(--accent);border-radius:20px;padding:48px 52px;width:420px;max-width:95vw;box-shadow:0 0 80px var(--glow);animation:fadeUp .3s ease;text-align:center;}
@@ -147,8 +146,6 @@
     .auth-cancel:hover{border-color:var(--accent);color:var(--accent);}
     .auth-error{color:#e74c3c;font-size:.76em;text-align:center;margin-top:10px;min-height:16px;letter-spacing:.5px;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-    #landingPage{min-height:100vh;display:none;}
 
     .topbar{position:fixed;top:0;width:100%;padding:13px 36px;display:flex;justify-content:space-between;align-items:center;z-index:200;background:var(--bg);border-bottom:1px solid rgba(197,160,89,.2);backdrop-filter:blur(12px);}
     .logo-mark{display:flex;align-items:center;gap:10px;cursor:pointer;color:var(--accent);text-decoration:none;}
@@ -192,10 +189,41 @@
     .screen.active{display:block;}
     #screenDash{padding-top:68px;}
 
-    .dash-tabs{display:flex;gap:0;padding:20px 40px 0;border-bottom:1px solid rgba(197,160,89,.15);}
+    /* NOTIFICATION BADGE */
     .tab-btn{font-family:'Cinzel',serif;font-size:.78em;letter-spacing:3px;text-transform:uppercase;padding:10px 28px;cursor:pointer;border:none;background:transparent;color:var(--text);opacity:.45;border-bottom:2px solid transparent;transition:all .25s;position:relative;top:1px;}
     .tab-btn.active{opacity:1;color:var(--accent);border-bottom:2px solid var(--accent);}
     .tab-btn:hover{opacity:.8;}
+
+    .notif-badge{
+      position:absolute;
+      top:-2px;
+      right:6px;
+      min-width:18px;
+      height:18px;
+      border-radius:9px;
+      background:#e74c3c;
+      color:#fff;
+      font-family:'Raleway',sans-serif;
+      font-size:.62em;
+      font-weight:700;
+      letter-spacing:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 5px;
+      pointer-events:none;
+      animation:badgePop .3s cubic-bezier(.34,1.56,.64,1);
+      box-shadow:0 2px 8px rgba(231,76,60,.55);
+      border:2px solid var(--bg);
+      line-height:1;
+    }
+    .notif-badge.hidden{display:none!important;}
+    @keyframes badgePop{
+      from{opacity:0;transform:scale(0.4);}
+      to{opacity:1;transform:scale(1);}
+    }
+
+    .dash-tabs{display:flex;gap:0;padding:20px 40px 0;border-bottom:1px solid rgba(197,160,89,.15);}
 
     .tab-panel{display:none;}
     .tab-panel.active{display:block;}
@@ -227,6 +255,18 @@
     .sticky-note-actions span.del{color:rgba(160,30,30,.7);}
     .sticky-note-actions span.del:hover{color:rgba(160,30,30,1);}
 
+    .sticky-new-dot{
+      position:absolute;
+      top:10px;
+      right:10px;
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:#e74c3c;
+      border:2px solid rgba(255,255,255,.7);
+      box-shadow:0 1px 4px rgba(231,76,60,.5);
+    }
+
     .dash-divider{margin:0 40px;height:1px;background:linear-gradient(to right,transparent,var(--text),transparent);opacity:.12;}
 
     .notes-band{padding:24px 40px 100px;}
@@ -244,7 +284,7 @@
     .heading-chip:hover .hc-actions span.del{border-color:rgba(231,76,60,.3);}
     .heading-chip:hover .hc-actions span.del:hover{border-color:#e74c3c;background:rgba(231,76,60,.08);}
 
-    /* ── PROTOCOL TAB ── */
+    /* PROTOCOL TAB */
     .protocol-band{padding:28px 40px 100px;}
     .protocol-hero{background:linear-gradient(135deg,rgba(197,160,89,.08),rgba(197,160,89,.03));border:1px solid rgba(197,160,89,.2);border-radius:16px;padding:40px 48px;margin-bottom:32px;display:flex;align-items:center;gap:32px;}
     .protocol-hero-icon{font-size:3em;flex-shrink:0;opacity:.8;}
@@ -270,7 +310,7 @@
     .icon-opt:hover{background:rgba(197,160,89,.12);border-color:rgba(197,160,89,.4);}
     .icon-opt.selected{background:rgba(197,160,89,.18);border-color:var(--accent);}
 
-    /* ── ACTIVE USERS PANEL ── */
+    /* ACTIVE USERS PANEL */
     #activeUsersPanel{position:fixed;bottom:60px;left:22px;z-index:300;background:var(--card);border:1px solid rgba(197,160,89,.3);border-radius:12px;padding:10px 14px;font-family:'Cinzel',serif;font-size:.6em;letter-spacing:1.5px;backdrop-filter:blur(12px);opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s;pointer-events:none;min-width:170px;}
     #activeUsersPanel.visible{opacity:1;transform:translateY(0);}
     .aup-label{opacity:.45;text-transform:uppercase;letter-spacing:2px;margin-bottom:5px;font-size:.9em;}
@@ -303,7 +343,7 @@
     .pr-arrow{opacity:.25;font-size:.8em;margin-right:4px;transition:opacity .2s;flex-shrink:0;}
     .pointer-row:hover .pr-arrow{opacity:.7;}
 
-    /* ── NOTE BODY ── */
+    /* NOTE BODY */
     .note-body-inner{max-width:820px;}
     .nb-tag{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:4px;text-transform:uppercase;opacity:.38;margin-bottom:12px;}
     .nb-title{font-family:'Cinzel',serif;font-size:2.2em;letter-spacing:2px;color:var(--accent);margin-bottom:32px;line-height:1.25;}
@@ -312,9 +352,7 @@
 
     .empty{padding:40px 0;opacity:.3;font-family:'Cinzel',serif;letter-spacing:3px;font-size:.76em;}
 
-    /* ═══════════════════════════════════
-       EDITOR RICH TEXT TOOLBAR
-    ═══════════════════════════════════ */
+    /* EDITOR RICH TEXT TOOLBAR */
     .editor-toolbar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(197,160,89,.08);border:1px solid rgba(197,160,89,.25);border-radius:10px;margin-bottom:10px;flex-wrap:wrap;}
     .etb-btn{font-family:'Cinzel',serif;font-size:.68em;letter-spacing:1.5px;padding:5px 11px;border:1px solid rgba(197,160,89,.3);border-radius:6px;background:transparent;color:var(--accent);cursor:pointer;transition:all .2s;line-height:1.2;}
     .etb-btn:hover,.etb-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
@@ -324,7 +362,6 @@
     .etb-size-select{background:var(--card);border:1px solid rgba(197,160,89,.3);color:var(--text);border-radius:6px;padding:4px 8px;font-size:.78em;outline:none;cursor:pointer;font-family:'Raleway',sans-serif;}
     .etb-size-select:focus{border-color:var(--accent);}
 
-    /* ── RICH EDITOR TEXTAREA (contenteditable for formatting) ── */
     .rich-editor{width:100%;min-height:180px;padding:14px 16px;background:var(--card);border:1px solid var(--text);border-radius:8px;color:var(--text);font-size:.94em;font-family:'Raleway',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;resize:vertical;line-height:1.7;}
     .rich-editor:focus{border-color:var(--accent);box-shadow:0 0 12px var(--glow);}
     .rich-editor[contenteditable="true"]{min-height:180px;overflow-y:auto;}
@@ -356,7 +393,7 @@
     .view-div{height:1px;background:linear-gradient(to right,var(--accent),transparent);opacity:.2;margin-bottom:30px;}
     .view-body{font-size:var(--viewer-fs);line-height:1.88;opacity:1;white-space:pre-wrap;transition:font-size .2s;}
 
-    /* ── VIEWER FONT CONTROL ── */
+    /* VIEWER FONT CONTROL */
     .viewer-font-ctrl{position:fixed;bottom:22px;right:22px;z-index:400;background:var(--card);border:1px solid rgba(197,160,89,.3);border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:8px;backdrop-filter:blur(12px);box-shadow:0 4px 20px var(--glow);font-family:'Cinzel',serif;font-size:.62em;letter-spacing:1.5px;}
     .vfc-label{opacity:.45;text-transform:uppercase;white-space:nowrap;}
     .vfc-btn{background:transparent;border:1px solid rgba(197,160,89,.3);color:var(--accent);border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:.9em;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;padding:0;}
@@ -389,7 +426,7 @@
 
     #devCredit{position:fixed;bottom:9px;right:16px;z-index:50;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:2px;opacity:.55;color:var(--accent);pointer-events:none;user-select:none;}
 
-    /* ── PROTOCOL FULL VIEW ── */
+    /* PROTOCOL FULL VIEW */
     .protocol-view-inner{max-width:820px;}
     .protocol-view-icon{font-size:3em;margin-bottom:18px;line-height:1;}
     .protocol-view-title{font-family:'Cinzel',serif;font-size:2.2em;letter-spacing:2px;color:var(--accent);margin-bottom:10px;line-height:1.25;}
@@ -403,7 +440,7 @@
 
     .update-last-tag{display:inline-block;font-family:'Cinzel',serif;font-size:.56em;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:20px;border:1px solid rgba(10,25,47,.25);color:rgba(10,25,47,.55);background:rgba(0,0,0,.06);margin-top:8px;}
 
-    /* ════════════════════ BACKUP MODAL ════════════════════ */
+    /* BACKUP MODAL */
     #backupModal{position:fixed;inset:0;z-index:6000;display:none;justify-content:center;align-items:flex-start;padding:50px 20px;background:rgba(0,0,0,.80);backdrop-filter:blur(8px);overflow-y:auto;}
     #backupModal.open{display:flex;}
     .backup-modal-box{background:var(--bg);border:1px solid var(--accent);border-radius:20px;padding:40px 44px;width:100%;max-width:580px;box-shadow:0 0 80px var(--glow);animation:fadeUp .25s ease;position:relative;}
@@ -453,69 +490,71 @@
     .backup-status.success{color:#27ae60;}
     .backup-status.error{color:#e74c3c;}
     .backup-status.info{color:var(--accent);}
+
+    .rich-editor:empty:before{content:attr(data-placeholder);opacity:.35;pointer-events:none;}
   </style>
 </head>
 <body>
 <div class="bg-layer"></div>
 <div id="splash" style="display:none;"></div>
 
-<!-- ══ NAME PROMPT MODAL (all users) ══ -->
+<!-- NAME PROMPT MODAL -->
 <div id="nameModal">
   <div class="name-box">
-    <div class="name-box-logo">⚓</div>
+    <div class="name-box-logo">&#9875;</div>
     <div class="name-box-title">VikingCloud Compliance Hub</div>
     <div class="name-box-sub">Please identify yourself to continue</div>
 
     <div class="name-role-tabs">
-      <button class="name-role-tab active" id="roleTabViewer" onclick="selectRoleTab('viewer')">👁️ Viewer</button>
-      <button class="name-role-tab" id="roleTabEditor" onclick="selectRoleTab('editor')">✍️ Editor</button>
+      <button class="name-role-tab active" id="roleTabViewer" onclick="selectRoleTab('viewer')">&#128065; Viewer</button>
+      <button class="name-role-tab" id="roleTabEditor" onclick="selectRoleTab('editor')">&#9997; Editor</button>
     </div>
 
     <div class="name-field">
       <label>Your Name</label>
-      <input type="text" id="nameInput" placeholder="Enter your full name…" autocomplete="name">
+      <input type="text" id="nameInput" placeholder="Enter your full name&#8230;" autocomplete="name">
     </div>
 
     <div class="name-pass-field" id="namePassField">
       <div class="name-field" style="margin-bottom:0;">
         <label>Editor Password</label>
-        <input type="password" id="namePassInput" placeholder="Enter editor password…" autocomplete="current-password">
+        <input type="password" id="namePassInput" placeholder="Enter editor password&#8230;" autocomplete="current-password">
       </div>
     </div>
 
-    <button class="name-continue-btn" onclick="submitNameModal()">Continue →</button>
+    <button class="name-continue-btn" onclick="submitNameModal()">Continue &#8594;</button>
     <div class="name-error" id="nameModalError"></div>
   </div>
 </div>
 
-<!-- ══ BACKUP MODAL ══ -->
+<!-- BACKUP MODAL -->
 <div id="backupModal">
   <div class="backup-modal-box">
-    <button class="backup-close" onclick="closeBackupModal()">✕</button>
+    <button class="backup-close" onclick="closeBackupModal()">&#10005;</button>
     <div class="backup-modal-title">Backup &amp; Restore</div>
     <div class="backup-modal-sub">Save a full snapshot or restore from a previous backup</div>
-    <div class="backup-section-title">💾 Save Backup</div>
+    <div class="backup-section-title">&#128190; Save Backup</div>
     <div class="backup-option-card" onclick="downloadBackup()">
-      <div class="backup-opt-icon">📦</div>
+      <div class="backup-opt-icon">&#128230;</div>
       <div class="backup-opt-content">
         <div class="backup-opt-title">Download Backup File</div>
         <div class="backup-opt-desc">Exports all headings, sub-headings, topics, and notes as a structured JSON file.</div>
       </div>
-      <div class="backup-opt-arrow">›</div>
+      <div class="backup-opt-arrow">&#8250;</div>
     </div>
     <div id="saveStatus" class="backup-status"></div>
     <div class="backup-divider"></div>
-    <div class="backup-section-title">📂 Import Backup</div>
+    <div class="backup-section-title">&#128194; Import Backup</div>
     <div class="backup-drop-zone" id="dropZone">
       <input type="file" id="backupFileInput" accept=".json" onchange="handleFileSelect(event)">
-      <span class="backup-drop-icon">🗂️</span>
+      <span class="backup-drop-icon">&#128193;</span>
       <div class="backup-drop-label">Drop backup file here</div>
-      <div class="backup-drop-sub">or click to browse · .json only</div>
+      <div class="backup-drop-sub">or click to browse &middot; .json only</div>
     </div>
     <div class="backup-file-info" id="backupFileInfo">
-      <div class="bfi-icon">📄</div>
-      <div class="bfi-details"><div class="bfi-name" id="bfiName">—</div><div class="bfi-size" id="bfiSize">—</div></div>
-      <button class="bfi-clear" onclick="clearBackupFile()">✕</button>
+      <div class="bfi-icon">&#128196;</div>
+      <div class="bfi-details"><div class="bfi-name" id="bfiName">&#8212;</div><div class="bfi-size" id="bfiSize">&#8212;</div></div>
+      <button class="bfi-clear" onclick="clearBackupFile()">&#10005;</button>
     </div>
     <div class="backup-summary" id="backupSummary">
       <div class="backup-summary-label">Contents detected</div>
@@ -523,7 +562,7 @@
     </div>
     <div class="backup-progress" id="backupProgress">
       <div class="backup-progress-bar-wrap"><div class="backup-progress-bar" id="backupProgressBar"></div></div>
-      <div class="backup-progress-label" id="backupProgressLabel">Importing…</div>
+      <div class="backup-progress-label" id="backupProgressLabel">Importing&#8230;</div>
     </div>
     <div class="backup-import-actions">
       <button class="backup-import-btn" id="importBtn" onclick="importBackup()">Import &amp; Restore</button>
@@ -532,7 +571,7 @@
   </div>
 </div>
 
-<!-- ══ TOPBAR ══ -->
+<!-- TOPBAR -->
 <div class="topbar hidden" id="topbar">
   <div class="logo-mark" onclick="navTo('dash')">
     <div class="logo-icon">
@@ -548,12 +587,12 @@
   </div>
   <div class="topbar-right">
     <select class="theme-sel" id="themeSel" onchange="setTheme(this.value)">
-      <option value="light">☀️ Light</option>
-      <option value="dark">🌑 Dark</option>
-      <option value="default">🌌 Dark Navy</option>
-      <option value="forest">🌲 Forest</option>
+      <option value="light">&#9728; Light</option>
+      <option value="dark">&#127761; Dark</option>
+      <option value="default">&#127756; Dark Navy</option>
+      <option value="forest">&#127794; Forest</option>
     </select>
-    <button class="tbtn tbtn-backup hidden" id="backupBtn" onclick="openBackupModal()">🗄️ Backup</button>
+    <button class="tbtn tbtn-backup hidden" id="backupBtn" onclick="openBackupModal()">&#128452; Backup</button>
     <div class="emgmt hidden" id="emgmtWrap">
       <button id="emBtn" onclick="toggleEmDrop()">Editors
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -569,12 +608,21 @@
   </div>
 </div>
 
-<!-- ══ SCREEN: DASHBOARD ══ -->
+<!-- SCREEN: DASHBOARD -->
 <div class="screen" id="screenDash">
   <div class="dash-tabs">
-    <button class="tab-btn active" id="tabUpdatesBtn" onclick="switchTab('updates')">📋 Updates</button>
-    <button class="tab-btn" id="tabNotesBtn" onclick="switchTab('notes')">📝 Notes</button>
-    <button class="tab-btn" id="tabProtocolBtn" onclick="switchTab('protocol')">📜 Protocol</button>
+    <button class="tab-btn active" id="tabUpdatesBtn" onclick="switchTab('updates')" style="position:relative;">
+      &#128203; Updates
+      <span class="notif-badge hidden" id="badge-updates"></span>
+    </button>
+    <button class="tab-btn" id="tabNotesBtn" onclick="switchTab('notes')" style="position:relative;">
+      &#128221; Notes
+      <span class="notif-badge hidden" id="badge-notes"></span>
+    </button>
+    <button class="tab-btn" id="tabProtocolBtn" onclick="switchTab('protocol')" style="position:relative;">
+      &#128220; Protocol
+      <span class="notif-badge hidden" id="badge-protocol"></span>
+    </button>
   </div>
 
   <div class="tab-panel active" id="tabUpdates">
@@ -611,7 +659,7 @@
   </div>
 </div>
 
-<!-- ══ SCREEN: SUB-HEADINGS ══ -->
+<!-- SCREEN: SUB-HEADINGS -->
 <div class="screen" id="screenSub">
   <div class="drill-screen">
     <div class="breadcrumb" id="bcSub"></div>
@@ -625,7 +673,7 @@
   </div>
 </div>
 
-<!-- ══ SCREEN: TOPICS ══ -->
+<!-- SCREEN: TOPICS -->
 <div class="screen" id="screenSubSub">
   <div class="drill-screen">
     <div class="breadcrumb" id="bcSubSub"></div>
@@ -638,7 +686,7 @@
   </div>
 </div>
 
-<!-- ══ SCREEN: NOTE BODY ══ -->
+<!-- SCREEN: NOTE BODY -->
 <div class="screen" id="screenNote">
   <div class="drill-screen">
     <div class="breadcrumb" id="bcNote"></div>
@@ -660,12 +708,12 @@
   </div>
 </div>
 
-<!-- ══ SCREEN: PROTOCOL FULL VIEW ══ -->
+<!-- SCREEN: PROTOCOL FULL VIEW -->
 <div class="screen" id="screenProtocol">
   <div class="drill-screen">
     <div class="breadcrumb" id="bcProtocol"></div>
     <div class="protocol-view-inner">
-      <div class="protocol-view-icon" id="pvIcon">📋</div>
+      <div class="protocol-view-icon" id="pvIcon">&#128203;</div>
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:4px;">
         <div class="protocol-view-title" id="pvTitle"></div>
         <div class="protocol-view-actions" id="pvEditorActions" style="display:none;flex-shrink:0;margin-top:8px;">
@@ -683,10 +731,10 @@
   </div>
 </div>
 
-<!-- ══ UPDATE FULL VIEW ══ -->
+<!-- UPDATE FULL VIEW -->
 <div id="viewOv">
   <div class="view-inner">
-    <div class="view-back" onclick="closeUpdateView()">← Back</div>
+    <div class="view-back" onclick="closeUpdateView()">&#8592; Back</div>
     <div class="view-tag">Update</div>
     <div class="view-title" id="viewTitle"></div>
     <div class="view-div"></div>
@@ -694,16 +742,15 @@
   </div>
 </div>
 
-<!-- ══ MODAL ══ -->
+<!-- MODAL -->
 <div class="modal-ov" id="modal">
   <div class="modal-box">
-    <button class="mclose" onclick="closeModal()">✕</button>
+    <button class="mclose" onclick="closeModal()">&#10005;</button>
     <h2 id="modalTitle">New Item</h2>
     <div class="ff" id="ffTitle">
       <label id="ffTitleLabel">Title</label>
-      <input type="text" id="mTitle" placeholder="Enter title…" spellcheck="true">
+      <input type="text" id="mTitle" placeholder="Enter title&#8230;" spellcheck="true">
     </div>
-    <!-- Rich editor for body (editor only) -->
     <div class="ff hidden" id="ffBody">
       <label>Body</label>
       <div class="editor-toolbar" id="editorToolbar">
@@ -724,8 +771,7 @@
           </select>
         </div>
       </div>
-      <div class="rich-editor" id="mBodyRich" contenteditable="true" spellcheck="true" data-placeholder="Enter note content…"></div>
-      <!-- Hidden textarea synced from rich editor for backward compat -->
+      <div class="rich-editor" id="mBodyRich" contenteditable="true" spellcheck="true" data-placeholder="Enter note content&#8230;"></div>
       <textarea id="mBody" style="display:none;"></textarea>
     </div>
     <div class="ff hidden" id="ffDesc">
@@ -747,13 +793,13 @@
           </select>
         </div>
       </div>
-      <div class="rich-editor" id="descRich" contenteditable="true" spellcheck="true" style="min-height:90px;" data-placeholder="Brief description…"></div>
+      <div class="rich-editor" id="descRich" contenteditable="true" spellcheck="true" style="min-height:90px;" data-placeholder="Brief description&#8230;"></div>
       <textarea id="mDesc" style="display:none;"></textarea>
     </div>
     <div class="ff hidden" id="ffIcon">
       <label>Icon</label>
       <div class="icon-grid" id="iconPickerGrid"></div>
-      <input type="hidden" id="mIcon" value="📋">
+      <input type="hidden" id="mIcon" value="&#128203;">
     </div>
     <div class="mactions">
       <button class="mprimary" onclick="saveModal()">Save</button>
@@ -762,26 +808,26 @@
   </div>
 </div>
 
-<!-- ══ LIVE BADGE + TOAST ══ -->
-<div id="liveBadge" class="connecting"><div class="live-dot"></div><span id="liveBadgeText">Connecting…</span></div>
-<div id="liveToast"><span id="toastIcon">⚡</span> <span id="toastMsg"></span></div>
+<!-- LIVE BADGE + TOAST -->
+<div id="liveBadge" class="connecting"><div class="live-dot"></div><span id="liveBadgeText">Connecting&#8230;</span></div>
+<div id="liveToast"><span id="toastIcon">&#9889;</span> <span id="toastMsg"></span></div>
 
-<!-- ══ ACTIVE USERS ══ -->
+<!-- ACTIVE USERS -->
 <div id="activeUsersPanel">
   <div class="aup-label">Currently Viewing</div>
   <div class="aup-total"><span class="aup-dot"></span><span id="aupTotal">0</span> users</div>
   <div class="aup-split">Editors: <span id="aupEditors">0</span> | Viewers: <span id="aupViewers">0</span></div>
 </div>
 
-<!-- ══ VIEWER FONT CONTROL (all users, positioned bottom-right) ══ -->
+<!-- VIEWER FONT CONTROL -->
 <div class="viewer-font-ctrl hidden" id="viewerFontCtrl">
   <span class="vfc-label">Font</span>
-  <button class="vfc-btn" onclick="adjustViewerFont(-1)" title="Decrease font size">A−</button>
+  <button class="vfc-btn" onclick="adjustViewerFont(-1)" title="Decrease font size">A&#8722;</button>
   <span class="vfc-size-display" id="vfcDisplay">M</span>
   <button class="vfc-btn" onclick="adjustViewerFont(1)" title="Increase font size">A+</button>
 </div>
 
-<!-- ══ TZ CLOCKS ══ -->
+<!-- TZ CLOCKS -->
 <div id="tzPanel">
   <div class="tz-wrap">
     <svg class="aclock" viewBox="0 0 60 60"><g id="tk-IST"></g><circle cx="30" cy="30" r="27" class="cf"/><line id="IST-h" x1="30" y1="30" x2="30" y2="15" class="hh"/><line id="IST-m" x1="30" y1="30" x2="30" y2="8" class="hm"/><line id="IST-s" x1="30" y1="34" x2="30" y2="6" class="hs"/><circle cx="30" cy="30" r="2.5" class="cc"/></svg>
@@ -798,11 +844,6 @@
 </div>
 
 <div id="devCredit">Developed by Kedar &amp; Tirth</div>
-
-<style>
-  /* Rich editor placeholder */
-  .rich-editor:empty:before{content:attr(data-placeholder);opacity:.35;pointer-events:none;}
-</style>
 
 <script>
 const _U = "https://rspfzjybkicxgvcfqdzh.supabase.co";
@@ -826,17 +867,106 @@ let activeTab = 'updates';
 let presenceChannel = null;
 const sessionId = 'sess_' + Math.random().toString(36).substr(2, 9);
 
-// Viewer font sizing
 const FONT_SIZES = ['0.82em','0.92em','1.05em','1.18em','1.32em','1.48em'];
 const FONT_LABELS = ['XS','S','M','L','XL','XXL'];
-let viewerFontIdx = 2; // default M
+let viewerFontIdx = 2;
 
 let pendingBackupData = null;
 let selectedBackupFile = null;
 
-// ═══════════════════════════════════════
+// NOTIFICATION SYSTEM
+const SECTIONS = ['updates', 'notes', 'protocol'];
+let notifCounts = { updates: 0, notes: 0, protocol: 0 };
+let notifPollTimer = null;
+
+async function getLastReadAt(sectionName) {
+  try {
+    const { data } = await db
+      .from('user_section_reads')
+      .select('last_read_at')
+      .eq('user_name', userName)
+      .eq('section_name', sectionName)
+      .single();
+    return data ? data.last_read_at : null;
+  } catch { return null; }
+}
+
+async function markSectionRead(sectionName) {
+  if (!userName) return;
+  try {
+    await db.from('user_section_reads').upsert(
+      { user_name: userName, section_name: sectionName, last_read_at: new Date().toISOString() },
+      { onConflict: 'user_name,section_name' }
+    );
+  } catch(e) { console.warn('markSectionRead failed:', e); }
+}
+
+async function computeUnreadCount(sectionName) {
+  try {
+    const lastRead = await getLastReadAt(sectionName);
+    let query;
+    if (sectionName === 'updates') {
+      query = db.from('posts').select('id', { count: 'exact', head: true });
+      if (lastRead) query = query.gt('created_at', lastRead);
+    } else if (sectionName === 'notes') {
+      const [h, s, ss] = await Promise.all([
+        lastRead
+          ? db.from('note_headings').select('id', {count:'exact',head:true}).gt('created_at', lastRead)
+          : db.from('note_headings').select('id', {count:'exact',head:true}),
+        lastRead
+          ? db.from('note_subheadings').select('id', {count:'exact',head:true}).gt('created_at', lastRead)
+          : db.from('note_subheadings').select('id', {count:'exact',head:true}),
+        lastRead
+          ? db.from('note_subsubheadings').select('id', {count:'exact',head:true}).gt('created_at', lastRead)
+          : db.from('note_subsubheadings').select('id', {count:'exact',head:true}),
+      ]);
+      return (h.count || 0) + (s.count || 0) + (ss.count || 0);
+    } else if (sectionName === 'protocol') {
+      query = db.from('protocols').select('id', { count: 'exact', head: true });
+      if (lastRead) query = query.gt('created_at', lastRead);
+    } else return 0;
+    const { count } = await query;
+    return count || 0;
+  } catch { return 0; }
+}
+
+function renderBadge(sectionName, count) {
+  const badge = document.getElementById('badge-' + sectionName);
+  if (!badge) return;
+  if (sectionName === activeTab) { badge.classList.add('hidden'); return; }
+  if (count <= 0) { badge.classList.add('hidden'); return; }
+  const display = count > 9 ? '9+' : String(count);
+  if (badge.textContent !== display) {
+    badge.textContent = display;
+    badge.classList.remove('hidden');
+    badge.style.animation = 'none';
+    requestAnimationFrame(() => { badge.style.animation = ''; });
+  } else {
+    badge.classList.remove('hidden');
+  }
+}
+
+async function refreshAllNotifCounts() {
+  for (const sec of SECTIONS) {
+    const count = await computeUnreadCount(sec);
+    notifCounts[sec] = count;
+    renderBadge(sec, count);
+  }
+}
+
+function startNotifPolling() {
+  if (notifPollTimer) clearInterval(notifPollTimer);
+  refreshAllNotifCounts();
+  notifPollTimer = setInterval(refreshAllNotifCounts, 30000);
+}
+
+async function onTabVisit(sectionName) {
+  notifCounts[sectionName] = 0;
+  renderBadge(sectionName, 0);
+  await markSectionRead(sectionName);
+}
+
 // NAME PROMPT MODAL
-// ═══════════════════════════════════════
 let pendingRole = 'viewer';
 
 function selectRoleTab(r) {
@@ -859,7 +989,6 @@ async function submitNameModal() {
     const pass = document.getElementById('namePassInput').value;
     if (pass !== 'viking2026') { errEl.textContent = 'Incorrect editor password.'; document.getElementById('namePassInput').value = ''; document.getElementById('namePassInput').focus(); return; }
 
-    // Verify name in authorized_editors
     const { data } = await db.from('authorized_editors').select('*').ilike('name', name).single();
     if (!data) { errEl.textContent = 'This name is not on the authorized editor list.'; return; }
 
@@ -892,9 +1021,7 @@ function showWelcomeSplash(name) {
 document.getElementById('nameInput').addEventListener('keydown', e => { if(e.key==='Enter') submitNameModal(); });
 document.getElementById('namePassInput').addEventListener('keydown', e => { if(e.key==='Enter') submitNameModal(); });
 
-// ═══════════════════════════════════════
 // VIEWER FONT CONTROL
-// ═══════════════════════════════════════
 function applyViewerFont() {
   const size = FONT_SIZES[viewerFontIdx];
   document.documentElement.style.setProperty('--viewer-fs', size);
@@ -906,9 +1033,7 @@ function adjustViewerFont(delta) {
   applyViewerFont();
 }
 
-// ═══════════════════════════════════════
 // EDITOR RICH TEXT TOOLBAR
-// ═══════════════════════════════════════
 function execFmt(cmd) {
   const el = document.getElementById('mBodyRich');
   el.focus();
@@ -967,22 +1092,13 @@ function setRichHtml(elId, html) {
   if (el) el.innerHTML = html || '';
 }
 
-// Convert stored content to display: if it's HTML, use innerHTML; if plain text, set as text
-function contentToDisplay(content) {
-  if (!content) return '(No content yet.)';
-  // detect HTML
-  if (/<[a-z][\s\S]*>/i.test(content)) return content;
-  return content;
-}
-
-// ═══════════════════════════════════════
 // TAB SWITCHING
-// ═══════════════════════════════════════
 function switchTab(tab) {
   activeTab = tab;
   ['updates','notes','protocol'].forEach(t => {
-    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)+'Btn').classList.toggle('active', t===tab);
-    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
+    const capT = t.charAt(0).toUpperCase()+t.slice(1);
+    document.getElementById('tab'+capT+'Btn').classList.toggle('active', t===tab);
+    document.getElementById('tab'+capT).classList.toggle('active', t===tab);
   });
   if (tab === 'protocol') loadProtocols();
 
@@ -994,11 +1110,12 @@ function switchTab(tab) {
     else { newBtn.style.display = 'none'; }
   }
   if (addProtBtn) addProtBtn.classList.toggle('hidden', !(tab === 'protocol' && role === 'editor'));
+
+  onTabVisit(tab);
+  SECTIONS.forEach(s => { if (s !== tab) renderBadge(s, notifCounts[s]); });
 }
 
-// ═══════════════════════════════════════
 // ENTER DASHBOARD
-// ═══════════════════════════════════════
 function enterDashboard() {
   document.getElementById('topbar').classList.remove('hidden');
   document.getElementById('welcomeMsg').textContent = role === 'editor' ? 'Editor: ' + editorName : 'Viewer: ' + viewerName;
@@ -1012,7 +1129,6 @@ function enterDashboard() {
     document.getElementById('backupBtn').classList.remove('hidden');
   }
 
-  // Font control visible for everyone
   document.getElementById('viewerFontCtrl').classList.remove('hidden');
   applyViewerFont();
 
@@ -1026,18 +1142,18 @@ function enterDashboard() {
   startRealtime();
   startAutoRefresh();
   startPresenceTracking();
+  startNotifPolling();
 }
 
 async function logout() {
   sessionStorage.removeItem('ch_role');
   sessionStorage.removeItem('ch_name');
+  if (notifPollTimer) clearInterval(notifPollTimer);
   await stopPresenceTracking().catch(()=>{});
   location.reload();
 }
 
-// ═══════════════════════════════════════
 // NAVIGATION
-// ═══════════════════════════════════════
 function navTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const map = { dash:'screenDash', sub:'screenSub', subSub:'screenSubSub', note:'screenNote', protocol:'screenProtocol' };
@@ -1069,14 +1185,12 @@ function openNewModal() {
 function renderBreadcrumb(containerId, items) {
   const el = document.getElementById(containerId);
   el.innerHTML = items.map((item, i) => {
-    const sep = i < items.length - 1 ? '<span class="bc-sep">›</span>' : '';
+    const sep = i < items.length - 1 ? '<span class="bc-sep">&#8250;</span>' : '';
     return `<span class="bc-item${item.current?' current':''}" onclick="${item.onClick||''}">${esc(item.label)}</span>${sep}`;
   }).join('');
 }
 
-// ═══════════════════════════════════════
 // UPDATES
-// ═══════════════════════════════════════
 async function loadUpdates() {
   const { data } = await db.from('posts').select('*').order('created_at', { ascending: false });
   allUpdates = data || [];
@@ -1097,37 +1211,40 @@ function renderUpdates() {
   grid.innerHTML = '';
   if (!allUpdates.length) { grid.innerHTML = '<div class="empty">No updates yet.</div>'; return; }
   const colors = ['sc0','sc1','sc2','sc3','sc4'];
-  allUpdates.forEach((u, i) => {
-    const d = fmtDate(u.created_at);
-    const upd = u.updated_at && u.updated_at !== u.created_at ? fmtUpdated(u.updated_at) : null;
-    let actions = '';
-    if (role === 'editor') {
-      actions = `<div class="sticky-note-actions">
-        <span onclick="event.stopPropagation();openEditUpdateModal(${JSON.stringify(u).replace(/"/g,'&quot;')})">Edit</span>
-        <span class="del" onclick="event.stopPropagation();deleteUpdate(${u.id})">Del</span>
-      </div>`;
-    }
-    const note = document.createElement('div');
-    note.className = `sticky-note ${colors[i%colors.length]}`;
-    // Strip HTML for card preview
-    const previewContent = u.content ? u.content.replace(/<[^>]+>/g,' ').trim() : '';
-    note.innerHTML = `
-      <div class="sticky-note-title">${esc(u.title)}</div>
-      <div class="sticky-note-body">${esc(previewContent)}</div>
-      ${upd ? `<div class="update-last-tag">Updated ${upd}</div>` : ''}
-      <div class="sticky-note-footer">
-        <span class="sticky-note-date">${d}</span>
-        ${actions}
-      </div>`;
-    note.addEventListener('click', () => openUpdateView(u));
-    grid.appendChild(note);
+
+  getLastReadAt('updates').then(lastReadAt => {
+    allUpdates.forEach((u, i) => {
+      const isNew = lastReadAt ? new Date(u.created_at) > new Date(lastReadAt) : true;
+      const d = fmtDate(u.created_at);
+      const upd = u.updated_at && u.updated_at !== u.created_at ? fmtUpdated(u.updated_at) : null;
+      let actions = '';
+      if (role === 'editor') {
+        actions = `<div class="sticky-note-actions">
+          <span onclick="event.stopPropagation();openEditUpdateModal(${JSON.stringify(u).replace(/"/g,'&quot;')})">Edit</span>
+          <span class="del" onclick="event.stopPropagation();deleteUpdate(${u.id})">Del</span>
+        </div>`;
+      }
+      const note = document.createElement('div');
+      note.className = `sticky-note ${colors[i%colors.length]}`;
+      const previewContent = u.content ? u.content.replace(/<[^>]+>/g,' ').trim() : '';
+      note.innerHTML = `
+        ${isNew ? '<div class="sticky-new-dot"></div>' : ''}
+        <div class="sticky-note-title">${esc(u.title)}</div>
+        <div class="sticky-note-body">${esc(previewContent)}</div>
+        ${upd ? `<div class="update-last-tag">Updated ${upd}</div>` : ''}
+        <div class="sticky-note-footer">
+          <span class="sticky-note-date">${d}</span>
+          ${actions}
+        </div>`;
+      note.addEventListener('click', () => openUpdateView(u));
+      grid.appendChild(note);
+    });
   });
 }
 
 function openUpdateView(u) {
   document.getElementById('viewTitle').textContent = u.title;
   const vb = document.getElementById('viewBody');
-  // Render HTML content properly
   if (u.content && /<[a-z][\s\S]*>/i.test(u.content)) {
     vb.innerHTML = u.content;
   } else {
@@ -1140,6 +1257,7 @@ async function deleteUpdate(id) {
   if (!confirm('Delete this update?')) return;
   await db.from('posts').delete().eq('id', id);
   await loadUpdates();
+  refreshAllNotifCounts();
 }
 
 function openNewUpdateModal() {
@@ -1164,9 +1282,7 @@ function openEditUpdateModal(u) {
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
-// ═══════════════════════════════════════
 // HEADINGS
-// ═══════════════════════════════════════
 async function loadHeadings() {
   const { data } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
   renderHeadings(data || []);
@@ -1186,7 +1302,7 @@ function renderHeadings(list) {
         <span class="del" onclick="event.stopPropagation();deleteHeading(${h.id})">Del</span>
       </div>`;
     }
-    chip.innerHTML = `<span class="hc-title">${esc(h.title)}</span>${actions}<span class="hc-arrow">›</span>`;
+    chip.innerHTML = `<span class="hc-title">${esc(h.title)}</span>${actions}<span class="hc-arrow">&#8250;</span>`;
     chip.addEventListener('click', () => openSubScreen(h));
     grid.appendChild(chip);
   });
@@ -1216,9 +1332,7 @@ function openEditHeadingModal(h) {
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
-// ═══════════════════════════════════════
 // SUB-HEADINGS
-// ═══════════════════════════════════════
 async function openSubScreen(heading) {
   currentHeading = heading; currentSubheading = null;
   renderBreadcrumb('bcSub', [
@@ -1249,7 +1363,7 @@ function renderSubheadings(list) {
         <span class="del" onclick="event.stopPropagation();deleteSubheading(${sub.id})">Del</span>
       </div>`;
     }
-    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(sub.title)}</span>${actions}<span class="pr-spacer"></span><span class="pr-arrow">›</span>`;
+    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(sub.title)}</span>${actions}<span class="pr-spacer"></span><span class="pr-arrow">&#8250;</span>`;
     row.addEventListener('click', () => openSubNoteScreen(sub));
     el.appendChild(row);
   });
@@ -1290,9 +1404,7 @@ function openEditSubModal(sub) {
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
-// ═══════════════════════════════════════
-// TOPICS (sub-sub-headings)
-// ═══════════════════════════════════════
+// TOPICS
 async function openSubSubScreen(subheading) {
   currentSubheading = subheading;
   renderBreadcrumb('bcSubSub', [
@@ -1323,7 +1435,7 @@ function renderSubSubheadings(list) {
         <span class="del" onclick="event.stopPropagation();deleteSubSubheading(${ss.id})">Del</span>
       </div>`;
     }
-    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(ss.title)}</span>${actions}<span class="pr-spacer"></span><span class="pr-arrow">›</span>`;
+    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(ss.title)}</span>${actions}<span class="pr-spacer"></span><span class="pr-arrow">&#8250;</span>`;
     row.addEventListener('click', () => openNoteScreen(ss));
     el.appendChild(row);
   });
@@ -1354,9 +1466,7 @@ function openEditSubSubModal(ss) {
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
 
-// ═══════════════════════════════════════
 // NOTE SCREEN
-// ═══════════════════════════════════════
 let currentNote = null;
 let noteSource = null;
 
@@ -1435,12 +1545,9 @@ async function deleteCurrentNote() {
   }
 }
 
-// ═══════════════════════════════════════
 // SAVE MODAL
-// ═══════════════════════════════════════
 async function saveModal() {
   const title = document.getElementById('mTitle').value.trim();
-  // Get rich HTML from contenteditable
   const bodyHtml = getRichHtml('mBodyRich');
   const bodyText = bodyHtml.replace(/<[^>]+>/g,' ').trim();
   const descHtml = getRichHtml('descRich');
@@ -1452,6 +1559,7 @@ async function saveModal() {
     if (!bodyText) { alert('Body is required.'); return; }
     await db.from('posts').insert([{ title, content: bodyHtml }]);
     await loadUpdates();
+    refreshAllNotifCounts();
   } else if (ctx.mode === 'edit-update') {
     if (!bodyText) { alert('Body is required.'); return; }
     await db.from('posts').update({ title, content: bodyHtml }).eq('id', ctx.item.id);
@@ -1459,6 +1567,7 @@ async function saveModal() {
   } else if (ctx.mode === 'new-heading') {
     await db.from('note_headings').insert([{ title }]);
     await loadHeadings();
+    refreshAllNotifCounts();
   } else if (ctx.mode === 'edit-heading') {
     await db.from('note_headings').update({ title }).eq('id', ctx.item.id);
     await loadHeadings();
@@ -1469,6 +1578,7 @@ async function saveModal() {
   } else if (ctx.mode === 'new-sub') {
     await db.from('note_subheadings').insert([{ heading_id: currentHeading.id, title }]);
     await loadSubheadings(currentHeading.id);
+    refreshAllNotifCounts();
   } else if (ctx.mode === 'edit-sub') {
     await db.from('note_subheadings').update({ title, body: bodyHtml }).eq('id', ctx.item.id);
     if (currentNote && currentNote.id === ctx.item.id) {
@@ -1488,6 +1598,7 @@ async function saveModal() {
     if (!bodyText) { alert('Body is required.'); return; }
     await db.from('note_subsubheadings').insert([{ subheading_id: currentSubheading.id, title, body: bodyHtml }]);
     await loadSubSubheadings(currentSubheading.id);
+    refreshAllNotifCounts();
   } else if (ctx.mode === 'edit-subsub') {
     if (!bodyText) { alert('Body is required.'); return; }
     await db.from('note_subsubheadings').update({ title, body: bodyHtml }).eq('id', ctx.item.id);
@@ -1499,11 +1610,12 @@ async function saveModal() {
       await loadSubSubheadings(currentSubheading.id);
     }
   } else if (ctx.mode === 'new-protocol') {
-    const icon = document.getElementById('mIcon').value || '📋';
+    const icon = document.getElementById('mIcon').value || '&#128203;';
     await db.from('protocols').insert([{ title, description: descHtml, icon }]);
     await loadProtocols();
+    refreshAllNotifCounts();
   } else if (ctx.mode === 'edit-protocol') {
-    const icon = document.getElementById('mIcon').value || '📋';
+    const icon = document.getElementById('mIcon').value || '&#128203;';
     await db.from('protocols').update({ title, description: descHtml, icon }).eq('id', ctx.item.id);
     if (currentProtocol && currentProtocol.id === ctx.item.id) {
       const upd = new Date().toISOString();
@@ -1526,10 +1638,8 @@ function closeModal() {
   modalCtx = null;
 }
 
-// ═══════════════════════════════════════
 // PROTOCOLS
-// ═══════════════════════════════════════
-const PROTOCOL_ICONS = ['📋','🔐','🛡️','⚖️','📊','📜','🗂️','🔍','🔧','📝','✅','⚠️','🚨','🏛️','🔒','📌','💡','🎯','🔗','📣'];
+const PROTOCOL_ICONS = ['&#128203;','&#128272;','&#128737;','&#9878;','&#128202;','&#128220;','&#128193;','&#128269;','&#128295;','&#128221;','&#9989;','&#9888;','&#128680;','&#127963;','&#128274;','&#128204;','&#128161;','&#127919;','&#128279;','&#128227;'];
 
 async function loadProtocols() {
   const grid = document.getElementById('protocolGrid');
@@ -1557,7 +1667,7 @@ function renderProtocols(list) {
     card.className = 'protocol-card';
     card.style.cursor = 'pointer';
     card.innerHTML = `
-      <div class="protocol-card-icon">${esc(p.icon||'📋')}</div>
+      <div class="protocol-card-icon">${esc(p.icon||'&#128203;')}</div>
       <div class="protocol-card-title">${esc(p.title)}</div>
       <div class="protocol-card-desc">${esc(descPreview)}</div>
       ${updLabel ? `<div class="protocol-view-updated" style="margin-top:12px;">${updLabel}</div>` : ''}
@@ -1570,7 +1680,8 @@ function renderProtocols(list) {
 function buildIconPicker(selected) {
   const grid = document.getElementById('iconPickerGrid');
   if (!grid) return;
-  grid.innerHTML = PROTOCOL_ICONS.map(ic => `<span class="icon-opt${ic===selected?' selected':''}" onclick="selectIcon('${ic}')">${ic}</span>`).join('');
+  const actualIcons = ['📋','🔐','🛡️','⚖️','📊','📜','🗂️','🔍','🔧','📝','✅','⚠️','🚨','🏛️','🔒','📌','💡','🎯','🔗','📣'];
+  grid.innerHTML = actualIcons.map(ic => `<span class="icon-opt${ic===selected?' selected':''}" onclick="selectIcon('${ic}')">${ic}</span>`).join('');
   document.getElementById('mIcon').value = selected || '📋';
 }
 function selectIcon(ic) {
@@ -1607,6 +1718,7 @@ async function deleteProtocol(id) {
   if (!confirm('Delete this protocol?')) return;
   await db.from('protocols').delete().eq('id', id);
   await loadProtocols();
+  refreshAllNotifCounts();
 }
 
 let currentProtocol = null;
@@ -1643,9 +1755,7 @@ async function deleteCurrentProtocol() {
   navTo('dash'); switchTab('protocol'); await loadProtocols();
 }
 
-// ═══════════════════════════════════════
 // BACKUP & RESTORE
-// ═══════════════════════════════════════
 function openBackupModal() {
   if (role !== 'editor') return;
   pendingBackupData = null; selectedBackupFile = null; clearBackupFileUI();
@@ -1662,7 +1772,7 @@ function setBackupProgress(pct, label) {
 }
 async function downloadBackup() {
   if (role !== 'editor') return;
-  setBackupStatus('saveStatus', 'Fetching data…', 'info');
+  setBackupStatus('saveStatus', 'Fetching data\u2026', 'info');
   try {
     const { data: headings } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
     const headingsWithChildren = await Promise.all((headings||[]).map(async h => {
@@ -1681,8 +1791,8 @@ async function downloadBackup() {
     a.href = url; a.download = `vikingcloud-backup-${ts}.json`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     const hc=headingsWithChildren.length, sc=headingsWithChildren.reduce((s,h)=>s+h.subheadings.length,0), tc=headingsWithChildren.reduce((s,h)=>h.subheadings.reduce((ss,sub)=>ss+sub.topics.length,s),0);
-    setBackupStatus('saveStatus', `✓ Downloaded — ${hc} headings, ${sc} sub-headings, ${tc} topics`, 'success');
-  } catch(e) { setBackupStatus('saveStatus', '✕ Failed: ' + (e.message||e), 'error'); }
+    setBackupStatus('saveStatus', `\u2713 Downloaded \u2014 ${hc} headings, ${sc} sub-headings, ${tc} topics`, 'success');
+  } catch(e) { setBackupStatus('saveStatus', '\u2715 Failed: ' + (e.message||e), 'error'); }
 }
 function handleFileSelect(e) { const file = e.target.files && e.target.files[0]; if (file) processBackupFile(file); }
 (function setupDragDrop() {
@@ -1708,20 +1818,20 @@ function processBackupFile(file) {
   reader.onload = ev => {
     try {
       const data = JSON.parse(ev.target.result);
-      if (!validateBackup(data)) { setBackupStatus('importStatus','✕ Invalid backup file.','error'); pendingBackupData=null; return; }
+      if (!validateBackup(data)) { setBackupStatus('importStatus','\u2715 Invalid backup file.','error'); pendingBackupData=null; return; }
       pendingBackupData = data;
       const hc=(data.headings||[]).length, sc=(data.headings||[]).reduce((s,h)=>s+(h.subheadings||[]).length,0), tc=(data.headings||[]).reduce((s,h)=>(h.subheadings||[]).reduce((ss,sub)=>ss+(sub.topics||[]).length,s),0);
       document.getElementById('backupSummaryItems').innerHTML = [
-        `<span class="backup-summary-item">📁 ${hc} Heading${hc!==1?'s':''}</span>`,
-        `<span class="backup-summary-item">📂 ${sc} Sub-heading${sc!==1?'s':''}</span>`,
-        `<span class="backup-summary-item">📄 ${tc} Topic${tc!==1?'s':''}</span>`,
-        data.exportedAt?`<span class="backup-summary-item">🕐 ${new Date(data.exportedAt).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'})}</span>`:'',
-        data.exportedBy?`<span class="backup-summary-item">👤 ${esc(data.exportedBy)}</span>`:''
+        `<span class="backup-summary-item">&#128193; ${hc} Heading${hc!==1?'s':''}</span>`,
+        `<span class="backup-summary-item">&#128194; ${sc} Sub-heading${sc!==1?'s':''}</span>`,
+        `<span class="backup-summary-item">&#128196; ${tc} Topic${tc!==1?'s':''}</span>`,
+        data.exportedAt?`<span class="backup-summary-item">&#128336; ${new Date(data.exportedAt).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'})}</span>`:'',
+        data.exportedBy?`<span class="backup-summary-item">&#128100; ${esc(data.exportedBy)}</span>`:''
       ].filter(Boolean).join('');
       document.getElementById('backupSummary').classList.add('show');
       document.getElementById('importBtn').classList.add('show');
       setBackupStatus('importStatus','Ready to import. This will ADD to existing data.','info');
-    } catch(err) { setBackupStatus('importStatus','✕ Could not parse: '+err.message,'error'); pendingBackupData=null; }
+    } catch(err) { setBackupStatus('importStatus','\u2715 Could not parse: '+err.message,'error'); pendingBackupData=null; }
   };
   reader.readAsText(file);
 }
@@ -1742,7 +1852,7 @@ async function importBackup() {
   const headings = pendingBackupData.headings||[];
   if (!headings.length) { setBackupStatus('importStatus','Backup is empty.','error'); return; }
   const btn = document.getElementById('importBtn');
-  btn.disabled = true; btn.textContent = 'Importing…'; setBackupProgress(0,'Starting…');
+  btn.disabled = true; btn.textContent = 'Importing\u2026'; setBackupProgress(0,'Starting\u2026');
   let total=headings.length; headings.forEach(h=>{total+=(h.subheadings||[]).length;(h.subheadings||[]).forEach(sub=>{total+=(sub.topics||[]).length;});}); let done=0;
   function tick(label){done++;setBackupProgress(Math.round(done/total*100),label);}
   try {
@@ -1760,20 +1870,18 @@ async function importBackup() {
     }
     setBackupProgress(100,'Complete!');
     const hc=headings.length, sc=headings.reduce((s,h)=>s+(h.subheadings||[]).length,0), tc=headings.reduce((s,h)=>(h.subheadings||[]).reduce((ss,sub)=>ss+(sub.topics||[]).length,s),0);
-    setBackupStatus('importStatus',`✓ Imported ${hc} headings, ${sc} sub-headings, ${tc} topics!`,'success');
-    btn.textContent='✓ Done'; btn.style.background='#27ae60';
+    setBackupStatus('importStatus',`\u2713 Imported ${hc} headings, ${sc} sub-headings, ${tc} topics!`,'success');
+    btn.textContent='\u2713 Done'; btn.style.background='#27ae60';
     await loadHeadings();
     setTimeout(()=>{closeBackupModal();btn.disabled=false;btn.textContent='Import & Restore';btn.style.background='';},2200);
   } catch(err) {
-    setBackupStatus('importStatus','✕ '+err.message,'error');
+    setBackupStatus('importStatus','\u2715 '+err.message,'error');
     document.getElementById('backupProgress').classList.remove('show');
     btn.disabled=false; btn.textContent='Import & Restore';
   }
 }
 
-// ═══════════════════════════════════════
 // REALTIME
-// ═══════════════════════════════════════
 function setLiveBadge(s, t) { const b=document.getElementById('liveBadge'); b.className=s; document.getElementById('liveBadgeText').textContent=t; }
 function showToast(icon, msg) {
   document.getElementById('toastIcon').textContent=icon; document.getElementById('toastMsg').textContent=msg;
@@ -1785,14 +1893,26 @@ function startRealtime() {
   realtimeChannel = db.channel('posts-live')
     .on('postgres_changes',{event:'*',schema:'public',table:'posts'},payload=>{
       const ev=payload.eventType;
-      if(ev==='INSERT'){if(!allUpdates.find(n=>n.id===payload.new.id)){allUpdates.unshift(payload.new);renderUpdates();showToast('📋',`New: "${payload.new.title.substring(0,40)}"`);}
-      }else if(ev==='UPDATE'){const i=allUpdates.findIndex(n=>n.id===payload.new.id);if(i!==-1)allUpdates[i]=payload.new;else allUpdates.unshift(payload.new);renderUpdates();showToast('✏️',`Updated: "${payload.new.title.substring(0,40)}"`);}
-      else if(ev==='DELETE'){allUpdates=allUpdates.filter(n=>n.id!==payload.old.id);renderUpdates();showToast('🗑️','Update removed');}
+      if(ev==='INSERT'){
+        if(!allUpdates.find(n=>n.id===payload.new.id)){
+          allUpdates.unshift(payload.new);renderUpdates();
+          showToast('📋',`New: "${payload.new.title.substring(0,40)}"`);
+          refreshAllNotifCounts();
+        }
+      }else if(ev==='UPDATE'){
+        const i=allUpdates.findIndex(n=>n.id===payload.new.id);
+        if(i!==-1)allUpdates[i]=payload.new;else allUpdates.unshift(payload.new);
+        renderUpdates();showToast('✏️',`Updated: "${payload.new.title.substring(0,40)}"`);
+      }else if(ev==='DELETE'){
+        allUpdates=allUpdates.filter(n=>n.id!==payload.old.id);
+        renderUpdates();showToast('🗑️','Update removed');
+        refreshAllNotifCounts();
+      }
     })
     .subscribe(status=>{
       if(status==='SUBSCRIBED')setLiveBadge('connected','Live');
-      else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setLiveBadge('disconnected','Reconnecting…');setTimeout(startRealtime,5000);}
-      else setLiveBadge('connecting','Connecting…');
+      else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){setLiveBadge('disconnected','Reconnecting\u2026');setTimeout(startRealtime,5000);}
+      else setLiveBadge('connecting','Connecting\u2026');
     });
 }
 
@@ -1814,9 +1934,7 @@ function startAutoRefresh() {
   },1000);
 }
 
-// ═══════════════════════════════════════
 // PRESENCE
-// ═══════════════════════════════════════
 function updateActiveUsersUI(state) {
   const entries=Object.values(state).flat(); let ed=0,vw=0;
   entries.forEach(e=>{ if(e.role==='editor')ed++; else vw++; });
@@ -1843,9 +1961,7 @@ async function stopPresenceTracking() {
   document.getElementById('activeUsersPanel').classList.remove('visible');
 }
 
-// ═══════════════════════════════════════
 // EDITOR MANAGEMENT
-// ═══════════════════════════════════════
 let emOpen=false;
 function toggleEmDrop(){emOpen=!emOpen;document.getElementById('emDrop').classList.toggle('open',emOpen);document.getElementById('emBtn').classList.toggle('open',emOpen);if(emOpen){loadEmList();setTimeout(()=>document.addEventListener('click',emOutside),10);}else document.removeEventListener('click',emOutside);}
 function emOutside(e){if(!document.getElementById('emgmtWrap').contains(e.target)){emOpen=false;document.getElementById('emDrop').classList.remove('open');document.getElementById('emBtn').classList.remove('open');document.removeEventListener('click',emOutside);}}
@@ -1857,23 +1973,19 @@ async function loadEmList(){
   list.innerHTML=data.map(ed=>{
     const ini=ed.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
     const isSelf=ed.name.toLowerCase()===editorName.toLowerCase(), isFd=ed.id===fid;
-    return`<div class="em-row" id="em-row-${ed.id}"><div class="em-name"><div class="em-av ${isFd?'founder':''}">${ini}</div><span>${esc(ed.name)}${isFd?' 👑':''}${isSelf?' <span style="opacity:.4;font-size:.8em;">(you)</span>':''}</span></div>${(!isSelf&&!isFd)?`<button class="em-rmv" onclick="removeEditor(${ed.id},'${ed.name.replace(/'/g,"\\'")}',${isFd})">Remove</button>`:''}</div>`;
+    return`<div class="em-row" id="em-row-${ed.id}"><div class="em-name"><div class="em-av ${isFd?'founder':''}">${ini}</div><span>${esc(ed.name)}${isFd?' &#128081;':''}${isSelf?' <span style="opacity:.4;font-size:.8em;">(you)</span>':''}</span></div>${(!isSelf&&!isFd)?`<button class="em-rmv" onclick="removeEditor(${ed.id},'${ed.name.replace(/'/g,"\\'")}',${isFd})">Remove</button>`:''}</div>`;
   }).join('');
 }
 async function removeEditor(id,name,isFd){if(isFd){alert('Cannot remove founding editor.');return;}if(!isFounder){alert('Only the founding editor can remove others.');return;}if(!confirm(`Remove "${name}"?`))return;const{error}=await db.from('authorized_editors').delete().eq('id',id);if(!error){const r=document.getElementById(`em-row-${id}`);if(r){r.style.opacity='0';setTimeout(()=>r.remove(),300);}}else alert('Failed.');}
 async function addEditor(){const n=prompt('Name of new Editor:');if(n&&n.trim()){const{error}=await db.from('authorized_editors').insert([{name:n.trim()}]);if(!error){alert(`"${n.trim()}" added.`);loadEmList();}else alert('Failed.');}}
 
-// ═══════════════════════════════════════
 // THEME
-// ═══════════════════════════════════════
 function setTheme(t){document.body.className=t==='default'?'':'theme-'+t;document.getElementById('themeSel').value=t;}
 setTheme('light');
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ═══════════════════════════════════════
 // CLOCKS
-// ═══════════════════════════════════════
 (function buildTicks(){
   ['IST','GMT','EST'].forEach(id=>{
     const g=document.getElementById('tk-'+id);if(!g)return;
@@ -1885,23 +1997,36 @@ const TZC=[{id:'IST',tz:'Asia/Kolkata'},{id:'GMT',tz:'Etc/GMT'},{id:'EST',tz:'Am
 function tickClocks(){const now=new Date();TZC.forEach(c=>{const fmt=u=>parseInt(new Intl.DateTimeFormat('en-US',{timeZone:c.tz,[u]:'numeric',hour12:false}).format(now),10);const h24=fmt('hour'),m=fmt('minute'),s=fmt('second'),h=h24%12;rotateHand(document.getElementById(c.id+'-h'),h*30+m*.5);rotateHand(document.getElementById(c.id+'-m'),m*6+s*.1);rotateHand(document.getElementById(c.id+'-s'),s*6);const d=document.getElementById('dig-'+c.id);if(d)d.textContent=String(h24).padStart(2,'0')+':'+String(m).padStart(2,'0');});}
 tickClocks();setInterval(tickClocks,1000);
 
-// ═══════════════════════════════════════
 // KEY BINDINGS
-// ═══════════════════════════════════════
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){closeModal();closeUpdateView();if(document.getElementById('backupModal').classList.contains('open'))closeBackupModal();}
 });
 
-// Auto-restore session
 (function(){
-  const r=sessionStorage.getItem('ch_role');
-  const n=sessionStorage.getItem('ch_name');
-  if(r&&n){
-    // We still need name — re-show prompt
-    sessionStorage.removeItem('ch_role');
-    sessionStorage.removeItem('ch_name');
-  }
+  sessionStorage.removeItem('ch_role');
+  sessionStorage.removeItem('ch_name');
 })();
 </script>
 </body>
 </html>
+
+<!--
+===================================================================
+SUPABASE SETUP — Run this SQL in your Supabase SQL Editor:
+===================================================================
+
+CREATE TABLE IF NOT EXISTS user_section_reads (
+  id bigint generated always as identity primary key,
+  user_name text not null,
+  section_name text not null,
+  last_read_at timestamptz not null default now(),
+  unique(user_name, section_name)
+);
+
+ALTER TABLE user_section_reads ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow all for anon" ON user_section_reads
+  FOR ALL TO anon USING (true) WITH CHECK (true);
+
+===================================================================
+-->
