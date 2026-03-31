@@ -17,11 +17,110 @@
       --border: #dde3ee;
       --shadow: 0 2px 16px rgba(21,101,192,0.10);
       --sticky-color: #dbeafe;
+      /* Change tracking badge colors — editor-only */
+      --audit-bg: rgba(21,101,192,0.07);
+      --audit-border: rgba(21,101,192,0.18);
+      --audit-text: #1565c0;
+      --audit-edit-bg: rgba(184,134,11,0.07);
+      --audit-edit-border: rgba(184,134,11,0.22);
+      --audit-edit-text: #8a6000;
     }
 
     *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; font-family:'Raleway',sans-serif; }
     body { background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; font-weight:500; }
     .hidden { display:none!important; }
+
+    /* ── EDITOR-ONLY AUDIT BADGE ─────────────────────────────── */
+    /*  All elements with .audit-editor-only are hidden by default.
+        When role=editor the JS adds class "editor-mode" to <body>,
+        which reveals them.  Viewers never see these elements.       */
+    .audit-editor-only { display:none!important; }
+    body.editor-mode .audit-editor-only { display:var(--audit-display, flex)!important; }
+
+    /* Generic inline audit badge (used in sticky notes, pointer rows, cards) */
+    .audit-badge {
+      --audit-display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'Cinzel', serif;
+      font-size: .58em;
+      letter-spacing: 1px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+    .audit-badge.created {
+      background: var(--audit-bg);
+      border: 1px solid var(--audit-border);
+      color: var(--audit-text);
+    }
+    .audit-badge.edited {
+      background: var(--audit-edit-bg);
+      border: 1px solid var(--audit-edit-border);
+      color: var(--audit-edit-text);
+    }
+    .audit-badge .audit-icon { flex-shrink:0; font-size:.9em; }
+    .audit-badge .audit-name { font-weight:700; max-width:100px; overflow:hidden; text-overflow:ellipsis; }
+    .audit-badge .audit-time { opacity:.65; flex-shrink:0; }
+    .audit-badge .audit-action { opacity:.5; flex-shrink:0; font-style:italic; }
+
+    /* Block-style audit bar (used in note / protocol viewer) */
+    .audit-block-editor {
+      --audit-display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .audit-block-editor.created {
+      background: var(--audit-bg);
+      border: 1px solid var(--audit-border);
+    }
+    .audit-block-editor.edited {
+      background: var(--audit-edit-bg);
+      border: 1px solid var(--audit-edit-border);
+    }
+    .audit-block-editor .ab-icon { font-size:1.1em; flex-shrink:0; }
+    .audit-block-editor .ab-label {
+      font-family:'Cinzel',serif;
+      font-size:.65em;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      opacity:.5;
+      flex-shrink:0;
+    }
+    .audit-block-editor.created .ab-label { color: var(--audit-text); }
+    .audit-block-editor.edited  .ab-label { color: var(--audit-edit-text); }
+    .audit-block-editor .ab-name {
+      font-family:'Cinzel',serif;
+      font-size:.72em;
+      letter-spacing:1px;
+      font-weight:700;
+    }
+    .audit-block-editor.created .ab-name { color: var(--audit-text); }
+    .audit-block-editor.edited  .ab-name { color: var(--audit-edit-text); }
+    .audit-block-editor .ab-sep { opacity:.25; flex-shrink:0; }
+    .audit-block-editor .ab-time {
+      font-family:'Raleway',sans-serif;
+      font-size:.68em;
+      opacity:.6;
+      letter-spacing:.3px;
+    }
+    /* History section in viewer (shows both created + edited) */
+    .audit-history-wrap {
+      --audit-display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
 
     #splash {
       position:fixed; inset:0; background:#fff; z-index:9000;
@@ -146,7 +245,6 @@
     .sr-item-title { font-family:'Cinzel',serif; font-size:.8em; letter-spacing:1px; color:var(--accent); line-height:1.3; }
     .sr-item-preview { font-size:.7em; opacity:.45; line-height:1.4; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
     .sr-item-tag { font-size:.58em; letter-spacing:1.5px; text-transform:uppercase; opacity:.35; font-family:'Cinzel',serif; }
-    .sr-empty { padding:20px 14px; text-align:center; font-size:.78em; opacity:.4; font-family:'Cinzel',serif; letter-spacing:2px; }
     .sr-highlight { background:rgba(21,101,192,.15); border-radius:2px; font-weight:700; }
 
     .tbtn { padding:7px 16px; border-radius:6px; border:1px solid var(--border); font-weight:600; cursor:pointer; background:#fff; color:var(--text); font-size:.8em; font-family:'Raleway',sans-serif; transition:all .2s; white-space:nowrap; }
@@ -217,15 +315,19 @@
     .sticky-note:hover { transform:translateY(-4px) rotate(-0.8deg); box-shadow:4px 8px 24px rgba(21,101,192,.2); }
     .sticky-note-title { font-family:'Cinzel',serif; font-size:.8em; letter-spacing:1.5px; color:#1a1a2e; font-weight:700; line-height:1.35; margin-bottom:6px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
     .sticky-note-body { font-size:.75em; color:rgba(26,26,46,.62); line-height:1.6; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-    .sticky-note-audit { position:absolute; bottom:10px; left:16px; right:16px; display:flex; flex-direction:column; gap:3px; }
-    .sticky-audit-author { font-family:'Cinzel',serif; font-size:.58em; letter-spacing:1px; color:var(--accent); font-style:italic; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .sticky-audit-datetime { font-size:.56em; color:rgba(26,26,46,.45); font-family:'Raleway',sans-serif; letter-spacing:.5px; }
+    .sticky-note-audit { position:absolute; bottom:10px; left:16px; right:16px; display:flex; flex-direction:column; gap:4px; }
     .sticky-note-actions { display:flex; gap:10px; margin-top:4px; }
     .sticky-note-actions span { font-size:.62em; letter-spacing:1px; text-decoration:underline; cursor:pointer; font-family:'Cinzel',serif; color:rgba(26,26,46,.6); }
     .sticky-note-actions span:hover { color:#1a1a2e; }
     .sticky-note-actions span.del { color:rgba(192,57,43,.7); }
     .sticky-note-actions span.del:hover { color:#c0392b; }
     .sticky-note-new-dot { position:absolute; top:10px; right:10px; width:9px; height:9px; border-radius:50%; background:#c0392b; border:2px solid rgba(255,255,255,.9); box-shadow:0 1px 4px rgba(192,57,43,.45); }
+
+    /* Sticky-specific audit badge override */
+    .sticky-note .audit-badge {
+      font-size:.56em;
+      padding: 2px 7px;
+    }
 
     .dash-divider { margin:0 40px; height:1px; background:linear-gradient(to right,transparent,var(--text),transparent); opacity:.1; }
 
@@ -251,9 +353,6 @@
     .protocol-card-icon { font-size:1.6em; margin-bottom:14px; }
     .protocol-card-title { font-family:'Cinzel',serif; font-size:.82em; letter-spacing:2px; color:var(--accent); margin-bottom:8px; }
     .protocol-card-desc { font-size:.74em; opacity:.5; line-height:1.6; }
-    .protocol-card-audit { margin-top:10px; padding-top:8px; border-top:1px solid rgba(21,101,192,.1); display:flex; flex-direction:column; gap:2px; }
-    .protocol-audit-author { font-family:'Cinzel',serif; font-size:.6em; letter-spacing:1px; color:var(--accent); font-style:italic; }
-    .protocol-audit-datetime { font-size:.58em; color:rgba(26,26,46,.4); font-family:'Raleway',sans-serif; letter-spacing:.3px; }
     .protocol-view-updated { display:inline-block; font-family:'Cinzel',serif; font-size:.6em; letter-spacing:2px; text-transform:uppercase; padding:3px 10px; border-radius:20px; border:1px solid rgba(21,101,192,.25); color:var(--accent); opacity:.7; }
     .protocol-card-actions { display:flex; gap:6px; margin-top:14px; opacity:0; transition:opacity .2s; }
     .protocol-card:hover .protocol-card-actions { opacity:1; }
@@ -275,12 +374,11 @@
     .drill-title { font-family:'Cinzel',serif; font-size:1.5em; letter-spacing:2px; color:var(--accent); margin-bottom:8px; }
     .drill-subtitle { font-size:.8em; opacity:.45; margin-bottom:28px; letter-spacing:.5px; }
     .pointer-list { display:flex; flex-direction:column; gap:0; }
-    .pointer-row { display:flex; align-items:center; padding:13px 8px; border-bottom:1px solid rgba(21,101,192,.08); cursor:pointer; border-radius:6px; transition:background .2s; }
+    .pointer-row { display:flex; align-items:center; padding:13px 8px; border-bottom:1px solid rgba(21,101,192,.08); cursor:pointer; border-radius:6px; transition:background .2s; flex-wrap:wrap; gap:4px; }
     .pointer-row:hover { background:rgba(21,101,192,.04); }
     .pointer-row:last-child { border-bottom:none; }
     .pr-bullet { width:6px; height:6px; border-radius:50%; border:1px solid var(--accent); flex-shrink:0; margin:0 14px; opacity:.5; }
     .pr-title { font-family:'Cinzel',serif; font-size:.86em; letter-spacing:1.5px; color:var(--accent); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:35%; }
-    .pr-audit { font-family:'Raleway',sans-serif; font-size:.6em; letter-spacing:.3px; color:var(--text); opacity:.4; margin-left:8px; white-space:nowrap; font-style:italic; overflow:hidden; text-overflow:ellipsis; }
     .pr-actions { display:flex; gap:6px; margin-left:10px; flex-shrink:0; }
     .pr-actions span { font-size:.6em; letter-spacing:1px; cursor:pointer; font-family:'Cinzel',serif; color:var(--accent); opacity:0; transition:opacity .2s; padding:2px 7px; border:1px solid transparent; border-radius:4px; }
     .pointer-row:hover .pr-actions span { opacity:.7; border-color:rgba(21,101,192,.25); }
@@ -295,9 +393,6 @@
     .note-body-inner { max-width:820px; }
     .nb-tag { font-family:'Cinzel',serif; font-size:.6em; letter-spacing:4px; text-transform:uppercase; opacity:.38; margin-bottom:12px; }
     .nb-title { font-family:'Cinzel',serif; font-size:2.2em; letter-spacing:2px; color:var(--accent); margin-bottom:8px; line-height:1.25; }
-    .nb-audit-block { display:flex; align-items:center; gap:10px; margin-bottom:28px; padding:10px 16px; background:rgba(21,101,192,.05); border:1px solid rgba(21,101,192,.12); border-radius:8px; }
-    .nb-audit-icon { font-size:1em; opacity:.6; }
-    .nb-audit-text { font-family:'Cinzel',serif; font-size:.68em; letter-spacing:1px; color:var(--accent); font-style:italic; }
     .nb-divider { height:1px; background:linear-gradient(to right,var(--accent),transparent); opacity:.2; margin-bottom:32px; }
     .nb-body { font-size:var(--viewer-fs,1.05em); line-height:1.9; opacity:1; white-space:pre-wrap; word-wrap:break-word; font-family:'Raleway',sans-serif; margin:0; background:transparent; border:none; padding:0; color:inherit; transition:font-size .2s; }
 
@@ -340,18 +435,12 @@
     .view-back:hover { opacity:.85; }
     .view-tag { font-family:'Cinzel',serif; font-size:.58em; letter-spacing:4px; text-transform:uppercase; opacity:.35; margin-bottom:8px; }
     .view-title { font-family:'Cinzel',serif; font-size:2.4em; letter-spacing:2px; color:var(--accent); margin-bottom:14px; line-height:1.2; }
-    .view-audit-block { display:inline-flex; align-items:center; gap:8px; margin-bottom:22px; padding:8px 14px; background:rgba(21,101,192,.05); border:1px solid rgba(21,101,192,.15); border-radius:8px; }
-    .view-audit-icon { font-size:.85em; opacity:.6; }
-    .view-audit-text { font-family:'Cinzel',serif; font-size:.68em; letter-spacing:1px; color:var(--accent); font-style:italic; }
     .view-div { height:1px; background:linear-gradient(to right,var(--accent),transparent); opacity:.2; margin-bottom:30px; }
     .view-body { font-size:var(--viewer-fs,1.05em); line-height:1.88; opacity:1; white-space:pre-wrap; transition:font-size .2s; }
 
     .protocol-view-inner { max-width:820px; }
     .protocol-view-icon { font-size:3em; margin-bottom:18px; line-height:1; }
     .protocol-view-title { font-family:'Cinzel',serif; font-size:2.2em; letter-spacing:2px; color:var(--accent); margin-bottom:14px; line-height:1.25; }
-    .protocol-view-audit-block { display:inline-flex; align-items:center; gap:8px; margin-bottom:18px; padding:8px 14px; background:rgba(21,101,192,.05); border:1px solid rgba(21,101,192,.15); border-radius:8px; }
-    .protocol-view-audit-icon { font-size:.85em; opacity:.6; }
-    .protocol-view-audit-text { font-family:'Cinzel',serif; font-size:.68em; letter-spacing:1px; color:var(--accent); font-style:italic; }
     .protocol-view-meta { display:flex; align-items:center; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
     .protocol-view-tag { font-family:'Cinzel',serif; font-size:.6em; letter-spacing:4px; text-transform:uppercase; opacity:.38; }
     .protocol-view-divider { height:1px; background:linear-gradient(to right,var(--accent),transparent); opacity:.2; margin-bottom:28px; }
@@ -452,22 +541,18 @@
   <div class="name-box">
     <div class="name-box-logo">&#9875;</div>
     <div class="name-box-title">VikingCloud Compliance Hub</div>
-    <div class="name-box-sub">Please identify yourself to continue</div>
-    <div class="name-role-tabs">
-      <button class="name-role-tab active" id="roleTabViewer" onclick="selectRoleTab('viewer')">&#128065; Viewer</button>
-      <button class="name-role-tab" id="roleTabEditor" onclick="selectRoleTab('editor')">&#9997; Editor</button>
-    </div>
+    <div class="name-box-sub">Sign in to continue</div>
     <div class="name-field">
-      <label>Your Name</label>
-      <input type="text" id="nameInput" placeholder="Enter your full name&#8230;" autocomplete="name">
+      <label>Email Address</label>
+      <input type="email" id="nameInput" placeholder="Enter your email&#8230;" autocomplete="email">
     </div>
-    <div class="name-pass-field" id="namePassField">
+    <div class="name-pass-field show" id="namePassField">
       <div class="name-field" style="margin-bottom:0;">
-        <label>Editor Password</label>
-        <input type="password" id="namePassInput" placeholder="Enter editor password&#8230;" autocomplete="current-password">
+        <label>Password</label>
+        <input type="password" id="namePassInput" placeholder="Enter your password&#8230;" autocomplete="current-password">
       </div>
     </div>
-    <button class="name-continue-btn" onclick="submitNameModal()">Continue &#8594;</button>
+    <button class="name-continue-btn" id="loginBtn" onclick="submitNameModal()">Sign In &#8594;</button>
     <div class="name-error" id="nameModalError"></div>
   </div>
 </div>
@@ -552,6 +637,7 @@
 
   <div class="topbar-right">
     <button class="tbtn tbtn-backup hidden" id="backupBtn" onclick="openBackupModal()">&#128452; Backup</button>
+    <button class="tbtn hidden" id="activityLogBtn" onclick="openActivityLog()" style="border-color:rgba(21,101,192,.3);color:var(--accent);background:rgba(21,101,192,.05);">&#128203; Activity Log</button>
     <div class="emgmt hidden" id="emgmtWrap">
       <button id="emBtn" onclick="toggleEmDrop()">Editors &amp; Viewers
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -674,10 +760,8 @@
           </div>
         </div>
       </div>
-      <div class="nb-audit-block" id="noteBodyAudit" style="display:none;">
-        <span class="nb-audit-icon">&#9997;</span>
-        <span class="nb-audit-text" id="noteBodyAuditText"></span>
-      </div>
+      <!-- EDITOR-ONLY: full change history for notes -->
+      <div class="audit-history-wrap audit-editor-only" id="noteAuditHistory"></div>
       <div class="nb-divider"></div>
       <pre class="nb-body" id="noteBodyText"></pre>
     </div>
@@ -702,10 +786,8 @@
             onmouseout="this.style.background='#fff';this.style.color='#c0392b'">Delete</button>
         </div>
       </div>
-      <div class="protocol-view-audit-block" id="pvAuditBlock" style="display:none;">
-        <span class="protocol-view-audit-icon">&#9997;</span>
-        <span class="protocol-view-audit-text" id="pvAuditText"></span>
-      </div>
+      <!-- EDITOR-ONLY: full change history for protocols -->
+      <div class="audit-history-wrap audit-editor-only" id="protocolAuditHistory"></div>
       <div class="protocol-view-meta">
         <span class="protocol-view-tag">Protocol</span>
         <span class="protocol-view-updated" id="pvUpdated"></span>
@@ -721,10 +803,8 @@
     <div class="view-back" onclick="closeUpdateView()">&#8592; Back</div>
     <div class="view-tag">Update</div>
     <div class="view-title" id="viewTitle"></div>
-    <div class="view-audit-block" id="viewAuditBlock" style="display:none;">
-      <span class="view-audit-icon">&#9997;</span>
-      <span class="view-audit-text" id="viewAuditText"></span>
-    </div>
+    <!-- EDITOR-ONLY: change history in update overlay -->
+    <div class="audit-history-wrap audit-editor-only" id="updateAuditHistory"></div>
     <div class="view-div"></div>
     <div class="view-body" id="viewBody"></div>
   </div>
@@ -820,6 +900,59 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════
+     ACTIVITY LOG MODAL (Editor-Only)
+════════════════════════════════════════════════════════ -->
+<div id="activityLogModal" style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(245,245,245,.96);backdrop-filter:blur(10px);overflow-y:auto;">
+  <div style="max-width:860px;margin:60px auto 40px;padding:0 20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:12px;">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:1.1em;letter-spacing:4px;color:var(--accent);text-transform:uppercase;">Activity Log</div>
+        <div style="font-size:.72em;opacity:.4;letter-spacing:1.5px;margin-top:4px;">All editor actions — visible only to editors</div>
+      </div>
+      <button onclick="closeActivityLog()" style="padding:7px 18px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-family:'Raleway',sans-serif;font-size:.84em;transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">&#10005; Close</button>
+    </div>
+
+    <!-- Filters -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+      <select id="alFilterSection" onchange="renderActivityLog()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
+        <option value="">All Sections</option>
+        <option value="Updates">Updates</option>
+        <option value="Notes">Notes</option>
+        <option value="Protocols">Protocols</option>
+      </select>
+      <select id="alFilterAction" onchange="renderActivityLog()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
+        <option value="">All Actions</option>
+        <option value="Add">Add</option>
+        <option value="Edit">Edit</option>
+        <option value="Delete">Delete</option>
+      </select>
+      <select id="alFilterEditor" onchange="renderActivityLog()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
+        <option value="">All Editors</option>
+      </select>
+      <button onclick="clearAlFilters()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-family:'Raleway',sans-serif;font-size:.82em;opacity:.6;transition:all .2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'">Clear Filters</button>
+      <div style="margin-left:auto;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;color:var(--accent);opacity:.5;align-self:center;" id="alCount"></div>
+    </div>
+
+    <!-- Log Table -->
+    <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);">
+      <div style="display:grid;grid-template-columns:1fr 80px 110px 140px 1.4fr;gap:0;border-bottom:2px solid var(--border);background:rgba(21,101,192,.04);">
+        <div style="padding:12px 18px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Editor</div>
+        <div style="padding:12px 10px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Action</div>
+        <div style="padding:12px 10px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Section</div>
+        <div style="padding:12px 10px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Timestamp</div>
+        <div style="padding:12px 18px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Description</div>
+      </div>
+      <div id="alBody" style="min-height:120px;">
+        <div style="text-align:center;padding:40px;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;color:var(--accent);opacity:.35;">Loading&#8230;</div>
+      </div>
+    </div>
+    <div id="alLoadMore" style="text-align:center;margin-top:16px;display:none;">
+      <button onclick="loadMoreActivityLogs()" style="padding:10px 28px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--accent);cursor:pointer;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(21,101,192,.05)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">Load More</button>
+    </div>
+  </div>
+</div>
+
 <div id="devCredit">Developed by Tirth &amp; Kedar</div>
 
 <script>
@@ -832,8 +965,6 @@ const db = supabase.createClient(_U, _K);
 
 /* ==========================================================
    KNOWN SCHEMA COLUMNS PER TABLE
-   Only columns listed here will be sent to Supabase.
-   Add more if you add columns to your DB later.
 ========================================================== */
 const TABLE_COLUMNS = {
   posts:                  ['title','content','created_by','created_at','updated_by','updated_at'],
@@ -843,12 +974,10 @@ const TABLE_COLUMNS = {
   protocols:              ['title','description','icon','created_by','created_at','updated_by','updated_at'],
   authorized_editors:     ['name'],
   user_section_reads:     ['user_name','section_name','last_read_at'],
+  activity_logs:          ['user_email','action','section','description','created_at'],
+  users:                  ['id','email','role'],
 };
 
-/* Cache of which columns actually exist per table (discovered at runtime) */
-const _colCache = {};
-
-/* Strip payload to only known columns for the table */
 function stripPayload(table, payload) {
   const allowed = TABLE_COLUMNS[table];
   if (!allowed) return payload;
@@ -857,7 +986,6 @@ function stripPayload(table, payload) {
   return out;
 }
 
-/* Safe insert: first try full payload, on schema-cache error strip audit cols and retry */
 async function safeInsert(table, payload) {
   const stripped = stripPayload(table, payload);
   let { data, error } = await db.from(table).insert([stripped]).select().single();
@@ -869,7 +997,6 @@ async function safeInsert(table, payload) {
   return { data, error };
 }
 
-/* Safe insert without .single() — for cases where we don't need the returned row */
 async function safeInsertBulk(table, payload) {
   const stripped = stripPayload(table, payload);
   let { data, error } = await db.from(table).insert([stripped]);
@@ -881,7 +1008,6 @@ async function safeInsertBulk(table, payload) {
   return { data, error };
 }
 
-/* Safe update */
 async function safeUpdate(table, payload, matchCol, matchVal) {
   const stripped = stripPayload(table, payload);
   let { data, error } = await db.from(table).update(stripped).eq(matchCol, matchVal);
@@ -913,6 +1039,7 @@ let role = 'viewer';
 let editorName = '';
 let viewerName = '';
 let userName = '';
+let userEmail = '';          // ← Supabase Auth email
 let founderEditorId = null;
 let isFounder = false;
 let allUpdates = [];
@@ -933,8 +1060,28 @@ let pendingBackupData = null;
 let selectedBackupFile = null;
 
 /* ==========================================================
-   AUDIT TRAIL
+   ██████╗██╗  ██╗ █████╗ ███╗   ██╗ ██████╗ ███████╗
+  ██╔════╝██║  ██║██╔══██╗████╗  ██║██╔════╝ ██╔════╝
+  ██║     ███████║███████║██╔██╗ ██║██║  ███╗█████╗
+  ██║     ██╔══██║██╔══██║██║╚██╗██║██║   ██║██╔══╝
+  ╚██████╗██║  ██║██║  ██║██║ ╚████║╚██████╔╝███████╗
+   ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝
+   TRACKING  —  EDITOR-ONLY VISIBILITY SYSTEM
 ========================================================== */
+
+/**
+ * Apply editor-mode class to body.
+ * ALL .audit-editor-only elements are hidden via CSS unless
+ * body has this class.  Viewers never trigger this path.
+ */
+function activateEditorAuditMode() {
+  document.body.classList.add('editor-mode');
+}
+
+/**
+ * Format a datetime string into a human-readable audit timestamp.
+ * Returns e.g. "12 Jan 2025, 03:45 PM"
+ */
 function fmtAuditDateTime(isoString) {
   if (!isoString) return '';
   const d = new Date(isoString);
@@ -943,11 +1090,76 @@ function fmtAuditDateTime(isoString) {
   return `${date}, ${time}`;
 }
 
+/**
+ * Build a single compact audit line string (used in legacy places).
+ */
 function buildAuditLine(createdBy, createdAt, updatedBy, updatedAt) {
   const hasUpdate = updatedAt && updatedAt !== createdAt;
   if (hasUpdate && updatedBy) return `${updatedBy} \u2013 ${fmtAuditDateTime(updatedAt)} (edited)`;
   if (createdBy) return `${createdBy} \u2013 ${fmtAuditDateTime(createdAt)}`;
   return '';
+}
+
+/**
+ * Render an inline audit badge (compact, for sticky notes / list rows / protocol cards).
+ * Returns HTML string with .audit-editor-only so viewers never see it.
+ *
+ * Shows "edited" state if updatedAt differs from createdAt, otherwise "created".
+ */
+function renderAuditBadgeHtml(createdBy, createdAt, updatedBy, updatedAt) {
+  const hasEdit = updatedAt && updatedAt !== createdAt && updatedBy;
+  const type   = hasEdit ? 'edited'  : 'created';
+  const icon   = hasEdit ? '✏️'      : '＋';
+  const name   = hasEdit ? (updatedBy || createdBy || '') : (createdBy || '');
+  const time   = hasEdit ? fmtAuditDateTime(updatedAt) : fmtAuditDateTime(createdAt);
+  const action = hasEdit ? 'edited'  : 'added';
+
+  if (!name) return '';
+  return `<span class="audit-badge ${type} audit-editor-only" title="${esc(name)} · ${esc(time)}">
+    <span class="audit-icon">${icon}</span>
+    <span class="audit-name">${esc(name)}</span>
+    <span class="audit-time">${esc(time)}</span>
+    <span class="audit-action">(${action})</span>
+  </span>`;
+}
+
+/**
+ * Render full audit history block for detail views (note / protocol / update viewer).
+ * Shows TWO rows when both created + edited info exist, ONE row otherwise.
+ * Injected into elements with id like noteAuditHistory / protocolAuditHistory / updateAuditHistory.
+ * The parent wrapper already has .audit-editor-only on it.
+ */
+function renderAuditHistory(containerId, createdBy, createdAt, updatedBy, updatedAt) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+
+  const hasEdit = updatedAt && updatedAt !== createdAt && updatedBy;
+  let html = '';
+
+  // Created row
+  if (createdBy || createdAt) {
+    html += `
+      <div class="audit-block-editor created">
+        <span class="ab-icon">＋</span>
+        <span class="ab-label">Created by</span>
+        <span class="ab-name">${esc(createdBy || '—')}</span>
+        ${createdAt ? `<span class="ab-sep">·</span><span class="ab-time">${esc(fmtAuditDateTime(createdAt))}</span>` : ''}
+      </div>`;
+  }
+
+  // Edited row (only when different from created)
+  if (hasEdit) {
+    html += `
+      <div class="audit-block-editor edited">
+        <span class="ab-icon">✏️</span>
+        <span class="ab-label">Last edited by</span>
+        <span class="ab-name">${esc(updatedBy)}</span>
+        <span class="ab-sep">·</span>
+        <span class="ab-time">${esc(fmtAuditDateTime(updatedAt))}</span>
+      </div>`;
+  }
+
+  el.innerHTML = html;
 }
 
 /* ==========================================================
@@ -1089,43 +1301,82 @@ function renderViewersList() {
   }).join('');
 }
 
+
 /* ==========================================================
-   ROLE SELECTION & LOGIN
+   SUPABASE AUTH  —  EMAIL + PASSWORD LOGIN
 ========================================================== */
-let pendingRole = 'viewer';
-function selectRoleTab(r) {
-  pendingRole = r;
-  document.getElementById('roleTabViewer').classList.toggle('active', r === 'viewer');
-  document.getElementById('roleTabEditor').classList.toggle('active', r === 'editor');
-  const pf = document.getElementById('namePassField');
-  pf.classList.toggle('show', r === 'editor');
-  if (r === 'editor') setTimeout(() => document.getElementById('namePassInput').focus(), 80);
+
+/**
+ * Called on page load: check if a Supabase session already exists.
+ * If yes, skip the login modal and re-enter the dashboard directly.
+ */
+(async function checkExistingSession() {
+  try {
+    const { data: { session } } = await db.auth.getSession();
+    if (session && session.user) await bootstrapUser(session.user);
+  } catch (e) { console.warn('Session check:', e); }
+})();
+
+/** Fetch role from `users` table. Falls back to 'viewer'. */
+async function fetchUserRole(email) {
+  try {
+    const { data, error } = await db.from('users').select('role').eq('email', email).single();
+    if (error || !data) return 'viewer';
+    return data.role || 'viewer';
+  } catch { return 'viewer'; }
 }
 
-async function submitNameModal() {
-  const name = document.getElementById('nameInput').value.trim();
-  const errEl = document.getElementById('nameModalError');
-  errEl.textContent = '';
-  if (!name) { errEl.textContent = 'Please enter your name to continue.'; return; }
-  if (pendingRole === 'editor') {
-    const pass = document.getElementById('namePassInput').value;
-    if (pass !== 'viking2026') {
-      errEl.textContent = 'Incorrect editor password.';
-      document.getElementById('namePassInput').value = '';
-      document.getElementById('namePassInput').focus();
-      return;
-    }
-    const { data } = await db.from('authorized_editors').select('*').ilike('name', name).single();
-    if (!data) { errEl.textContent = 'This name is not on the authorized editor list.'; return; }
-    editorName = data.name; userName = data.name; role = 'editor';
+/** Bootstrap app state after successful auth. */
+async function bootstrapUser(authUser) {
+  userEmail = authUser.email;
+  const fetchedRole = await fetchUserRole(userEmail);
+  role = fetchedRole;
+
+  const namePart = userEmail.split('@')[0].replace(/[._]/g,' ');
+  const displayName = namePart.split(' ').map(w => w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+
+  if (role === 'editor') {
+    editorName = displayName; userName = displayName;
     const { data: fr } = await db.from('authorized_editors').select('id').order('id',{ascending:true}).limit(1).single();
-    if (fr) { founderEditorId = fr.id; isFounder = (data.id === fr.id); }
+    if (fr) founderEditorId = fr.id;
+    const { data: myEd } = await db.from('authorized_editors').select('id').ilike('name', editorName).single();
+    if (myEd && fr) isFounder = (myEd.id === fr.id);
   } else {
-    viewerName = name; userName = name; role = 'viewer';
+    viewerName = displayName; userName = displayName;
   }
+
   document.getElementById('nameModal').classList.add('hidden');
   showWelcomeSplash(userName);
 }
+
+/** Login form submit — authenticates via Supabase Auth email+password. */
+async function submitNameModal() {
+  const email = document.getElementById('nameInput').value.trim().toLowerCase();
+  const pass  = document.getElementById('namePassInput').value;
+  const errEl = document.getElementById('nameModalError');
+  const btn   = document.getElementById('loginBtn');
+  errEl.textContent = '';
+
+  if (!email) { errEl.textContent = 'Please enter your email address.'; return; }
+  if (!pass)  { errEl.textContent = 'Please enter your password.'; return; }
+
+  btn.textContent = 'Signing in\u2026'; btn.disabled = true;
+  try {
+    const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+      errEl.textContent = error.message || 'Invalid credentials. Please try again.';
+      btn.textContent = 'Sign In \u2192'; btn.disabled = false;
+      return;
+    }
+    await bootstrapUser(data.user);
+  } catch (e) {
+    errEl.textContent = 'Login failed. Please try again.';
+    btn.textContent = 'Sign In \u2192'; btn.disabled = false;
+  }
+}
+
+document.getElementById('nameInput').addEventListener('keydown',    e => { if(e.key==='Enter') submitNameModal(); });
+document.getElementById('namePassInput').addEventListener('keydown', e => { if(e.key==='Enter') submitNameModal(); });
 
 function showWelcomeSplash(name) {
   const s = document.getElementById('splash');
@@ -1134,8 +1385,102 @@ function showWelcomeSplash(name) {
   setTimeout(() => { s.style.display = 'none'; enterDashboard(); }, 2200);
 }
 
-document.getElementById('nameInput').addEventListener('keydown', e => { if(e.key==='Enter') submitNameModal(); });
-document.getElementById('namePassInput').addEventListener('keydown', e => { if(e.key==='Enter') submitNameModal(); });
+/* ==========================================================
+   ACTIVITY LOG  —  INSERT + DISPLAY (Editor-Only)
+========================================================== */
+let allActivityLogs = [];
+const AL_PAGE_SIZE  = 50;
+let alOffset        = 0;
+
+/**
+ * Insert an activity log entry into Supabase.
+ * Silent — never blocks the main operation.
+ * @param {'Add'|'Edit'|'Delete'} action
+ * @param {'Updates'|'Notes'|'Protocols'} section
+ * @param {string} description
+ */
+async function logActivity(action, section, description) {
+  if (role !== 'editor' || !userEmail) return;
+  try {
+    await db.from('activity_logs').insert([{
+      user_email:  userEmail,
+      action:      action,
+      section:     section,
+      description: description,
+      created_at:  new Date().toISOString()
+    }]);
+  } catch (e) { console.warn('logActivity (non-fatal):', e); }
+}
+
+async function openActivityLog() {
+  if (role !== 'editor') { alert('Access Denied: Activity Log is for editors only.'); return; }
+  document.getElementById('activityLogModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  alOffset = 0; allActivityLogs = [];
+  await fetchActivityLogs(true);
+  populateEditorFilter();
+}
+
+function closeActivityLog() {
+  document.getElementById('activityLogModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function fetchActivityLogs(reset) {
+  if (reset) { alOffset = 0; allActivityLogs = []; }
+  const { data } = await db.from('activity_logs')
+    .select('*').order('created_at',{ascending:false})
+    .range(alOffset, alOffset + AL_PAGE_SIZE - 1);
+  allActivityLogs = reset ? (data||[]) : [...allActivityLogs, ...(data||[])];
+  alOffset += (data||[]).length;
+  document.getElementById('alLoadMore').style.display = (data||[]).length === AL_PAGE_SIZE ? 'block' : 'none';
+  renderActivityLog();
+}
+
+async function loadMoreActivityLogs() { await fetchActivityLogs(false); }
+
+function clearAlFilters() {
+  ['alFilterSection','alFilterAction','alFilterEditor'].forEach(id => { document.getElementById(id).value = ''; });
+  renderActivityLog();
+}
+
+function populateEditorFilter() {
+  const sel = document.getElementById('alFilterEditor');
+  const cur = sel.value;
+  const emails = [...new Set(allActivityLogs.map(l=>l.user_email).filter(Boolean))];
+  sel.innerHTML = '<option value="">All Editors</option>' +
+    emails.map(e=>`<option value="${esc(e)}"${e===cur?' selected':''}>${esc(e)}</option>`).join('');
+}
+
+function renderActivityLog() {
+  const secF = document.getElementById('alFilterSection').value;
+  const actF = document.getElementById('alFilterAction').value;
+  const edF  = document.getElementById('alFilterEditor').value;
+  const rows = allActivityLogs.filter(l =>
+    (!secF || l.section===secF) && (!actF || l.action===actF) && (!edF || l.user_email===edF));
+
+  document.getElementById('alCount').textContent = `${rows.length} ${rows.length===1?'entry':'entries'}`;
+  if (!rows.length) {
+    document.getElementById('alBody').innerHTML =
+      `<div style="text-align:center;padding:40px;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;color:var(--accent);opacity:.35;">No entries found.</div>`;
+    return;
+  }
+  const AC = { Add:{bg:'rgba(39,174,96,.09)',bd:'rgba(39,174,96,.28)',tx:'#1a7a46'}, Edit:{bg:'rgba(184,134,11,.09)',bd:'rgba(184,134,11,.30)',tx:'#8a6000'}, Delete:{bg:'rgba(192,57,43,.09)',bd:'rgba(192,57,43,.30)',tx:'#a93226'} };
+  const SI = { Updates:'📋', Notes:'📝', Protocols:'📜' };
+  document.getElementById('alBody').innerHTML = rows.map((l,i)=>{
+    const c  = AC[l.action]||AC.Edit;
+    const ts = l.created_at ? new Date(l.created_at).toLocaleString([],{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true}) : '—';
+    return `<div style="display:grid;grid-template-columns:1fr 80px 110px 140px 1.4fr;${i>0?'border-top:1px solid var(--border);':''}align-items:start;">
+      <div style="padding:12px 18px;font-size:.78em;font-weight:600;word-break:break-all;">${esc(l.user_email||'—')}</div>
+      <div style="padding:12px 10px;"><span style="display:inline-block;padding:3px 9px;border-radius:20px;font-size:.65em;font-family:'Cinzel',serif;letter-spacing:1px;font-weight:700;background:${c.bg};border:1px solid ${c.bd};color:${c.tx};">${esc(l.action||'—')}</span></div>
+      <div style="padding:12px 10px;font-size:.78em;opacity:.75;">${SI[l.section]||'⚙️'} ${esc(l.section||'—')}</div>
+      <div style="padding:12px 10px;font-size:.72em;opacity:.55;line-height:1.4;">${esc(ts)}</div>
+      <div style="padding:12px 18px;font-size:.78em;line-height:1.5;opacity:.8;word-break:break-word;">${esc(l.description||'—')}</div>
+    </div>`;
+  }).join('');
+}
+
+
 
 /* ==========================================================
    VIEWER FONT
@@ -1318,6 +1663,10 @@ function switchTab(tab) {
    ENTER DASHBOARD
 ========================================================== */
 function enterDashboard() {
+  // Activate editor-mode class on body — this is the master
+  // switch that makes all .audit-editor-only elements visible.
+  if (role === 'editor') activateEditorAuditMode();
+
   document.getElementById('topbar').classList.remove('hidden');
   document.getElementById('welcomeMsg').textContent = role === 'editor' ? 'Editor: ' + editorName : 'Viewer: ' + viewerName;
   if (role === 'editor') {
@@ -1327,6 +1676,7 @@ function enterDashboard() {
     document.getElementById('addHeadingBtn').classList.remove('hidden');
     document.getElementById('addSubBtn').classList.remove('hidden');
     document.getElementById('backupBtn').classList.remove('hidden');
+    document.getElementById('activityLogBtn').classList.remove('hidden');
     document.getElementById('liveBadge').style.display = '';
   } else {
     document.getElementById('emgmtWrap').classList.add('hidden');
@@ -1349,6 +1699,7 @@ function enterDashboard() {
 async function logout() {
   if (viewersChannel) { await viewersChannel.untrack(); db.removeChannel(viewersChannel); }
   if (notifPollTimer) clearInterval(notifPollTimer);
+  await db.auth.signOut();
   location.reload();
 }
 
@@ -1419,7 +1770,8 @@ function renderUpdates() {
   getLastReadAt('updates').then(lastReadAt => {
     allUpdates.forEach(u => {
       const isNew = lastReadAt ? new Date(u.created_at) > new Date(lastReadAt) : true;
-      const auditLine = buildAuditLine(u.created_by, u.created_at, u.updated_by, u.updated_at);
+      // Build inline audit badge (editor-only via CSS)
+      const auditBadge = renderAuditBadgeHtml(u.created_by, u.created_at, u.updated_by, u.updated_at);
       let actions = '';
       if (role === 'editor') {
         actions = `<div class="sticky-note-actions">
@@ -1435,7 +1787,7 @@ function renderUpdates() {
         <div class="sticky-note-title">${esc(u.title)}</div>
         <div class="sticky-note-body">${esc(previewContent)}</div>
         <div class="sticky-note-audit">
-          ${auditLine ? `<div class="sticky-audit-author">&#9997; ${esc(auditLine)}</div>` : ''}
+          ${auditBadge}
           ${actions}
         </div>`;
       note.addEventListener('click', () => openUpdateView(u));
@@ -1446,11 +1798,8 @@ function renderUpdates() {
 
 function openUpdateView(u) {
   document.getElementById('viewTitle').textContent = u.title;
-  const auditLine = buildAuditLine(u.created_by, u.created_at, u.updated_by, u.updated_at);
-  const auditBlock = document.getElementById('viewAuditBlock');
-  const auditText = document.getElementById('viewAuditText');
-  if (auditLine) { auditText.textContent = auditLine; auditBlock.style.display = ''; }
-  else { auditBlock.style.display = 'none'; }
+  // Render full audit history (editor-only — wrapper has .audit-editor-only)
+  renderAuditHistory('updateAuditHistory', u.created_by, u.created_at, u.updated_by, u.updated_at);
   const vb = document.getElementById('viewBody');
   if (u.content && /<[a-z][\s\S]*>/i.test(u.content)) { vb.innerHTML = u.content; }
   else { vb.textContent = u.content || ''; }
@@ -1460,8 +1809,10 @@ function closeUpdateView() { document.getElementById('viewOv').classList.remove(
 
 async function deleteUpdate(id) {
   if (!confirm('Delete this update?')) return;
+  const target = allUpdates.find(u => u.id === id);
   const { error } = await db.from('posts').delete().eq('id', id);
   if (error) { alert('Error deleting: ' + error.message); return; }
+  await logActivity('Delete', 'Updates', `Deleted update: "${target ? target.title : id}"`);
   await loadUpdates(); refreshAllNotifCounts();
 }
 
@@ -1507,6 +1858,8 @@ function renderHeadings(list) {
   list.forEach(h => {
     const chip = document.createElement('div');
     chip.className = 'heading-chip';
+    // Inline audit badge for heading chips (editor-only)
+    const auditBadge = renderAuditBadgeHtml(h.created_by, h.created_at, h.updated_by, h.updated_at);
     let actions = '';
     if (role === 'editor') {
       actions = `<div class="hc-actions">
@@ -1514,7 +1867,7 @@ function renderHeadings(list) {
         <span class="del" onclick="event.stopPropagation();deleteHeading(${h.id})">Del</span>
       </div>`;
     }
-    chip.innerHTML = `<span class="hc-title">${esc(h.title)}</span>${actions}<span class="hc-arrow">&#8250;</span>`;
+    chip.innerHTML = `<span class="hc-title">${esc(h.title)}</span>${auditBadge}${actions}<span class="hc-arrow">&#8250;</span>`;
     chip.addEventListener('click', () => openSubScreen(h));
     grid.appendChild(chip);
   });
@@ -1522,7 +1875,9 @@ function renderHeadings(list) {
 
 async function deleteHeading(id) {
   if (!confirm('Delete this heading and all its contents?')) return;
+  const { data: h } = await db.from('note_headings').select('title').eq('id',id).single();
   await db.from('note_headings').delete().eq('id', id);
+  await logActivity('Delete', 'Notes', `Deleted heading: "${h ? h.title : id}" and all its sub-headings/topics`);
   await loadHeadings();
 }
 
@@ -1578,8 +1933,8 @@ function renderSubheadings(list) {
   list.forEach(sub => {
     const row = document.createElement('div');
     row.className = 'pointer-row';
-    const auditLine = buildAuditLine(sub.created_by, sub.created_at, sub.updated_by, sub.updated_at);
-    const auditSpan = auditLine ? `<span class="pr-audit">&#9997; ${esc(auditLine)}</span>` : '';
+    // Inline audit badge (editor-only)
+    const auditBadge = renderAuditBadgeHtml(sub.created_by, sub.created_at, sub.updated_by, sub.updated_at);
     let actions = '';
     if (role === 'editor') {
       actions = `<div class="pr-actions">
@@ -1588,7 +1943,7 @@ function renderSubheadings(list) {
         <span class="del" onclick="event.stopPropagation();deleteSubheading(${sub.id})">Del</span>
       </div>`;
     }
-    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(sub.title)}</span>${auditSpan}${actions}<span class="pr-spacer"></span><span class="pr-arrow">&#8250;</span>`;
+    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(sub.title)}</span>${auditBadge}${actions}<span class="pr-spacer"></span><span class="pr-arrow">&#8250;</span>`;
     row.addEventListener('click', () => openSubNoteScreen(sub));
     el.appendChild(row);
   });
@@ -1596,7 +1951,9 @@ function renderSubheadings(list) {
 
 async function deleteSubheading(id) {
   if (!confirm('Delete this sub-heading and all its topics?')) return;
+  const { data: s } = await db.from('note_subheadings').select('title').eq('id',id).single();
   await db.from('note_subheadings').delete().eq('id', id);
+  await logActivity('Delete', 'Notes', `Deleted sub-heading: "${s ? s.title : id}" and all its topics`);
   await loadSubheadings(currentHeading.id);
 }
 
@@ -1668,8 +2025,8 @@ function renderSubSubheadings(list) {
   list.forEach(ss => {
     const row = document.createElement('div');
     row.className = 'pointer-row';
-    const auditLine = buildAuditLine(ss.created_by, ss.created_at, ss.updated_by, ss.updated_at);
-    const auditSpan = auditLine ? `<span class="pr-audit">&#9997; ${esc(auditLine)}</span>` : '';
+    // Inline audit badge (editor-only)
+    const auditBadge = renderAuditBadgeHtml(ss.created_by, ss.created_at, ss.updated_by, ss.updated_at);
     let actions = '';
     if (role === 'editor') {
       actions = `<div class="pr-actions">
@@ -1677,7 +2034,7 @@ function renderSubSubheadings(list) {
         <span class="del" onclick="event.stopPropagation();deleteSubSubheading(${ss.id})">Del</span>
       </div>`;
     }
-    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(ss.title)}</span>${auditSpan}${actions}<span class="pr-spacer"></span><span class="pr-arrow">&#8250;</span>`;
+    row.innerHTML = `<span class="pr-bullet"></span><span class="pr-title">${esc(ss.title)}</span>${auditBadge}${actions}<span class="pr-spacer"></span><span class="pr-arrow">&#8250;</span>`;
     row.addEventListener('click', () => openNoteScreen(ss));
     el.appendChild(row);
   });
@@ -1685,7 +2042,9 @@ function renderSubSubheadings(list) {
 
 async function deleteSubSubheading(id) {
   if (!confirm('Delete this topic?')) return;
+  const { data: t } = await db.from('note_subsubheadings').select('title').eq('id',id).single();
   await db.from('note_subsubheadings').delete().eq('id', id);
+  await logActivity('Delete', 'Notes', `Deleted topic: "${t ? t.title : id}"`);
   await loadSubSubheadings(currentSubheading.id);
 }
 
@@ -1727,14 +2086,6 @@ function renderNoteBody(content) {
   else { el.textContent = content || '(No content yet.)'; }
 }
 
-function renderNoteAudit(item) {
-  const block = document.getElementById('noteBodyAudit');
-  const text = document.getElementById('noteBodyAuditText');
-  const auditLine = buildAuditLine(item.created_by, item.created_at, item.updated_by, item.updated_at);
-  if (auditLine) { text.textContent = auditLine; block.style.display = ''; }
-  else { block.style.display = 'none'; }
-}
-
 async function openSubNoteScreen(sub) {
   const { data:fresh } = await db.from('note_subheadings').select('*').eq('id', sub.id).single();
   const latest = fresh || sub;
@@ -1746,7 +2097,8 @@ async function openSubNoteScreen(sub) {
   ]);
   document.getElementById('noteBodyTag').textContent = 'Sub-Heading';
   document.getElementById('noteBodyTitle').textContent = latest.title;
-  renderNoteAudit(latest);
+  // Render full audit history block (editor-only via parent wrapper)
+  renderAuditHistory('noteAuditHistory', latest.created_by, latest.created_at, latest.updated_by, latest.updated_at);
   renderNoteBody(latest.body);
   document.getElementById('noteEditorActions').style.display = role === 'editor' ? 'flex' : 'none';
   navTo('note');
@@ -1764,7 +2116,8 @@ async function openNoteScreen(ss) {
   ]);
   document.getElementById('noteBodyTag').textContent = 'Note';
   document.getElementById('noteBodyTitle').textContent = latest.title;
-  renderNoteAudit(latest);
+  // Render full audit history block (editor-only via parent wrapper)
+  renderAuditHistory('noteAuditHistory', latest.created_by, latest.created_at, latest.updated_by, latest.updated_at);
   renderNoteBody(latest.body);
   document.getElementById('noteEditorActions').style.display = role === 'editor' ? 'flex' : 'none';
   navTo('note');
@@ -1793,9 +2146,11 @@ async function deleteCurrentNote() {
   if (noteSource === 'sub') {
     if (!confirm('Delete body content?')) return;
     await db.from('note_subheadings').update({ body:'' }).eq('id', currentNote.id);
+    await logActivity('Edit', 'Notes', `Cleared body content of sub-heading: "${currentNote.title}"`);
     renderNoteBody(''); currentNote = { ...currentNote, body:'' };
   } else {
     if (!confirm('Delete this topic?')) return;
+    await logActivity('Delete', 'Notes', `Deleted topic: "${currentNote.title}"`);
     await db.from('note_subsubheadings').delete().eq('id', currentNote.id);
     currentNote = null;
     await openSubSubScreen(currentSubheading);
@@ -1803,7 +2158,7 @@ async function deleteCurrentNote() {
 }
 
 /* ==========================================================
-   SAVE MODAL — uses safeInsert / safeUpdate
+   SAVE MODAL
 ========================================================== */
 async function saveModal() {
   const title = document.getElementById('mTitle').value.trim();
@@ -1820,22 +2175,26 @@ async function saveModal() {
       if (!bodyText) { alert('Body is required.'); return; }
       const { error } = await safeInsertBulk('posts', { title, content: bodyHtml, created_by: editorName, created_at: now });
       if (error) throw error;
+      await logActivity('Add', 'Updates', `Added update: "${title}"`);
       await loadUpdates(); refreshAllNotifCounts();
 
     } else if (ctx.mode === 'edit-update') {
       if (!bodyText) { alert('Body is required.'); return; }
       const { error } = await safeUpdate('posts', { title, content: bodyHtml, updated_by: editorName, updated_at: now }, 'id', ctx.item.id);
       if (error) throw error;
+      await logActivity('Edit', 'Updates', `Edited update: "${title}"`);
       await loadUpdates();
 
     } else if (ctx.mode === 'new-heading') {
       const { error } = await safeInsertBulk('note_headings', { title, created_by: editorName, created_at: now });
       if (error) throw error;
+      await logActivity('Add', 'Notes', `Added heading: "${title}"`);
       await loadHeadings(); refreshAllNotifCounts();
 
     } else if (ctx.mode === 'edit-heading') {
       const { error } = await safeUpdate('note_headings', { title, updated_by: editorName, updated_at: now }, 'id', ctx.item.id);
       if (error) throw error;
+      await logActivity('Edit', 'Notes', `Edited heading: "${title}"`);
       await loadHeadings();
       if (currentHeading && currentHeading.id === ctx.item.id) {
         currentHeading.title = title;
@@ -1845,58 +2204,69 @@ async function saveModal() {
     } else if (ctx.mode === 'new-sub') {
       const { error } = await safeInsertBulk('note_subheadings', { heading_id: currentHeading.id, title, created_by: editorName, created_at: now });
       if (error) throw error;
+      await logActivity('Add', 'Notes', `Added sub-heading: "${title}" under "${currentHeading.title}"`);
       await loadSubheadings(currentHeading.id); refreshAllNotifCounts();
 
     } else if (ctx.mode === 'edit-sub') {
       const { error } = await safeUpdate('note_subheadings', { title, body: bodyHtml, updated_by: editorName, updated_at: now }, 'id', ctx.item.id);
       if (error) throw error;
+      await logActivity('Edit', 'Notes', `Edited sub-heading: "${title}"`);
       if (currentNote && currentNote.id === ctx.item.id) {
         currentNote = { ...currentNote, title, body: bodyHtml, updated_by: editorName, updated_at: now };
         document.getElementById('noteBodyTitle').textContent = title;
-        renderNoteAudit(currentNote); renderNoteBody(bodyHtml);
+        renderAuditHistory('noteAuditHistory', currentNote.created_by, currentNote.created_at, editorName, now);
+        renderNoteBody(bodyHtml);
       }
       await loadSubheadings(currentHeading.id);
 
     } else if (ctx.mode === 'edit-sub-body') {
       const { error } = await safeUpdate('note_subheadings', { title, body: bodyHtml, updated_by: editorName, updated_at: now }, 'id', ctx.item.id);
       if (error) throw error;
+      await logActivity('Edit', 'Notes', `Edited body of sub-heading: "${title}"`);
       if (currentNote && currentNote.id === ctx.item.id) {
         currentNote = { ...currentNote, title, body: bodyHtml, updated_by: editorName, updated_at: now };
         document.getElementById('noteBodyTitle').textContent = title;
-        renderNoteAudit(currentNote); renderNoteBody(bodyHtml);
+        renderAuditHistory('noteAuditHistory', currentNote.created_by, currentNote.created_at, editorName, now);
+        renderNoteBody(bodyHtml);
       }
 
     } else if (ctx.mode === 'new-subsub') {
       if (!bodyText) { alert('Body is required.'); return; }
       const { error } = await safeInsertBulk('note_subsubheadings', { subheading_id: currentSubheading.id, title, body: bodyHtml, created_by: editorName, created_at: now });
       if (error) throw error;
+      await logActivity('Add', 'Notes', `Added topic: "${title}" under "${currentSubheading.title}"`);
       await loadSubSubheadings(currentSubheading.id); refreshAllNotifCounts();
 
     } else if (ctx.mode === 'edit-subsub') {
       if (!bodyText) { alert('Body is required.'); return; }
       const { error } = await safeUpdate('note_subsubheadings', { title, body: bodyHtml, updated_by: editorName, updated_at: now }, 'id', ctx.item.id);
       if (error) throw error;
+      await logActivity('Edit', 'Notes', `Edited topic: "${title}"`);
       if (currentNote && currentNote.id === ctx.item.id) {
         currentNote = { ...currentNote, title, body: bodyHtml, updated_by: editorName, updated_at: now };
         document.getElementById('noteBodyTitle').textContent = title;
-        renderNoteAudit(currentNote); renderNoteBody(bodyHtml);
+        renderAuditHistory('noteAuditHistory', currentNote.created_by, currentNote.created_at, editorName, now);
+        renderNoteBody(bodyHtml);
       } else { await loadSubSubheadings(currentSubheading.id); }
 
     } else if (ctx.mode === 'new-protocol') {
       const icon = document.getElementById('mIcon').value || '📋';
       const { error } = await safeInsertBulk('protocols', { title, description: descHtml, icon, created_by: editorName, created_at: now });
       if (error) throw error;
+      await logActivity('Add', 'Protocols', `Added protocol: "${title}"`);
       await loadProtocols(); refreshAllNotifCounts();
 
     } else if (ctx.mode === 'edit-protocol') {
       const icon = document.getElementById('mIcon').value || '📋';
       const { error } = await safeUpdate('protocols', { title, description: descHtml, icon, updated_by: editorName, updated_at: now }, 'id', ctx.item.id);
       if (error) throw error;
+      await logActivity('Edit', 'Protocols', `Edited protocol: "${title}"`);
       if (currentProtocol && currentProtocol.id === ctx.item.id) {
         currentProtocol = { ...currentProtocol, title, description: descHtml, icon, updated_by: editorName, updated_at: now };
         document.getElementById('pvIcon').textContent = icon;
         document.getElementById('pvTitle').textContent = title;
-        renderProtocolDesc(descHtml); renderProtocolAudit(currentProtocol);
+        renderProtocolDesc(descHtml);
+        renderAuditHistory('protocolAuditHistory', currentProtocol.created_by, currentProtocol.created_at, editorName, now);
         document.getElementById('pvUpdated').textContent = 'Updated ' + fmtUpdated(now);
       }
       await loadProtocols();
@@ -1938,13 +2308,19 @@ function renderProtocols(list) {
     const upd = p.updated_at && p.updated_at !== p.created_at ? p.updated_at : (p.created_at||null);
     const updLabel = upd ? 'Updated ' + fmtUpdated(upd) : '';
     const descPreview = p.description ? p.description.replace(/<[^>]+>/g,' ').trim().substring(0,100) : '';
-    const auditLine = buildAuditLine(p.created_by, p.created_at, p.updated_by, p.updated_at);
-    const auditBlock = auditLine ? `<div class="protocol-card-audit"><div class="protocol-audit-author">&#9997; ${esc(auditLine)}</div></div>` : '';
+    // Inline audit badge (editor-only)
+    const auditBadge = renderAuditBadgeHtml(p.created_by, p.created_at, p.updated_by, p.updated_at);
     const actions = role === 'editor' ? `<div class="protocol-card-actions"><button class="pc-action" onclick="event.stopPropagation();openEditProtocolModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">Edit</button><button class="pc-action del" onclick="event.stopPropagation();deleteProtocol(${p.id})">Delete</button></div>` : '';
     const card = document.createElement('div');
     card.className = 'protocol-card';
     card.style.cursor = 'pointer';
-    card.innerHTML = `<div class="protocol-card-icon">${esc(p.icon||'📋')}</div><div class="protocol-card-title">${esc(p.title)}</div><div class="protocol-card-desc">${esc(descPreview)}</div>${updLabel?`<div class="protocol-view-updated" style="margin-top:10px;">${updLabel}</div>`:''}${auditBlock}${actions}`;
+    card.innerHTML = `
+      <div class="protocol-card-icon">${esc(p.icon||'📋')}</div>
+      <div class="protocol-card-title">${esc(p.title)}</div>
+      <div class="protocol-card-desc">${esc(descPreview)}</div>
+      ${updLabel?`<div class="protocol-view-updated" style="margin-top:10px;">${updLabel}</div>`:''}
+      <div style="margin-top:8px;">${auditBadge}</div>
+      ${actions}`;
     card.addEventListener('click', () => openProtocolView(p));
     grid.appendChild(card);
   });
@@ -1991,7 +2367,9 @@ function openEditProtocolModal(p) {
 
 async function deleteProtocol(id) {
   if (!confirm('Delete this protocol?')) return;
+  const { data: p } = await db.from('protocols').select('title').eq('id',id).single();
   await db.from('protocols').delete().eq('id', id);
+  await logActivity('Delete', 'Protocols', `Deleted protocol: "${p ? p.title : id}"`);
   await loadProtocols(); refreshAllNotifCounts();
 }
 
@@ -2003,14 +2381,6 @@ function renderProtocolDesc(content) {
   else { el.textContent = content || '(No description yet.)'; }
 }
 
-function renderProtocolAudit(p) {
-  const block = document.getElementById('pvAuditBlock');
-  const text = document.getElementById('pvAuditText');
-  const auditLine = buildAuditLine(p.created_by, p.created_at, p.updated_by, p.updated_at);
-  if (auditLine) { text.textContent = auditLine; block.style.display = ''; }
-  else { block.style.display = 'none'; }
-}
-
 function openProtocolView(p) {
   currentProtocol = p;
   renderBreadcrumb('bcProtocol',[
@@ -2019,7 +2389,8 @@ function openProtocolView(p) {
   ]);
   document.getElementById('pvIcon').textContent = p.icon || '📋';
   document.getElementById('pvTitle').textContent = p.title;
-  renderProtocolAudit(p);
+  // Full audit history (editor-only via parent wrapper)
+  renderAuditHistory('protocolAuditHistory', p.created_by, p.created_at, p.updated_by, p.updated_at);
   renderProtocolDesc(p.description);
   const upd = p.updated_at || p.created_at;
   document.getElementById('pvUpdated').textContent = upd ? 'Updated ' + fmtUpdated(upd) : '';
@@ -2198,7 +2569,13 @@ function startAutoRefresh(){
     else if(scrId==='screenNote'&&currentNote){
       const src=noteSource==='sub'?db.from('note_subheadings'):db.from('note_subsubheadings');
       const{data:nd}=await src.select('*').eq('id',currentNote.id).single();
-      if(nd){currentNote=nd;renderNoteBody(nd.body);renderNoteAudit(nd);if(document.getElementById('noteBodyTitle').textContent!==nd.title)document.getElementById('noteBodyTitle').textContent=nd.title;}
+      if(nd){
+        currentNote=nd;
+        renderNoteBody(nd.body);
+        // Refresh audit history live
+        renderAuditHistory('noteAuditHistory', nd.created_by, nd.created_at, nd.updated_by, nd.updated_at);
+        if(document.getElementById('noteBodyTitle').textContent!==nd.title)document.getElementById('noteBodyTitle').textContent=nd.title;
+      }
     }
   },1000);
 }
@@ -2272,7 +2649,7 @@ document.addEventListener('keydown',e=>{
   if(e.altKey&&e.key==='ArrowLeft'){goBack();}
 });
 
-(function(){ sessionStorage.removeItem('ch_role'); sessionStorage.removeItem('ch_name'); })();
+(function(){ /* Supabase Auth manages session state — no manual sessionStorage needed */ })();
 </script>
 </body>
 </html>
