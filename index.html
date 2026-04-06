@@ -1976,17 +1976,81 @@ function editCurrentNote() {
   else openEditSubSubModal(currentNote);
 }
  
+/* Extract pure plain text from HTML — avoids CSS letter-spacing/pseudo-element artifacts */
+function htmlToPlainText(html) {
+  if (!html) return '';
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
+  document.body.appendChild(iframe);
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.open(); doc.write('<!DOCTYPE html><html><body></body></html>'); doc.close();
+    const container = doc.createElement('div');
+    container.innerHTML = html;
+    doc.body.appendChild(container);
+    function walk(node) {
+      if (node.nodeType === 3) return node.nodeValue;
+      if (node.nodeType !== 1) return '';
+      const tag = node.tagName.toUpperCase();
+      if (['SCRIPT','STYLE'].includes(tag)) return '';
+      const isBlock = ['P','DIV','BR','LI','H1','H2','H3','H4','H5','H6','TR','BLOCKQUOTE','PRE'].includes(tag);
+      let out = '';
+      for (const child of node.childNodes) out += walk(child);
+      return isBlock ? out + '\n' : out;
+    }
+    return walk(container).replace(/\n{3,}/g, '\n\n').trim();
+  } finally {
+    document.body.removeChild(iframe);
+  }
+}
+
 async function copyNoteBody() {
-  const el   = document.getElementById('noteBodyText');
-  const text = el.innerText || el.textContent;
-  if (!text || text === '(No content yet.)') return;
+  const el = document.getElementById('noteBodyText');
+  const raw = el.innerHTML || '';
+  const isEmpty = !raw || raw.trim() === '' || el.textContent.trim() === '(No content yet.)';
+  if (isEmpty) return;
+  const hasHtml = /<[a-z][\s\S]*>/i.test(raw);
+  const text = hasHtml ? htmlToPlainText(raw) : (el.textContent || '').trim();
+  if (!text) return;
   try {
     await navigator.clipboard.writeText(text);
     const btn = document.getElementById('copyNoteBtn');
     btn.textContent='Copied!'; btn.style.borderColor='#27ae60'; btn.style.color='#27ae60'; btn.style.opacity='1';
     setTimeout(() => { btn.textContent='Copy'; btn.style.borderColor='var(--border)'; btn.style.color='var(--text)'; btn.style.opacity='.6'; }, 2000);
-  } catch(e) {}
+  } catch(e) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+      document.body.appendChild(ta);
+      ta.select(); ta.setSelectionRange(0, ta.value.length);
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const btn = document.getElementById('copyNoteBtn');
+      btn.textContent='Copied!'; btn.style.borderColor='#27ae60'; btn.style.color='#27ae60'; btn.style.opacity='1';
+      setTimeout(() => { btn.textContent='Copy'; btn.style.borderColor='var(--border)'; btn.style.color='var(--text)'; btn.style.opacity='.6'; }, 2000);
+    } catch(e2) {}
+  }
 }
+
+/* Intercept native Ctrl+C when user manually selects text inside the note body */
+document.addEventListener('copy', function(e) {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const anchor = sel.anchorNode;
+  const noteEl = document.getElementById('noteBodyText');
+  if (!noteEl || !noteEl.contains(anchor)) return;
+  const range = sel.getRangeAt(0);
+  const frag = range.cloneContents();
+  const tmp = document.createElement('div');
+  tmp.appendChild(frag);
+  const hasHtml = /<[a-z][\s\S]*>/i.test(tmp.innerHTML);
+  const plainText = hasHtml ? htmlToPlainText(tmp.innerHTML) : (tmp.textContent || '').trim();
+  if (plainText) {
+    e.preventDefault();
+    e.clipboardData.setData('text/plain', plainText);
+  }
+});
  
 async function deleteCurrentNote() {
   if (!currentNote) return;
@@ -2603,11 +2667,24 @@ tickClocks(); setInterval(tickClocks,1000);
 ========================================================== */
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
-    closeModal();
-    closeUpdateView();
-    closeSearchResults();
-    if(document.getElementById('backupModal').classList.contains('open')) closeBackupModal();
-    if(document.getElementById('activityLogModal').style.display==='block') closeActivityLog();
+    const modalOpen  = document.getElementById('modal').classList.contains('open');
+    const backupOpen = document.getElementById('backupModal').classList.contains('open');
+    const actLogOpen = document.getElementById('activityLogModal').style.display==='block';
+    const searchOpen = document.getElementById('searchResults').classList.contains('open');
+    const uvEl       = document.getElementById('updateView');
+    const updateOpen = uvEl && (uvEl.classList.contains('open') || uvEl.style.display==='block');
+    const viewOvOpen = document.getElementById('viewOv') && document.getElementById('viewOv').classList.contains('open');
+    const anyOverlay = modalOpen || backupOpen || actLogOpen || searchOpen || updateOpen || viewOvOpen;
+    if(anyOverlay){
+      closeModal();
+      closeUpdateView();
+      closeSearchResults();
+      if(backupOpen) closeBackupModal();
+      if(actLogOpen) closeActivityLog();
+    } else {
+      // No overlay open — Escape goes back one level (works for all users)
+      goBack();
+    }
   }
   if(e.altKey&&e.key==='ArrowLeft') goBack();
 });
