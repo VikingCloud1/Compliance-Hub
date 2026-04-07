@@ -285,6 +285,20 @@
     .rich-editor:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(21,101,192,.1); }
     .rich-editor[contenteditable="true"] { min-height:180px; overflow-y:auto; }
     .rich-editor:empty:before { content:attr(data-placeholder); opacity:.35; pointer-events:none; }
+    .rich-editor img { max-width:100%; border-radius:6px; cursor:pointer; transition:outline .15s; }
+    .rich-editor img.img-selected { outline:2px solid var(--accent); outline-offset:2px; }
+    #imgResizePopover { position:fixed; z-index:9999; background:#fff; border:1px solid var(--border); border-radius:12px; padding:14px 18px; box-shadow:0 8px 32px rgba(21,101,192,.15); display:none; min-width:240px; animation:fadeUp .15s ease; }
+    #imgResizePopover.show { display:block; }
+    .irp-title { font-family:'Cinzel',serif; font-size:.62em; letter-spacing:2px; text-transform:uppercase; color:var(--accent); opacity:.6; margin-bottom:10px; }
+    .irp-slider-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+    .irp-slider { flex:1; -webkit-appearance:none; height:4px; border-radius:4px; background:linear-gradient(to right,var(--accent) var(--val,50%),#dde4f0 var(--val,50%)); outline:none; cursor:pointer; }
+    .irp-slider::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--accent); border:2px solid #fff; box-shadow:0 1px 6px rgba(21,101,192,.3); cursor:pointer; }
+    .irp-pct { font-family:'Cinzel',serif; font-size:.68em; color:var(--accent); min-width:36px; text-align:right; letter-spacing:1px; }
+    .irp-presets { display:flex; gap:6px; flex-wrap:wrap; }
+    .irp-preset { font-family:'Cinzel',serif; font-size:.6em; letter-spacing:1.5px; padding:4px 10px; border:1px solid rgba(21,101,192,.25); border-radius:6px; background:#fff; color:var(--accent); cursor:pointer; transition:all .2s; }
+    .irp-preset:hover,.irp-preset.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .irp-remove { display:block; width:100%; margin-top:10px; padding:6px; border-radius:6px; background:#fff; border:1px solid rgba(192,57,43,.3); color:#c0392b; font-family:'Cinzel',serif; font-size:.6em; letter-spacing:1.5px; cursor:pointer; text-align:center; transition:all .2s; }
+    .irp-remove:hover { background:#c0392b; color:#fff; }
  
     .modal-ov  { position:fixed; inset:0; z-index:3000; display:none; justify-content:center; align-items:flex-start; padding:60px 20px; background:rgba(245,245,245,.88); backdrop-filter:blur(6px); overflow-y:auto; }
     .modal-ov.open { display:flex; }
@@ -305,8 +319,8 @@
     .msecondary:hover { border-color:var(--accent); color:var(--accent); }
  
     #viewOv { position:fixed; inset:0; z-index:2500; display:none; background:#fff; overflow-y:auto; }
-    #viewOv.open { display:block; }
-    .view-inner { max-width:820px; margin:0 auto; padding:50px 40px 80px; }
+    #viewOv.open { display:flex; flex-direction:column; align-items:center; }
+    .view-inner { max-width:820px; width:100%; margin:0 auto; padding:50px 40px 80px; text-align:left; }
     .view-back  { display:inline-flex; align-items:center; gap:8px; font-family:'Cinzel',serif; font-size:.66em; letter-spacing:2px; text-transform:uppercase; opacity:.4; cursor:pointer; margin-bottom:34px; transition:opacity .2s; }
     .view-back:hover { opacity:.85; }
     .view-tag   { font-family:'Cinzel',serif; font-size:.58em; letter-spacing:4px; text-transform:uppercase; opacity:.35; margin-bottom:8px; }
@@ -720,6 +734,9 @@
             <option value="28px">28</option>
           </select>
         </div>
+        <div class="etb-divider"></div>
+        <button class="etb-btn" onclick="triggerImgUpload()" title="Insert Image">&#128247; Image</button>
+        <input type="file" id="imgFileInput" accept="image/*" style="display:none;" onchange="insertImageFromFile(event)">
       </div>
       <div class="rich-editor" id="mBodyRich" contenteditable="true" spellcheck="true" data-placeholder="Enter note content&#8230;"></div>
       <textarea id="mBody" style="display:none;"></textarea>
@@ -1342,6 +1359,142 @@ document.addEventListener('selectionchange', () => {
 });
 function getRichHtml(elId) { const el = document.getElementById(elId); return el ? el.innerHTML : ''; }
 function setRichHtml(elId, html) { const el = document.getElementById(elId); if (el) el.innerHTML = html || ''; }
+
+/* ==========================================================
+   IMAGE UPLOAD & RESIZE
+========================================================== */
+let _selectedImg = null;
+
+function triggerImgUpload() {
+  const inp = document.getElementById('imgFileInput');
+  inp.value = '';
+  inp.click();
+}
+
+function insertImageFromFile(e) {
+  const file = e.target.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const editor = document.getElementById('mBodyRich');
+    editor.focus();
+    const img = document.createElement('img');
+    img.src = ev.target.result;
+    img.style.width = '100%';
+    img.style.maxWidth = '100%';
+    img.dataset.origPct = '100';
+    // Insert at cursor or append
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && editor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+      const range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(img);
+      range.setStartAfter(img);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else {
+      editor.appendChild(img);
+    }
+    setTimeout(() => selectEditorImage(img), 50);
+  };
+  reader.readAsDataURL(file);
+}
+
+function selectEditorImage(img) {
+  // Deselect previous
+  document.querySelectorAll('.rich-editor img.img-selected').forEach(i => i.classList.remove('img-selected'));
+  _selectedImg = img;
+  img.classList.add('img-selected');
+  showImgResizePopover(img);
+}
+
+function showImgResizePopover(img) {
+  const pop = document.getElementById('imgResizePopover');
+  const rect = img.getBoundingClientRect();
+  // Current width as percentage of natural width (or container)
+  const container = img.closest('.rich-editor');
+  const containerW = container ? container.clientWidth : window.innerWidth;
+  const currentW = img.offsetWidth || containerW;
+  const pct = Math.round((currentW / containerW) * 100);
+
+  const slider = document.getElementById('irpSlider');
+  slider.value = pct;
+  updateSliderTrack(slider);
+  document.getElementById('irpPct').textContent = pct + '%';
+  // Highlight active preset
+  document.querySelectorAll('.irp-preset').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.pct) === pct);
+  });
+
+  // Position popover below image, bounded to viewport
+  const popW = 260;
+  let left = rect.left + (rect.width / 2) - (popW / 2);
+  left = Math.max(10, Math.min(left, window.innerWidth - popW - 10));
+  let top = rect.bottom + 10;
+  if (top + 180 > window.innerHeight) top = rect.top - 190;
+
+  pop.style.left = left + 'px';
+  pop.style.top = top + 'px';
+  pop.classList.add('show');
+}
+
+function hideImgResizePopover() {
+  document.getElementById('imgResizePopover').classList.remove('show');
+  if (_selectedImg) { _selectedImg.classList.remove('img-selected'); _selectedImg = null; }
+}
+
+function updateSliderTrack(slider) {
+  const min = parseInt(slider.min), max = parseInt(slider.max), val = parseInt(slider.value);
+  const pct = ((val - min) / (max - min)) * 100;
+  slider.style.setProperty('--val', pct + '%');
+}
+
+function onImgSliderInput(val) {
+  if (!_selectedImg) return;
+  const container = _selectedImg.closest('.rich-editor');
+  const containerW = container ? container.clientWidth : window.innerWidth;
+  _selectedImg.style.width = (containerW * val / 100) + 'px';
+  document.getElementById('irpPct').textContent = val + '%';
+  updateSliderTrack(document.getElementById('irpSlider'));
+  // Update active preset
+  document.querySelectorAll('.irp-preset').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.pct) === parseInt(val));
+  });
+}
+
+function setImgPreset(pct) {
+  if (!_selectedImg) return;
+  const container = _selectedImg.closest('.rich-editor');
+  const containerW = container ? container.clientWidth : window.innerWidth;
+  _selectedImg.style.width = (containerW * pct / 100) + 'px';
+  const slider = document.getElementById('irpSlider');
+  slider.value = pct;
+  updateSliderTrack(slider);
+  document.getElementById('irpPct').textContent = pct + '%';
+  document.querySelectorAll('.irp-preset').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.pct) === pct);
+  });
+}
+
+function removeSelectedImg() {
+  if (!_selectedImg) return;
+  _selectedImg.remove();
+  hideImgResizePopover();
+}
+
+// Click on editor images to open resize popover
+document.addEventListener('click', function(e) {
+  const pop = document.getElementById('imgResizePopover');
+  if (!pop) return;
+  if (e.target.tagName === 'IMG' && e.target.closest('.rich-editor')) {
+    e.preventDefault();
+    selectEditorImage(e.target);
+    return;
+  }
+  if (pop.contains(e.target)) return;
+  hideImgResizePopover();
+});
  
 /* ==========================================================
    GLOBAL SEARCH
@@ -2689,5 +2842,23 @@ document.addEventListener('keydown',e=>{
   if(e.altKey&&e.key==='ArrowLeft') goBack();
 });
 </script>
+
+<!-- Image Resize Popover -->
+<div id="imgResizePopover">
+  <div class="irp-title">&#128247; Resize Image</div>
+  <div class="irp-slider-row">
+    <input type="range" class="irp-slider" id="irpSlider" min="10" max="100" value="100"
+      oninput="onImgSliderInput(this.value)" style="--val:100%;">
+    <span class="irp-pct" id="irpPct">100%</span>
+  </div>
+  <div class="irp-presets">
+    <button class="irp-preset" data-pct="25" onclick="setImgPreset(25)">25%</button>
+    <button class="irp-preset" data-pct="50" onclick="setImgPreset(50)">50%</button>
+    <button class="irp-preset" data-pct="75" onclick="setImgPreset(75)">75%</button>
+    <button class="irp-preset active" data-pct="100" onclick="setImgPreset(100)">100%</button>
+  </div>
+  <button class="irp-remove" onclick="removeSelectedImg()">&#128465; Remove Image</button>
+</div>
+
 </body>
 </html>
