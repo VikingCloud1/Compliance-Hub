@@ -90,7 +90,10 @@
     /* Login lockout bar */
     #loginLockout { display:none; background:rgba(192,57,43,.08); border:1px solid rgba(192,57,43,.25); border-radius:8px; padding:10px 14px; margin-bottom:16px; font-size:.72em; color:#c0392b; letter-spacing:.3px; text-align:center; }
  
-    .topbar { position:fixed; top:0; width:100%; padding:0 16px; display:flex; justify-content:space-between; align-items:center; z-index:200; background:#fff; border-bottom:1px solid var(--border); box-shadow:0 2px 12px rgba(21,101,192,.07); backdrop-filter:blur(12px); gap:10px; height:56px; }
+    .topbar { position:fixed; top:0; width:100%; padding:0 16px; display:flex; justify-content:space-between; align-items:center; z-index:500; background:#fff; border-bottom:1px solid var(--border); box-shadow:0 2px 12px rgba(21,101,192,.07); backdrop-filter:blur(12px); gap:10px; height:56px; }
+    /* Sticky sub-nav: Updates / Notes / Protocols */
+    .dash-tabs { display:flex; gap:0; padding:0 40px; border-bottom:1px solid var(--border); position:fixed; top:56px; left:0; right:0; z-index:490; background:#fff; box-shadow:0 2px 8px rgba(21,101,192,.04); }
+    .dash-tabs-spacer { height:48px; } /* placeholder so content isn't hidden under sticky tabs */
  
     #backBtn { display:none; align-items:center; gap:5px; padding:6px 12px 6px 8px; border-radius:7px; border:1px solid var(--border); background:#fff; color:var(--text); cursor:pointer; font-family:'Cinzel',serif; font-size:.72em; letter-spacing:1.5px; text-transform:uppercase; transition:all .2s; white-space:nowrap; flex-shrink:0; order:-1; }
     #backBtn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); box-shadow:0 0 0 3px rgba(21,101,192,.08); }
@@ -167,22 +170,22 @@
     .spin { display:inline-block; width:12px; height:12px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle; }
     @keyframes spin { to { transform:rotate(360deg); } }
  
-    .screen { display:none; min-height:100vh; padding-top:68px; }
+    .screen { display:none; min-height:100vh; padding-top:116px; }
     .screen.active { display:block; }
-    #screenDash { padding-top:68px; }
+    #screenDash { padding-top:116px; }
  
-    .tab-btn { font-family:'Cinzel',serif; font-size:.78em; letter-spacing:3px; text-transform:uppercase; padding:10px 28px; cursor:pointer; border:none; background:transparent; color:var(--text); opacity:.45; border-bottom:2px solid transparent; transition:all .25s; position:relative; top:1px; }
+    .tab-btn { font-family:'Cinzel',serif; font-size:.78em; letter-spacing:3px; text-transform:uppercase; padding:12px 28px; cursor:pointer; border:none; background:transparent; color:var(--text); opacity:.45; border-bottom:2px solid transparent; transition:all .25s; position:relative; height:46px; }
     .tab-btn.active { opacity:1; color:var(--accent); border-bottom:2px solid var(--accent); }
     .tab-btn:hover  { opacity:.8; }
     .notif-badge { position:absolute; top:-2px; right:6px; min-width:18px; height:18px; border-radius:9px; background:#c0392b; color:#fff; font-family:'Raleway',sans-serif; font-size:.62em; font-weight:700; letter-spacing:0; display:flex; align-items:center; justify-content:center; padding:0 5px; pointer-events:none; animation:badgePop .3s cubic-bezier(.34,1.56,.64,1); box-shadow:0 2px 8px rgba(192,57,43,.4); border:2px solid #fff; line-height:1; }
     .notif-badge.hidden { display:none!important; }
     @keyframes badgePop { from{opacity:0;transform:scale(0.4)} to{opacity:1;transform:scale(1)} }
  
-    .dash-tabs   { display:flex; gap:0; padding:20px 40px 0; border-bottom:1px solid var(--border); }
+    .dash-tabs   { display:flex; gap:0; padding:0 40px; border-bottom:1px solid var(--border); position:fixed; top:56px; left:0; right:0; z-index:490; background:#fff; box-shadow:0 2px 8px rgba(21,101,192,.04); height:46px; align-items:center; }
     .tab-panel   { display:none; }
     .tab-panel.active { display:block; }
  
-    .updates-band { padding:28px 40px 0; }
+    .updates-band { padding:20px 40px 0; }
     .sec-hdr    { display:flex; align-items:center; gap:16px; margin-bottom:20px; }
     .sec-label  { font-family:'Cinzel',serif; font-size:.68em; letter-spacing:5px; text-transform:uppercase; color:var(--accent); white-space:nowrap; }
     .sec-line   { flex:1; height:1px; background:linear-gradient(to right,var(--accent),transparent); opacity:.2; }
@@ -206,7 +209,7 @@
  
     .dash-divider { margin:0 40px; height:1px; background:linear-gradient(to right,transparent,var(--text),transparent); opacity:.1; }
  
-    .notes-band    { padding:24px 40px 100px; }
+    .notes-band    { padding:20px 40px 100px; min-height:60vh; }
     .headings-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
     .heading-chip  { background:#fff; border:1px solid var(--border); border-radius:10px; padding:16px 20px; cursor:pointer; box-shadow:var(--shadow); transition:border-color .3s,box-shadow .25s,transform .25s; display:flex; align-items:center; gap:8px; }
     .heading-chip:hover { border-color:var(--accent); box-shadow:0 4px 20px var(--glow); transform:translateY(-2px); }
@@ -221,7 +224,7 @@
     .heading-chip:hover .hc-actions span.del { border-color:rgba(192,57,43,.25); }
     .heading-chip:hover .hc-actions span.del:hover { border-color:#c0392b; background:rgba(192,57,43,.07); }
  
-    .protocol-band  { padding:28px 40px 100px; }
+    .protocol-band  { padding:20px 40px 100px; }
     .protocol-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
     .protocol-card  { background:#fff; border:1px solid var(--border); border-radius:12px; padding:28px 24px 20px; box-shadow:var(--shadow); transition:border-color .3s,box-shadow .25s,transform .25s; position:relative; }
     .protocol-card:hover { border-color:var(--accent); box-shadow:0 6px 28px var(--glow); transform:translateY(-3px); }
@@ -337,7 +340,7 @@
     .protocol-view-desc   { font-size:var(--viewer-fs,1.05em); line-height:1.9; opacity:.85; white-space:pre-wrap; word-wrap:break-word; transition:font-size .2s; }
     .protocol-view-actions{ display:flex; gap:8px; margin-top:6px; }
  
-    .viewer-font-ctrl { position:fixed; bottom:22px; right:22px; z-index:400; background:#fff; border:1px solid var(--border); border-radius:14px; padding:8px 12px; display:flex; align-items:center; gap:8px; backdrop-filter:blur(12px); box-shadow:var(--shadow); font-family:'Cinzel',serif; font-size:.62em; letter-spacing:1.5px; }
+    .viewer-font-ctrl { position:fixed; bottom:22px; right:96px; z-index:400; background:#fff; border:1px solid var(--border); border-radius:14px; padding:8px 12px; display:flex; align-items:center; gap:8px; backdrop-filter:blur(12px); box-shadow:var(--shadow); font-family:'Cinzel',serif; font-size:.62em; letter-spacing:1.5px; }
     .vfc-label        { opacity:.45; text-transform:uppercase; white-space:nowrap; }
     .vfc-btn          { background:#f8faff; border:1px solid var(--border); color:var(--accent); border-radius:6px; width:26px; height:26px; cursor:pointer; font-size:.9em; font-weight:700; display:flex; align-items:center; justify-content:center; transition:all .2s; padding:0; }
     .vfc-btn:hover    { border-color:var(--accent); background:var(--accent-soft); }
@@ -354,7 +357,7 @@
     #liveToast { position:fixed; bottom:66px; left:22px; z-index:300; background:#fff; border:1px solid var(--border); border-radius:10px; padding:10px 15px; font-size:.78em; letter-spacing:.5px; box-shadow:var(--shadow); display:flex; align-items:center; gap:10px; opacity:0; transform:translateY(8px); transition:opacity .35s,transform .35s; pointer-events:none; max-width:270px; }
     #liveToast.show { opacity:1; transform:translateY(0); }
  
-    #tzPanel { position:fixed; right:0; top:50%; transform:translateY(-50%); z-index:90; display:flex; flex-direction:column; align-items:center; background:#fff; border:1px solid var(--border); border-right:none; border-radius:16px 0 0 16px; padding:16px 12px; box-shadow:-4px 0 24px var(--glow); gap:6px; }
+    #tzPanel { position:fixed; right:0; top:50%; transform:translateY(-50%); z-index:480; display:flex; flex-direction:column; align-items:center; background:#fff; border:1px solid var(--border); border-right:none; border-radius:16px 0 0 16px; padding:16px 12px; box-shadow:-4px 0 24px var(--glow); gap:6px; }
     .tz-wrap { display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 0; }
     .tz-wrap+.tz-wrap { border-top:1px solid var(--border); }
     .aclock { width:45px; height:45px; flex-shrink:0; }
@@ -418,8 +421,64 @@
     .backup-status.error  { color:#c0392b; }
     .backup-status.info   { color:var(--accent); }
  
-    #devCredit { position:fixed; bottom:9px; right:16px; z-index:50; font-family:'Cinzel',serif; font-size:.56em; letter-spacing:2px; opacity:.4; color:var(--accent); pointer-events:none; user-select:none; }
+    #devCredit { position:fixed; bottom:9px; right:96px; z-index:50; font-family:'Cinzel',serif; font-size:.56em; letter-spacing:2px; opacity:.4; color:var(--accent); pointer-events:none; user-select:none; }
  
+
+    /* ── NOTES FLAT VIEW ─────────────────────────────── */
+    .notes-controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .notes-view-btns { display:flex; gap:4px; background:#f0f4ff; border-radius:8px; padding:3px; }
+    .notes-view-btn { padding:5px 10px; border-radius:6px; border:none; background:transparent; cursor:pointer; font-size:.75em; color:var(--text); opacity:.5; transition:all .2s; }
+    .notes-view-btn.active { background:#fff; opacity:1; color:var(--accent); box-shadow:0 1px 6px rgba(21,101,192,.12); }
+    .notes-sort-btn { padding:5px 12px; border-radius:7px; border:1px solid var(--border); background:#fff; color:var(--text); cursor:pointer; font-size:.72em; font-family:'Cinzel',serif; letter-spacing:1.5px; transition:all .2s; opacity:.65; white-space:nowrap; }
+    .notes-sort-btn.active { opacity:1; border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+
+    /* List view */
+    .notes-flat-list { display:flex; flex-direction:column; gap:8px; padding-bottom:80px; }
+    .note-flat-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px 20px; cursor:pointer; box-shadow:var(--shadow); transition:border-color .25s,box-shadow .25s,transform .2s; display:flex; align-items:center; gap:14px; }
+    .note-flat-card:hover { border-color:var(--accent); box-shadow:0 4px 20px var(--glow); transform:translateY(-1px); }
+    .note-flat-left { flex:1; min-width:0; }
+    .note-flat-title { font-family:'Cinzel',serif; font-size:.84em; letter-spacing:1.5px; color:var(--accent); margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .note-flat-preview { font-size:.74em; opacity:.45; line-height:1.5; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
+    .note-flat-badge { font-family:'Cinzel',serif; font-size:.58em; letter-spacing:1.5px; text-transform:uppercase; padding:3px 10px; border-radius:20px; background:var(--accent-soft); border:1px solid rgba(21,101,192,.18); color:var(--accent); white-space:nowrap; flex-shrink:0; }
+    .note-flat-arrow { opacity:.25; font-size:.8em; flex-shrink:0; transition:opacity .2s; }
+    .note-flat-card:hover .note-flat-arrow { opacity:.7; }
+    .note-flat-actions { display:flex; gap:6px; flex-shrink:0; opacity:0; transition:opacity .2s; }
+    .note-flat-card:hover .note-flat-actions { opacity:1; }
+    .note-flat-act { font-size:.6em; letter-spacing:1px; cursor:pointer; font-family:'Cinzel',serif; color:var(--accent); padding:3px 8px; border:1px solid rgba(21,101,192,.25); border-radius:4px; background:transparent; transition:all .2s; white-space:nowrap; }
+    .note-flat-act:hover { border-color:var(--accent); background:var(--accent-soft); }
+    .note-flat-act.del { color:#c0392b; border-color:rgba(192,57,43,.25); }
+    .note-flat-act.del:hover { border-color:#c0392b; background:rgba(192,57,43,.07); }
+
+    /* Grid view */
+    .notes-flat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px; padding-bottom:80px; }
+    .note-grid-card { background:#fff; border:1px solid var(--border); border-radius:14px; padding:20px 18px; cursor:pointer; box-shadow:var(--shadow); transition:border-color .25s,box-shadow .25s,transform .25s; position:relative; }
+    .note-grid-card:hover { border-color:var(--accent); box-shadow:0 6px 28px var(--glow); transform:translateY(-3px); }
+    .note-grid-badge { font-family:'Cinzel',serif; font-size:.56em; letter-spacing:1.5px; text-transform:uppercase; padding:2px 9px; border-radius:20px; background:var(--accent-soft); border:1px solid rgba(21,101,192,.18); color:var(--accent); display:inline-block; margin-bottom:10px; }
+    .note-grid-title { font-family:'Cinzel',serif; font-size:.8em; letter-spacing:1.5px; color:var(--accent); margin-bottom:7px; line-height:1.35; }
+    .note-grid-preview { font-size:.72em; opacity:.42; line-height:1.55; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .note-grid-actions { display:flex; gap:6px; margin-top:12px; opacity:0; transition:opacity .2s; }
+    .note-grid-card:hover .note-grid-actions { opacity:1; }
+
+    /* Compact icon view */
+    .notes-flat-compact { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:8px; padding-bottom:80px; }
+    .note-compact-card { background:#fff; border:1px solid var(--border); border-radius:10px; padding:12px 14px; cursor:pointer; transition:border-color .2s,box-shadow .2s,transform .2s; display:flex; align-items:center; gap:9px; }
+    .note-compact-card:hover { border-color:var(--accent); box-shadow:0 3px 14px var(--glow); transform:translateY(-1px); }
+    .note-compact-icon { width:30px; height:30px; border-radius:8px; background:var(--accent-soft); border:1px solid rgba(21,101,192,.18); display:flex; align-items:center; justify-content:center; font-family:'Cinzel',serif; font-size:.7em; color:var(--accent); font-weight:700; flex-shrink:0; }
+    .note-compact-title { font-family:'Cinzel',serif; font-size:.72em; letter-spacing:1px; color:var(--accent); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .note-compact-badge { font-size:.55em; letter-spacing:1px; text-transform:uppercase; opacity:.4; font-family:'Cinzel',serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    /* Note detail modal (inline) */
+    #noteDetailModal { position:fixed; inset:0; z-index:4000; display:none; justify-content:center; align-items:flex-start; padding:60px 20px; background:rgba(245,245,245,.90); backdrop-filter:blur(8px); overflow-y:auto; }
+    #noteDetailModal.open { display:flex; }
+    .ndm-box { background:#fff; border:1px solid var(--border); border-radius:18px; padding:38px 44px; width:100%; max-width:740px; box-shadow:0 8px 60px var(--glow); animation:fadeUp .22s ease; position:relative; }
+    .ndm-close { position:absolute; top:15px; right:17px; background:#fff; border:1px solid var(--border); color:var(--text); cursor:pointer; border-radius:6px; padding:4px 11px; font-size:.72em; font-family:'Raleway',sans-serif; transition:all .2s; }
+    .ndm-close:hover { border-color:var(--accent); color:var(--accent); }
+    .ndm-tag { font-family:'Cinzel',serif; font-size:.58em; letter-spacing:4px; text-transform:uppercase; padding:3px 12px; border-radius:20px; background:var(--accent-soft); border:1px solid rgba(21,101,192,.2); color:var(--accent); display:inline-block; margin-bottom:14px; }
+    .ndm-title { font-family:'Cinzel',serif; font-size:1.8em; letter-spacing:2px; color:var(--accent); margin-bottom:18px; line-height:1.3; }
+    .ndm-divider { height:1px; background:linear-gradient(to right,var(--accent),transparent); opacity:.2; margin-bottom:24px; }
+    .ndm-body { font-size:1em; line-height:1.9; white-space:pre-wrap; word-wrap:break-word; font-family:'Raleway',sans-serif; color:var(--text); }
+    .ndm-actions { display:flex; gap:8px; margin-bottom:20px; }
+
     @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
   </style>
 </head>
@@ -566,18 +625,19 @@
   </div>
 </div>
  
+<div class="dash-tabs hidden" id="dashTabs">
+  <button class="tab-btn active" id="tabUpdatesBtn" onclick="navToDashTab('updates')" style="position:relative;">
+    &#128203; Updates <span class="notif-badge hidden" id="badge-updates"></span>
+  </button>
+  <button class="tab-btn" id="tabNotesBtn" onclick="navToDashTab('notes')" style="position:relative;">
+    &#128221; Notes <span class="notif-badge hidden" id="badge-notes"></span>
+  </button>
+  <button class="tab-btn" id="tabProtocolBtn" onclick="navToDashTab('protocol')" style="position:relative;">
+    &#128220; Protocol <span class="notif-badge hidden" id="badge-protocol"></span>
+  </button>
+</div>
+
 <div class="screen" id="screenDash">
-  <div class="dash-tabs">
-    <button class="tab-btn active" id="tabUpdatesBtn" onclick="switchTab('updates')" style="position:relative;">
-      &#128203; Updates <span class="notif-badge hidden" id="badge-updates"></span>
-    </button>
-    <button class="tab-btn" id="tabNotesBtn" onclick="switchTab('notes')" style="position:relative;">
-      &#128221; Notes <span class="notif-badge hidden" id="badge-notes"></span>
-    </button>
-    <button class="tab-btn" id="tabProtocolBtn" onclick="switchTab('protocol')" style="position:relative;">
-      &#128220; Protocol <span class="notif-badge hidden" id="badge-protocol"></span>
-    </button>
-  </div>
  
   <div class="tab-panel active" id="tabUpdates">
     <div class="updates-band">
@@ -595,9 +655,17 @@
       <div class="sec-hdr">
         <span class="sec-label">Notes</span>
         <div class="sec-line"></div>
-        <span class="sec-action hidden" id="addHeadingBtn" onclick="openNewHeadingModal()">+ Add Heading</span>
+        <div class="notes-controls">
+          <div class="notes-view-btns">
+            <button class="notes-view-btn active" id="notesViewList" onclick="setNotesView('list')" title="List view">&#9776; List</button>
+            <button class="notes-view-btn" id="notesViewGrid" onclick="setNotesView('grid')" title="Grid view">&#8718; Grid</button>
+            <button class="notes-view-btn" id="notesViewCompact" onclick="setNotesView('compact')" title="Compact view">&#9635; Compact</button>
+          </div>
+          <button class="notes-sort-btn" id="notesSortBtn" onclick="toggleNotesSort()" title="Sort A→Z">A&#8594;Z</button>
+          <span class="sec-action hidden" id="addHeadingBtn" onclick="openNewHeadingModal()">+ Add Heading</span>
+        </div>
       </div>
-      <div class="headings-grid" id="headingsGrid"></div>
+      <div id="notesContainer"></div>
     </div>
   </div>
  
@@ -842,6 +910,21 @@
   </div>
 </div>
  
+
+<div id="noteDetailModal">
+  <div class="ndm-box">
+    <button class="ndm-close" onclick="closeNoteDetailModal()">&#10005;</button>
+    <div id="ndmTag" class="ndm-tag">Note</div>
+    <div id="ndmActions" class="ndm-actions" style="display:none;">
+      <button id="ndmEditBtn" onclick="ndmEdit()" style="padding:6px 14px;border-radius:6px;background:#fff;border:1px solid var(--accent);color:var(--accent);cursor:pointer;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='#fff';this.style.color='var(--accent)'">Edit</button>
+      <button id="ndmDelBtn" onclick="ndmDelete()" style="padding:6px 14px;border-radius:6px;background:#fff;border:1px solid #c0392b;color:#c0392b;cursor:pointer;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.background='#c0392b';this.style.color='#fff'" onmouseout="this.style.background='#fff';this.style.color='#c0392b'">Delete</button>
+    </div>
+    <div id="ndmTitle" class="ndm-title"></div>
+    <div class="ndm-divider"></div>
+    <div id="ndmBody" class="ndm-body"></div>
+  </div>
+</div>
+
 <div id="devCredit">Developed by Tirth &amp; Kedar</div>
  
 <script>
@@ -1629,6 +1712,15 @@ document.addEventListener('click', e => {
 /* ==========================================================
    TAB SWITCHING
 ========================================================== */
+function navToDashTab(tab) {
+  // Always go to dashboard first, then switch tab
+  const activeScr = document.querySelector('.screen.active');
+  if (!activeScr || activeScr.id !== 'screenDash') {
+    navTo('dash');
+  }
+  switchTab(tab);
+}
+
 function switchTab(tab) {
   activeTab = tab;
   ['updates','notes','protocol'].forEach(t => {
@@ -1654,6 +1746,7 @@ function switchTab(tab) {
 ========================================================== */
 function enterDashboard() {
   document.getElementById('topbar').classList.remove('hidden');
+  document.getElementById('dashTabs').classList.remove('hidden');
   document.getElementById('welcomeMsg').textContent = role==='editor' ? 'Editor: '+editorName : 'Viewer: '+viewerName;
   if (role === 'editor') {
     document.getElementById('emgmtWrap').classList.remove('hidden');
@@ -1836,35 +1929,191 @@ function openEditUpdateModal(u) {
 /* ==========================================================
    HEADINGS
 ========================================================== */
-async function loadHeadings() {
-  const { data, error } = await db.from('note_headings').select('*').order('created_at', { ascending: true });
-  if (error) { console.error('loadHeadings:', error); return; }
-  renderHeadings(data || []);
-}
- 
-function renderHeadings(list) {
-  const grid = document.getElementById('headingsGrid');
-  grid.innerHTML = '';
-  if (!list.length) { grid.innerHTML = '<div class="empty">No headings yet.</div>'; return; }
-  list.forEach(h => {
-    const chip = document.createElement('div');
-    chip.className = 'heading-chip';
-    const auditBadge = renderAuditBadgeHtml(h.created_by, h.created_at, h.updated_by, h.updated_at);
-    let actions = '';
-    if (role === 'editor') {
-      actions = `<div class="hc-actions">
-        <span class="hc-edit" data-id="${h.id}">Edit</span>
-        <span class="del hc-del" data-id="${h.id}">Del</span>
-      </div>`;
-    }
-    chip.innerHTML = `<span class="hc-title">${esc(h.title)}</span>${auditBadge}${actions}<span class="hc-arrow">&#8250;</span>`;
-    chip.addEventListener('click', e => {
-      if (e.target.classList.contains('hc-edit')) { e.stopPropagation(); openEditHeadingModal(h); return; }
-      if (e.target.classList.contains('hc-del'))  { e.stopPropagation(); deleteHeading(h.id); return; }
-      openSubScreen(h);
-    });
-    grid.appendChild(chip);
+/* ── FLAT NOTES STATE ─── */
+let notesViewMode = 'list'; // 'list' | 'grid' | 'compact'
+let notesSortAZ = false;
+let allHeadingsFlat = [];
+let allSubsFlat = [];
+let allSubSubsFlat = [];
+
+function setNotesView(mode) {
+  notesViewMode = mode;
+  ['list','grid','compact'].forEach(m => {
+    const btn = document.getElementById('notesView'+m.charAt(0).toUpperCase()+m.slice(1));
+    if(btn) btn.classList.toggle('active', m===mode);
   });
+  renderFlatNotes();
+}
+
+function toggleNotesSort() {
+  notesSortAZ = !notesSortAZ;
+  const btn = document.getElementById('notesSortBtn');
+  if(btn) btn.classList.toggle('active', notesSortAZ);
+  renderFlatNotes();
+}
+
+async function loadHeadings() {
+  const [{ data: heads }, { data: subs }, { data: subsubs }] = await Promise.all([
+    db.from('note_headings').select('*').order('created_at', { ascending: true }),
+    db.from('note_subheadings').select('*').order('created_at', { ascending: true }),
+    db.from('note_subsubheadings').select('*').order('created_at', { ascending: true })
+  ]);
+  allHeadingsFlat  = heads   || [];
+  allSubsFlat      = subs    || [];
+  allSubSubsFlat   = subsubs || [];
+  renderFlatNotes();
+}
+
+function getFlatNotesList() {
+  // Build flat list: each sub-heading and topic becomes a card
+  const items = [];
+  allHeadingsFlat.forEach(h => {
+    const hSubs = allSubsFlat.filter(s => s.heading_id === h.id);
+    hSubs.forEach(sub => {
+      items.push({ id: sub.id, title: sub.title, preview: sub.body, label: h.title, type: 'sub', _sub: sub, _heading: h });
+      const subTopics = allSubSubsFlat.filter(ss => ss.subheading_id === sub.id);
+      subTopics.forEach(ss => {
+        items.push({ id: ss.id, title: ss.title, preview: ss.body, label: sub.title, type: 'subsub', _subsub: ss, _sub: sub, _heading: h });
+      });
+    });
+    // Also expose heading itself if no subs
+    if(!hSubs.length) {
+      items.push({ id: h.id, title: h.title, preview: '', label: 'Heading', type: 'heading', _heading: h });
+    }
+  });
+  if(notesSortAZ) items.sort((a,b) => a.title.localeCompare(b.title));
+  return items;
+}
+
+function stripHtml(html) { if(!html) return ''; return html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim(); }
+
+function renderFlatNotes() {
+  const container = document.getElementById('notesContainer');
+  if(!container) return;
+  const items = getFlatNotesList();
+  if(!items.length) { container.innerHTML = '<div class="empty">No notes yet.</div>'; return; }
+
+  if(notesViewMode === 'list') {
+    container.innerHTML = '';
+    const list = document.createElement('div');
+    list.className = 'notes-flat-list';
+    items.forEach(item => {
+      const preview = stripHtml(item.preview).substring(0,120);
+      const card = document.createElement('div');
+      card.className = 'note-flat-card';
+      let actionsHtml = '';
+      if(role === 'editor' && item.type !== 'heading') {
+        actionsHtml = `<div class="note-flat-actions">
+          <span class="note-flat-act nfa-edit" data-id="${item.id}" data-type="${item.type}">Edit</span>
+          <span class="note-flat-act del nfa-del" data-id="${item.id}" data-type="${item.type}">Del</span>
+        </div>`;
+      }
+      card.innerHTML = `<div class="note-flat-left">
+        <div class="note-flat-title">${esc(item.title)}</div>
+        ${preview?`<div class="note-flat-preview">${esc(preview)}</div>`:''}
+      </div>
+      <span class="note-flat-badge">${esc(item.label)}</span>
+      ${actionsHtml}
+      <span class="note-flat-arrow">&#8250;</span>`;
+      card.addEventListener('click', e => {
+        if(e.target.classList.contains('nfa-edit')){ e.stopPropagation(); handleFlatNoteEdit(item); return; }
+        if(e.target.classList.contains('nfa-del')) { e.stopPropagation(); handleFlatNoteDel(item); return; }
+        openNoteDetailModal(item);
+      });
+      list.appendChild(card);
+    });
+    container.appendChild(list);
+
+  } else if(notesViewMode === 'grid') {
+    container.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'notes-flat-grid';
+    items.forEach(item => {
+      const preview = stripHtml(item.preview).substring(0,140);
+      const card = document.createElement('div');
+      card.className = 'note-grid-card';
+      let actionsHtml = '';
+      if(role === 'editor' && item.type !== 'heading') {
+        actionsHtml = `<div class="note-grid-actions">
+          <span class="note-flat-act nfa-edit" data-id="${item.id}" data-type="${item.type}">Edit</span>
+          <span class="note-flat-act del nfa-del" data-id="${item.id}" data-type="${item.type}">Del</span>
+        </div>`;
+      }
+      card.innerHTML = `<div class="note-grid-badge">${esc(item.label)}</div>
+        <div class="note-grid-title">${esc(item.title)}</div>
+        ${preview?`<div class="note-grid-preview">${esc(preview)}</div>`:''}
+        ${actionsHtml}`;
+      card.addEventListener('click', e => {
+        if(e.target.classList.contains('nfa-edit')){ e.stopPropagation(); handleFlatNoteEdit(item); return; }
+        if(e.target.classList.contains('nfa-del')) { e.stopPropagation(); handleFlatNoteDel(item); return; }
+        openNoteDetailModal(item);
+      });
+      grid.appendChild(card);
+    });
+    container.appendChild(grid);
+
+  } else { // compact
+    container.innerHTML = '';
+    const compact = document.createElement('div');
+    compact.className = 'notes-flat-compact';
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'note-compact-card';
+      const initials = item.title.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+      card.innerHTML = `<div class="note-compact-icon">${initials}</div>
+        <div style="min-width:0;">
+          <div class="note-compact-title">${esc(item.title)}</div>
+          <div class="note-compact-badge">${esc(item.label)}</div>
+        </div>`;
+      card.addEventListener('click', () => openNoteDetailModal(item));
+      compact.appendChild(card);
+    });
+    container.appendChild(compact);
+  }
+}
+
+/* ── NOTE DETAIL MODAL ─── */
+let currentNdmItem = null;
+function openNoteDetailModal(item) {
+  currentNdmItem = item;
+  const modal = document.getElementById('noteDetailModal');
+  document.getElementById('ndmTag').textContent = item.label || 'Note';
+  document.getElementById('ndmTitle').textContent = item.title;
+  const bodyEl = document.getElementById('ndmBody');
+  const content = item.preview || '';
+  if(content && /<[a-z][\s\S]*>/i.test(content)) bodyEl.innerHTML = content;
+  else bodyEl.textContent = content || '(No content yet.)';
+  const actionsEl = document.getElementById('ndmActions');
+  actionsEl.style.display = (role === 'editor' && item.type !== 'heading') ? 'flex' : 'none';
+  modal.classList.add('open');
+}
+function closeNoteDetailModal() {
+  document.getElementById('noteDetailModal').classList.remove('open');
+  currentNdmItem = null;
+}
+function ndmEdit() {
+  if(!currentNdmItem) return;
+  closeNoteDetailModal();
+  handleFlatNoteEdit(currentNdmItem);
+}
+async function ndmDelete() {
+  if(!currentNdmItem) return;
+  closeNoteDetailModal();
+  await handleFlatNoteDel(currentNdmItem);
+}
+function handleFlatNoteEdit(item) {
+  if(item.type === 'sub') { openEditSubBodyModal(item._sub); }
+  else if(item.type === 'subsub') { openEditSubSubModal(item._subsub); }
+}
+async function handleFlatNoteDel(item) {
+  if(item.type === 'sub') { await deleteSubheading(item.id); }
+  else if(item.type === 'subsub') { await deleteSubSubheading(item.id); }
+  await loadHeadings();
+}
+
+function renderHeadings(list) {
+  // Legacy: kept for compat but redirects to flat view
+  renderFlatNotes();
 }
  
 async function deleteHeading(id) {
@@ -1954,7 +2203,8 @@ async function deleteSubheading(id) {
   await db.from('note_subheadings').delete().eq('id', id);
   invalidateSearchCache();
   await logActivity('Delete', 'Notes', `Deleted sub-heading: "${s ? s.title : id}" and all its topics`);
-  await loadSubheadings(currentHeading.id);
+  if(currentHeading) await loadSubheadings(currentHeading.id);
+  await loadHeadings(); // refresh flat view
 }
  
 function openEditSubBodyModal(sub) {
@@ -2049,7 +2299,8 @@ async function deleteSubSubheading(id) {
   await db.from('note_subsubheadings').delete().eq('id', id);
   invalidateSearchCache();
   await logActivity('Delete', 'Notes', `Deleted topic: "${t ? t.title : id}"`);
-  await loadSubSubheadings(currentSubheading.id);
+  if(currentSubheading) await loadSubSubheadings(currentSubheading.id);
+  await loadHeadings(); // refresh flat view too
 }
  
 function openNewSubSubModal() {
@@ -2827,10 +3078,12 @@ document.addEventListener('keydown',e=>{
     const uvEl       = document.getElementById('updateView');
     const updateOpen = uvEl && (uvEl.classList.contains('open') || uvEl.style.display==='block');
     const viewOvOpen = document.getElementById('viewOv') && document.getElementById('viewOv').classList.contains('open');
-    const anyOverlay = modalOpen || backupOpen || actLogOpen || searchOpen || updateOpen || viewOvOpen;
+    const ndmOpen = document.getElementById('noteDetailModal') && document.getElementById('noteDetailModal').classList.contains('open');
+    const anyOverlay = modalOpen || backupOpen || actLogOpen || searchOpen || updateOpen || viewOvOpen || ndmOpen;
     if(anyOverlay){
       closeModal();
       closeUpdateView();
+      if(ndmOpen) closeNoteDetailModal();
       closeSearchResults();
       if(backupOpen) closeBackupModal();
       if(actLogOpen) closeActivityLog();
@@ -2859,6 +3112,8 @@ document.addEventListener('keydown',e=>{
   </div>
   <button class="irp-remove" onclick="removeSelectedImg()">&#128465; Remove Image</button>
 </div>
+
+
 
 </body>
 </html>
