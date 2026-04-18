@@ -358,7 +358,8 @@
     #liveToast.show { opacity:1; transform:translateY(0); }
  
     /* ── RIGHT SIDEBAR (Clock + Labels) ─── */
-    #rightSidebar { position:fixed; right:0; top:102px; bottom:0; z-index:400; width:90px; display:flex; flex-direction:column; background:#fff; border-left:1px solid var(--border); box-shadow:-4px 0 24px var(--glow); overflow:hidden; }
+    #rightSidebar { position:fixed; right:0; top:102px; bottom:0; z-index:400; width:90px; display:flex; flex-direction:column; background:#fff; border-left:1px solid var(--border); box-shadow:-4px 0 24px var(--glow); overflow:hidden; transition:width .25s ease; }
+    #rightSidebar.notes-expanded { width:170px; }
     #tzPanel { display:flex; flex-direction:column; align-items:center; padding:12px 8px; gap:4px; border-bottom:1px solid var(--border); }
     .tz-wrap { display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 0; width:100%; }
     .tz-wrap+.tz-wrap { border-top:1px solid var(--border); }
@@ -382,6 +383,21 @@
     .label-filter-chip { font-family:'Cinzel',serif; font-size:.52em; letter-spacing:1px; text-transform:uppercase; padding:5px 6px; border-radius:6px; border:1px solid rgba(21,101,192,.18); background:rgba(21,101,192,.04); color:var(--accent); cursor:pointer; text-align:center; transition:all .2s; line-height:1.3; word-break:break-word; }
     .label-filter-chip:hover { border-color:var(--accent); background:rgba(21,101,192,.1); }
     .label-filter-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .lp-item { display:flex; flex-direction:column; gap:2px; padding:7px 8px; border-radius:8px; border:1px solid transparent; cursor:pointer; transition:all .18s; }
+    .lp-item:hover { border-color:rgba(21,101,192,.2); background:rgba(21,101,192,.05); }
+    .lp-item.active { background:var(--accent); border-color:var(--accent); }
+    .lp-item-name { font-family:'Cinzel',serif; font-size:.55em; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent); line-height:1.3; word-break:break-word; }
+    .lp-item.active .lp-item-name { color:#fff; }
+    .lp-item-count { font-size:.5em; opacity:.5; font-family:'Raleway',sans-serif; letter-spacing:.3px; }
+    .lp-item.active .lp-item-count { opacity:.75; color:#fff; }
+    .lp-all { display:flex; align-items:center; justify-content:space-between; padding:6px 8px; border-radius:8px; border:1px solid rgba(21,101,192,.18); background:rgba(21,101,192,.04); cursor:pointer; transition:all .18s; margin-bottom:2px; }
+    .lp-all:hover { border-color:var(--accent); background:rgba(21,101,192,.1); }
+    .lp-all.active { background:var(--accent); border-color:var(--accent); }
+    .lp-all-label { font-family:'Cinzel',serif; font-size:.55em; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent); }
+    .lp-all.active .lp-all-label { color:#fff; }
+    .lp-all-count { font-size:.5em; opacity:.5; font-family:'Raleway',sans-serif; }
+    .lp-all.active .lp-all-count { opacity:.75; color:#fff; }
+    .lp-divider { height:1px; background:rgba(21,101,192,.1); margin:4px 2px; }
     .label-filter-all { border-color:rgba(21,101,192,.3); background:rgba(21,101,192,.07); }
  
     #backupModal { position:fixed; inset:0; z-index:6000; display:none; justify-content:center; align-items:flex-start; padding:50px 20px; background:rgba(245,245,245,.92); backdrop-filter:blur(8px); overflow-y:auto; }
@@ -493,11 +509,165 @@
     .ndm-actions { display:flex; gap:8px; margin-bottom:20px; }
  
     @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── UPDATE GATE ─────────────────────────────────────── */
+    #updateGate {
+      position:fixed; inset:0; z-index:7000;
+      background:rgba(245,245,245,.97); backdrop-filter:blur(10px);
+      display:none; flex-direction:column; overflow-y:auto;
+    }
+    #updateGate.open { display:flex; }
+    .ug-inner {
+      max-width:760px; width:100%; margin:0 auto;
+      padding:60px 40px 100px; display:flex; flex-direction:column; gap:0;
+    }
+    .ug-logo { display:flex; align-items:center; gap:10px; margin-bottom:40px; }
+    .ug-logo-text { font-family:'Cinzel',serif; font-size:.95em; letter-spacing:3px; color:var(--accent); font-weight:700; }
+    .ug-logo-sub  { font-size:.38em; letter-spacing:5px; opacity:.45; display:block; margin-top:2px; }
+    .ug-headline  { font-family:'Cinzel',serif; font-size:1.55em; letter-spacing:2px; color:var(--accent); margin-bottom:8px; line-height:1.3; }
+    .ug-sub       { font-size:.82em; opacity:.55; letter-spacing:.5px; margin-bottom:32px; line-height:1.6; }
+    .ug-progress-wrap { display:flex; align-items:center; gap:14px; margin-bottom:28px; }
+    .ug-progress-bar-bg { flex:1; height:5px; background:var(--border); border-radius:10px; overflow:hidden; }
+    .ug-progress-bar-fill { height:100%; background:var(--accent); border-radius:10px; transition:width .4s cubic-bezier(.4,0,.2,1); width:0%; }
+    .ug-progress-label { font-family:'Cinzel',serif; font-size:.62em; letter-spacing:2px; color:var(--accent); white-space:nowrap; opacity:.7; }
+    .ug-cards { display:flex; flex-direction:column; gap:14px; margin-bottom:32px; }
+
+    /* gate card */
+    .ug-card { background:#fff; border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:var(--shadow); transition:border-color .25s,box-shadow .25s; }
+    .ug-card.required-card { border-left:4px solid #c0392b; }
+    .ug-card.acked-green   { border-color:#27ae60; box-shadow:0 2px 16px rgba(39,174,96,.13); }
+    .ug-card.acked-amber   { border-color:#e67e22; box-shadow:0 2px 16px rgba(230,126,34,.13); }
+    .ug-card.acked-red     { border-color:#c0392b; box-shadow:0 2px 16px rgba(192,57,43,.13); }
+
+    .ug-card-header { display:flex; align-items:center; gap:14px; padding:18px 22px; cursor:pointer; user-select:none; transition:background .15s; }
+    .ug-card-header:hover { background:rgba(21,101,192,.02); }
+    .ug-card-icon  { width:40px; height:40px; border-radius:10px; background:var(--accent-soft); border:1px solid rgba(21,101,192,.18); display:flex; align-items:center; justify-content:center; font-size:1.1em; flex-shrink:0; }
+    .ug-card-meta  { flex:1; min-width:0; }
+    .ug-card-label { font-family:'Cinzel',serif; font-size:.95em; letter-spacing:1.5px; color:var(--accent); font-weight:700; line-height:1.3; }
+    .ug-card-label-sub { font-size:.72em; opacity:.45; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .ug-card-badges { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+    .ug-badge { font-family:'Cinzel',serif; font-size:.55em; letter-spacing:1.5px; text-transform:uppercase; padding:3px 10px; border-radius:20px; font-weight:700; white-space:nowrap; }
+    .ug-badge-req  { background:rgba(192,57,43,.09); border:1px solid rgba(192,57,43,.28); color:#c0392b; }
+    .ug-badge-new  { background:rgba(21,101,192,.08); border:1px solid rgba(21,101,192,.22); color:var(--accent); }
+    .ug-badge-upd  { background:rgba(184,134,11,.08); border:1px solid rgba(184,134,11,.25); color:#8a6000; }
+    .ug-badge-ver  { background:rgba(0,0,0,.04); border:1px solid var(--border); color:rgba(26,26,46,.5); font-size:.52em; }
+    .ug-chevron { font-size:.8em; opacity:.3; transition:transform .25s,opacity .2s; flex-shrink:0; margin-left:4px; }
+    .ug-card.expanded .ug-chevron { transform:rotate(90deg); opacity:.6; }
+
+    .ug-card-body { display:none; padding:0 22px 22px; border-top:1px solid var(--border); animation:fadeUp .2s ease; }
+    .ug-card.expanded .ug-card-body { display:block; }
+    .ug-card-title { font-family:'Cinzel',serif; font-size:.88em; letter-spacing:1px; color:var(--accent); margin:18px 0 10px; }
+    .ug-card-content { font-size:.82em; line-height:1.8; opacity:.75; margin-bottom:20px; white-space:pre-wrap; word-wrap:break-word; }
+    .ug-card-content img { max-width:100%; border-radius:8px; }
+
+    /* three-option response buttons */
+    .ug-response-label { font-family:'Cinzel',serif; font-size:.6em; letter-spacing:3px; text-transform:uppercase; opacity:.45; margin-bottom:12px; }
+    .ug-response-opts  { display:flex; flex-direction:column; gap:8px; }
+    .ug-resp-btn {
+      display:flex; align-items:center; gap:12px; padding:13px 16px;
+      border-radius:10px; border:1.5px solid var(--border); background:#fff;
+      cursor:pointer; text-align:left; transition:all .22s; width:100%;
+      font-family:'Raleway',sans-serif;
+    }
+    .ug-resp-btn:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(21,101,192,.1); }
+    .ug-resp-btn .resp-icon { font-size:1.2em; flex-shrink:0; width:28px; text-align:center; }
+    .ug-resp-btn .resp-text { flex:1; }
+    .ug-resp-btn .resp-title { font-family:'Cinzel',serif; font-size:.78em; letter-spacing:1px; font-weight:700; margin-bottom:2px; }
+    .ug-resp-btn .resp-desc  { font-size:.68em; opacity:.5; }
+    /* green — understood */
+    .ug-resp-btn.opt-green:hover,.ug-resp-btn.opt-green.selected {
+      border-color:#27ae60; background:rgba(39,174,96,.05);
+    }
+    .ug-resp-btn.opt-green.selected .resp-title { color:#27ae60; }
+    /* amber — clarification */
+    .ug-resp-btn.opt-amber:hover,.ug-resp-btn.opt-amber.selected {
+      border-color:#e67e22; background:rgba(230,126,34,.05);
+    }
+    .ug-resp-btn.opt-amber.selected .resp-title { color:#e67e22; }
+    /* red — not understood */
+    .ug-resp-btn.opt-red:hover,.ug-resp-btn.opt-red.selected {
+      border-color:#c0392b; background:rgba(192,57,43,.05);
+    }
+    .ug-resp-btn.opt-red.selected .resp-title { color:#c0392b; }
+
+    .ug-resp-status {
+      display:none; align-items:center; gap:10px; margin-top:14px;
+      padding:10px 14px; border-radius:8px; font-size:.74em; font-family:'Cinzel',serif;
+      letter-spacing:1px; animation:fadeUp .2s ease;
+    }
+    .ug-resp-status.show { display:flex; }
+    .ug-resp-status.green { background:rgba(39,174,96,.08); border:1px solid rgba(39,174,96,.25); color:#1e7a47; }
+    .ug-resp-status.amber { background:rgba(230,126,34,.08); border:1px solid rgba(230,126,34,.28); color:#a05a10; }
+    .ug-resp-status.red   { background:rgba(192,57,43,.08); border:1px solid rgba(192,57,43,.25); color:#922b21; }
+
+    /* annotation area inside gate card */
+    .ug-annotation-wrap { margin-top:16px; border-top:1px solid var(--border); padding-top:16px; }
+    .ug-annotation-label { font-family:'Cinzel',serif; font-size:.58em; letter-spacing:2.5px; text-transform:uppercase; opacity:.38; margin-bottom:8px; }
+    .ug-annotation-input { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:8px; font-size:.8em; font-family:'Raleway',sans-serif; color:var(--text); background:#f8faff; resize:none; min-height:62px; outline:none; transition:border-color .2s,box-shadow .2s; }
+    .ug-annotation-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(21,101,192,.1); }
+    .ug-annotation-save { margin-top:8px; padding:6px 16px; border-radius:6px; border:1px solid var(--border); background:#fff; color:var(--text); cursor:pointer; font-family:'Cinzel',serif; font-size:.62em; letter-spacing:1.5px; transition:all .2s; }
+    .ug-annotation-save:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+    .ug-annotation-saved { font-size:.62em; color:#27ae60; opacity:0; transition:opacity .3s; margin-left:8px; }
+    .ug-annotation-saved.show { opacity:1; }
+
+    /* footer bar */
+    .ug-footer { position:sticky; bottom:0; left:0; right:0; background:rgba(245,245,245,.96); backdrop-filter:blur(12px); border-top:1px solid var(--border); padding:16px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .ug-footer-info { font-size:.74em; opacity:.55; letter-spacing:.3px; }
+    .ug-continue-btn {
+      padding:12px 32px; border-radius:10px; border:none;
+      font-family:'Cinzel',serif; font-size:.8em; letter-spacing:2.5px; text-transform:uppercase;
+      cursor:not-allowed; transition:all .25s; white-space:nowrap;
+      background:var(--border); color:rgba(26,26,46,.35);
+    }
+    .ug-continue-btn.unlocked {
+      background:var(--accent); color:#fff; cursor:pointer;
+      box-shadow:0 4px 18px rgba(21,101,192,.28);
+    }
+    .ug-continue-btn.unlocked:hover { opacity:.88; transform:translateY(-1px); }
+    .ug-continue-btn.unlocked:active { transform:translateY(0); }
+    /* clarification flag for admin (editor can see) */
+    .ug-flag-wrap { display:none; margin-top:12px; padding:10px 14px; background:rgba(230,126,34,.06); border:1px solid rgba(230,126,34,.22); border-radius:8px; font-size:.72em; color:#a05a10; }
+    body.editor-mode .ug-flag-wrap { display:block; }
   </style>
 </head>
 <body>
  
 <div id="splash" style="display:none;"></div>
+
+<!-- ══ UPDATE GATE ══════════════════════════════════════════ -->
+<div id="updateGate">
+  <div class="ug-inner">
+    <!-- Logo -->
+    <div class="ug-logo">
+      <svg width="28" height="28" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 48 Q40 56 68 48" stroke="var(--accent)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <line x1="40" y1="48" x2="40" y2="18" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M40 20 L58 30 L40 44 Z" fill="var(--accent)" opacity=".85"/>
+      </svg>
+      <div class="ug-logo-text">VikingCloud Compliance Hub<span class="ug-logo-sub">Update Gate</span></div>
+    </div>
+
+    <div class="ug-headline">Pending Updates Require Your Response</div>
+    <div class="ug-sub">Please review each update below and select your response before continuing to the portal. Your response is recorded and used for compliance tracking.</div>
+
+    <!-- Progress -->
+    <div class="ug-progress-wrap">
+      <div class="ug-progress-bar-bg"><div class="ug-progress-bar-fill" id="ugProgressFill"></div></div>
+      <div class="ug-progress-label" id="ugProgressLabel">0 of 0 responded</div>
+    </div>
+
+    <!-- Cards injected here -->
+    <div class="ug-cards" id="ugCards">
+      <div style="padding:40px;text-align:center;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;opacity:.35;">Loading updates…</div>
+    </div>
+  </div>
+
+  <!-- Sticky footer -->
+  <div class="ug-footer">
+    <div class="ug-footer-info" id="ugFooterInfo">Respond to all required updates to continue.</div>
+    <button class="ug-continue-btn" id="ugContinueBtn" onclick="ugContinue()">Continue to Portal</button>
+  </div>
+</div>
  
 <div id="nameModal">
   <div class="name-box">
@@ -846,8 +1016,10 @@
       <input type="hidden" id="mIcon" value="&#128203;">
     </div>
     <div class="ff hidden" id="ffLabel">
-      <label>Label / Category</label>
-      <input type="text" id="mLabel" placeholder="e.g. Scanning, Emails, Steps&#8230;" spellcheck="false">
+      <label>Label / Category <span style="font-size:.75em;opacity:.5;font-family:'Raleway',sans-serif;font-weight:400;letter-spacing:0;">(select existing or type a new one)</span></label>
+      <input type="text" id="mLabel" placeholder="e.g. Scanning, Emails, Steps&#8230;" spellcheck="false" list="labelSuggestions" autocomplete="off">
+      <datalist id="labelSuggestions"></datalist>
+      <div id="mLabelNewHint" style="display:none;margin-top:5px;font-size:.72em;color:var(--accent);opacity:.7;font-style:italic;letter-spacing:.3px;">✨ This will create a new label</div>
     </div>
     <div class="mactions">
       <button class="mprimary" id="modalSaveBtn" onclick="saveModal()">Save</button>
@@ -886,51 +1058,82 @@
 </div>
 <div id="labelsPanel" class="hidden">
   <div class="labels-panel-hdr">Labels</div>
-  <div class="label-filter-chip label-filter-all active" onclick="filterByLabel(null)" id="labelAll">All</div>
 </div>
 </div>
  
 <!-- ACTIVITY LOG MODAL (Editor-Only) -->
 <div id="activityLogModal" style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(245,245,245,.96);backdrop-filter:blur(10px);overflow-y:auto;">
-  <div style="max-width:860px;margin:60px auto 40px;padding:0 20px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;gap:12px;">
+  <div style="max-width:960px;margin:60px auto 40px;padding:0 20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px;">
       <div>
         <div style="font-family:'Cinzel',serif;font-size:1.1em;letter-spacing:4px;color:var(--accent);text-transform:uppercase;">Activity Log</div>
-        <div style="font-size:.72em;opacity:.4;letter-spacing:1.5px;margin-top:4px;">All editor actions — visible only to editors</div>
+        <div style="font-size:.72em;opacity:.4;letter-spacing:1.5px;margin-top:4px;">All editor actions &amp; viewer responses — visible only to editors</div>
       </div>
       <button onclick="closeActivityLog()" style="padding:7px 18px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-family:'Raleway',sans-serif;font-size:.84em;transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">&#10005; Close</button>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
-      <select id="alFilterSection" onchange="renderActivityLog()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
-        <option value="">All Sections</option>
-        <option value="Updates">Updates</option>
-        <option value="Notes">Notes</option>
-        <option value="Protocols">Protocols</option>
-      </select>
-      <select id="alFilterAction" onchange="renderActivityLog()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
-        <option value="">All Actions</option>
-        <option value="Add">Add</option>
-        <option value="Edit">Edit</option>
-        <option value="Delete">Delete</option>
-      </select>
-      <select id="alFilterEditor" onchange="renderActivityLog()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
-        <option value="">All Editors</option>
-      </select>
-      <button onclick="clearAlFilters()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-family:'Raleway',sans-serif;font-size:.82em;opacity:.6;transition:all .2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'">Clear Filters</button>
-      <div style="margin-left:auto;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;color:var(--accent);opacity:.5;align-self:center;" id="alCount"></div>
+
+    <!-- Tab switcher -->
+    <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;">
+      <button id="alTabActions" onclick="switchAlTab('actions')" style="padding:10px 24px;border:none;background:none;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid var(--accent);margin-bottom:-2px;color:var(--accent);font-weight:700;">&#9997; Editor Actions</button>
+      <button id="alTabResponses" onclick="switchAlTab('responses')" style="padding:10px 24px;border:none;background:none;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text);opacity:.45;">&#10003; User Responses</button>
     </div>
-    <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);">
-      <div style="display:grid;grid-template-columns:1fr 80px 110px 140px 1.4fr;gap:0;border-bottom:2px solid var(--border);background:rgba(21,101,192,.04);">
-        <div style="padding:12px 18px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Editor</div>
-        <div style="padding:12px 10px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Action</div>
-        <div style="padding:12px 10px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Section</div>
-        <div style="padding:12px 10px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Timestamp</div>
-        <div style="padding:12px 18px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Description</div>
+
+    <!-- Editor Actions Panel -->
+    <div id="alPanelActions">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+        <select id="alFilterSection" onchange="renderActivityLog()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
+          <option value="">All Sections</option>
+          <option value="Updates">Updates</option>
+          <option value="Notes">Notes</option>
+          <option value="Protocols">Protocols</option>
+        </select>
+        <select id="alFilterAction" onchange="renderActivityLog()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
+          <option value="">All Actions</option>
+          <option value="Add">Add</option>
+          <option value="Edit">Edit</option>
+          <option value="Delete">Delete</option>
+        </select>
+        <select id="alFilterEditor" onchange="renderActivityLog()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
+          <option value="">All Editors</option>
+        </select>
+        <button onclick="clearAlFilters()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-family:'Raleway',sans-serif;font-size:.82em;opacity:.6;transition:all .2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'">Clear Filters</button>
+        <div style="margin-left:auto;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;color:var(--accent);opacity:.5;align-self:center;" id="alCount"></div>
       </div>
-      <div id="alBody" style="min-height:120px;"></div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);">
+        <div style="display:grid;grid-template-columns:1fr 80px 110px 140px 1.4fr;gap:0;border-bottom:2px solid var(--border);background:rgba(21,101,192,.04);">
+          <div style="padding:12px 18px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Editor</div>
+          <div style="padding:12px 10px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Action</div>
+          <div style="padding:12px 10px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Section</div>
+          <div style="padding:12px 10px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Timestamp</div>
+          <div style="padding:12px 18px;font-family:'Cinzel',serif;font-size:.62em;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);opacity:.7;">Description</div>
+        </div>
+        <div id="alBody" style="min-height:120px;"></div>
+      </div>
+      <div id="alLoadMore" style="text-align:center;margin-top:16px;display:none;">
+        <button onclick="loadMoreActivityLogs()" style="padding:10px 28px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--accent);cursor:pointer;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(21,101,192,.05)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">Load More</button>
+      </div>
     </div>
-    <div id="alLoadMore" style="text-align:center;margin-top:16px;display:none;">
-      <button onclick="loadMoreActivityLogs()" style="padding:10px 28px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--accent);cursor:pointer;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(21,101,192,.05)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">Load More</button>
+
+    <!-- User Responses Panel -->
+    <div id="alPanelResponses" style="display:none;">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center;">
+        <select id="arFilterUser" onchange="renderUserResponses()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
+          <option value="">All Users</option>
+        </select>
+        <select id="arFilterChoice" onchange="renderUserResponses()" style="padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:'Raleway',sans-serif;font-size:.82em;outline:none;cursor:pointer;">
+          <option value="">All Responses</option>
+          <option value="acknowledged">✅ Acknowledged</option>
+          <option value="needs_clarification">⚠️ Needs Clarification</option>
+          <option value="not_understood">❌ Not Understood</option>
+        </select>
+        <button onclick="clearArFilters()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-family:'Raleway',sans-serif;font-size:.82em;opacity:.6;transition:all .2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'">Clear Filters</button>
+        <button onclick="loadUserResponses()" style="padding:8px 16px;border-radius:8px;border:1px solid rgba(21,101,192,.3);background:rgba(21,101,192,.05);color:var(--accent);cursor:pointer;font-family:'Raleway',sans-serif;font-size:.82em;transition:all .2s;" onmouseover="this.style.background='rgba(21,101,192,.1)'" onmouseout="this.style.background='rgba(21,101,192,.05)'">&#8635; Refresh</button>
+        <div style="margin-left:auto;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;color:var(--accent);opacity:.5;align-self:center;" id="arCount"></div>
+      </div>
+      <!-- Summary cards -->
+      <div id="arSummary" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;"></div>
+      <!-- Per-update accordion -->
+      <div id="arBody"></div>
     </div>
   </div>
 </div>
@@ -942,9 +1145,15 @@
     <div id="ndmTag" class="ndm-tag">Note</div>
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:14px;">
       <div id="ndmTitle" class="ndm-title" style="margin-bottom:0;"></div>
-      <div id="ndmActions" class="ndm-actions" style="display:none;flex-shrink:0;margin-top:10px;margin-bottom:0;">
-        <button id="ndmEditBtn" onclick="ndmEdit()" style="padding:7px 16px;border-radius:6px;background:#fff;border:1px solid var(--accent);color:var(--accent);cursor:pointer;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='#fff';this.style.color='var(--accent)'">Edit</button>
-        <button id="ndmDelBtn" onclick="ndmDelete()" style="padding:7px 16px;border-radius:6px;background:#fff;border:1px solid #c0392b;color:#c0392b;cursor:pointer;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.background='#c0392b';this.style.color='#fff'" onmouseout="this.style.background='#fff';this.style.color='#c0392b'">Delete</button>
+      <div style="display:flex;gap:8px;flex-shrink:0;margin-top:10px;align-items:center;">
+        <button id="ndmCopyBtn" onclick="copyNoteDetailBody()"
+          style="padding:7px 16px;border-radius:6px;background:#fff;border:1px solid var(--border);color:var(--text);cursor:pointer;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;transition:all .2s;opacity:.65;"
+          onmouseover="this.style.opacity='1';this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+          onmouseout="this.style.opacity='.65';this.style.borderColor='var(--border)';this.style.color='var(--text)'">&#128203; Copy</button>
+        <div id="ndmActions" class="ndm-actions" style="display:none;flex-shrink:0;margin-bottom:0;">
+          <button id="ndmEditBtn" onclick="ndmEdit()" style="padding:7px 16px;border-radius:6px;background:#fff;border:1px solid var(--accent);color:var(--accent);cursor:pointer;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='#fff';this.style.color='var(--accent)'">Edit</button>
+          <button id="ndmDelBtn" onclick="ndmDelete()" style="padding:7px 16px;border-radius:6px;background:#fff;border:1px solid #c0392b;color:#c0392b;cursor:pointer;font-family:'Cinzel',serif;font-size:.65em;letter-spacing:2px;transition:all .2s;" onmouseover="this.style.background='#c0392b';this.style.color='#fff'" onmouseout="this.style.background='#fff';this.style.color='#c0392b'">Delete</button>
+        </div>
       </div>
     </div>
     <div class="ndm-divider"></div>
@@ -1329,7 +1538,14 @@ function showWelcomeSplash(name) {
   const s = document.getElementById('splash');
   s.innerHTML = `<div class="splash-title">Welcome to VikingCloud Compliance Hub</div><div class="splash-sub">${esc(name)}</div>`;
   s.style.display = 'flex';
-  setTimeout(() => { s.style.display = 'none'; enterDashboard(); }, 2200);
+  setTimeout(async () => {
+    s.style.display = 'none';
+    if (role === 'viewer') {
+      await openUpdateGate();
+    } else {
+      enterDashboard();
+    }
+  }, 2200);
 }
  
 /* ==========================================================
@@ -1404,7 +1620,9 @@ function renderActivityLog() {
   const secF = document.getElementById('alFilterSection').value;
   const actF = document.getElementById('alFilterAction').value;
   const edF  = document.getElementById('alFilterEditor').value;
+  // Exclude Acknowledgements from editor actions tab
   const rows = allActivityLogs.filter(l =>
+    l.section !== 'Acknowledgements' &&
     (!secF || l.section===secF) && (!actF || l.action===actF) && (!edF || l.user_email===edF));
   document.getElementById('alCount').textContent = `${rows.length} ${rows.length===1?'entry':'entries'}`;
   if (!rows.length) {
@@ -1426,7 +1644,165 @@ function renderActivityLog() {
     </div>`;
   }).join('');
 }
- 
+
+/* ==========================================================
+   ACTIVITY LOG — TAB SWITCHING & USER RESPONSES
+========================================================== */
+let alActiveTab = 'actions';
+let allUserResponses = [];
+
+function switchAlTab(tab) {
+  alActiveTab = tab;
+  const isActions = tab === 'actions';
+  document.getElementById('alPanelActions').style.display   = isActions ? '' : 'none';
+  document.getElementById('alPanelResponses').style.display = isActions ? 'none' : '';
+  // Style tabs
+  const tA = document.getElementById('alTabActions');
+  const tR = document.getElementById('alTabResponses');
+  tA.style.borderBottomColor = isActions ? 'var(--accent)' : 'transparent';
+  tA.style.color             = isActions ? 'var(--accent)' : 'var(--text)';
+  tA.style.opacity           = isActions ? '1' : '.45';
+  tR.style.borderBottomColor = isActions ? 'transparent' : 'var(--accent)';
+  tR.style.color             = isActions ? 'var(--text)' : 'var(--accent)';
+  tR.style.opacity           = isActions ? '.45' : '1';
+  if (!isActions) loadUserResponses();
+}
+
+async function loadUserResponses() {
+  document.getElementById('arBody').innerHTML =
+    `<div style="text-align:center;padding:40px;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;color:var(--accent);opacity:.35;">Loading responses&#8230;</div>`;
+  document.getElementById('arSummary').innerHTML = '';
+
+  const { data, error } = await db.from('user_update_status')
+    .select('user_email, update_id, status, annotation, responded_at')
+    .order('responded_at', { ascending: false });
+
+  if (error) {
+    document.getElementById('arBody').innerHTML = `
+      <div style="padding:24px;background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.2);border-radius:12px;font-size:.8em;line-height:1.8;">
+        <strong style="color:#c0392b;">&#9888; Database error: ${esc(error.message)}</strong><br>
+        <span style="opacity:.7;">Ensure the user_update_status table and RLS policies are created. Run the migration SQL from the implementation guide.</span>
+      </div>`;
+    return;
+  }
+
+  allUserResponses = data || [];
+
+  if (!allUserResponses.length) {
+    document.getElementById('arBody').innerHTML = `
+      <div style="text-align:center;padding:40px;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;color:var(--accent);opacity:.45;">
+        No responses recorded yet.<br>
+        <span style="font-size:.85em;opacity:.7;display:block;margin-top:8px;font-family:'Raleway',sans-serif;letter-spacing:0;">
+          Responses appear here after viewers select their acknowledgement on the Update Gate.
+        </span>
+      </div>`;
+    return;
+  }
+
+  populateArUserFilter();
+  renderUserResponses();
+}
+function populateArUserFilter() {
+  const sel = document.getElementById('arFilterUser');
+  const cur = sel.value;
+  const emails = [...new Set(allUserResponses.map(r => r.user_email).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">All Users</option>' +
+    emails.map(e => `<option value="${esc(e)}"${e===cur?' selected':''}>${esc(e)}</option>`).join('');
+}
+
+function clearArFilters() {
+  document.getElementById('arFilterUser').value = '';
+  document.getElementById('arFilterChoice').value = '';
+  renderUserResponses();
+}
+
+function renderUserResponses() {
+  const userF   = document.getElementById('arFilterUser').value;
+  const choiceF = document.getElementById('arFilterChoice').value;
+
+  let rows = allUserResponses.filter(r =>
+    (!userF   || r.user_email === userF) &&
+    (!choiceF || r.status === choiceF)
+  );
+
+  document.getElementById('arCount').textContent = `${rows.length} ${rows.length===1?'response':'responses'}`;
+
+  // Status helpers keyed on new status strings
+  const STATUS_META = {
+    acknowledged:        { icon:'✅', label:'Acknowledged',       bg:'rgba(39,174,96,.08)',   bd:'rgba(39,174,96,.25)',   tx:'#1e7a47' },
+    needs_clarification: { icon:'⚠️', label:'Needs Clarification', bg:'rgba(230,126,34,.08)',  bd:'rgba(230,126,34,.28)',  tx:'#a05a10' },
+    not_understood:      { icon:'❌', label:'Not Understood',      bg:'rgba(192,57,43,.08)',   bd:'rgba(192,57,43,.25)',   tx:'#922b21' },
+  };
+  const metaOf = s => STATUS_META[s] || { icon:'•', label:s||'Unknown', bg:'rgba(21,101,192,.06)', bd:'rgba(21,101,192,.18)', tx:'var(--accent)' };
+
+  // Summary cards
+  const greens = rows.filter(r => r.status === 'acknowledged').length;
+  const ambers = rows.filter(r => r.status === 'needs_clarification').length;
+  const reds   = rows.filter(r => r.status === 'not_understood').length;
+  document.getElementById('arSummary').innerHTML = [
+    { ...STATUS_META.acknowledged,        count: greens },
+    { ...STATUS_META.needs_clarification, count: ambers },
+    { ...STATUS_META.not_understood,      count: reds   },
+  ].map(s => `
+    <div style="background:${s.bg};border:1px solid ${s.bd};border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;">
+      <span style="font-size:1.6em;">${s.icon}</span>
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:1.4em;font-weight:700;color:${s.tx};">${s.count}</div>
+        <div style="font-size:.7em;opacity:.65;letter-spacing:.5px;">${s.label}</div>
+      </div>
+    </div>`).join('');
+
+  if (!rows.length) {
+    document.getElementById('arBody').innerHTML =
+      `<div style="text-align:center;padding:40px;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;color:var(--accent);opacity:.35;">No responses found.</div>`;
+    return;
+  }
+
+  // Group by user
+  const byUser = {};
+  rows.forEach(r => {
+    const u = r.user_email || 'Unknown';
+    if (!byUser[u]) byUser[u] = [];
+    byUser[u].push(r);
+  });
+
+  document.getElementById('arBody').innerHTML = Object.entries(byUser).map(([email, resps]) => {
+    const ini  = email.split('@')[0].split(/[._]/).map(w=>w[0]||'').join('').toUpperCase().substring(0,2);
+    const g    = resps.filter(r => r.status === 'acknowledged').length;
+    const a    = resps.filter(r => r.status === 'needs_clarification').length;
+    const rd   = resps.filter(r => r.status === 'not_understood').length;
+    const rows_html = resps.map(r => {
+      const m  = metaOf(r.status);
+      const ts = r.responded_at ? new Date(r.responded_at).toLocaleString([],{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true}) : '—';
+      const note = r.annotation ? `<div style="font-size:.75em;opacity:.55;margin-top:3px;font-style:italic;">${esc(r.annotation)}</div>` : '';
+      return `<div style="display:grid;grid-template-columns:28px 1fr 160px;gap:10px;padding:10px 14px;border-top:1px solid rgba(21,101,192,.06);align-items:start;">
+        <span style="font-size:1.1em;margin-top:1px;">${m.icon}</span>
+        <div>
+          <div style="font-size:.8em;line-height:1.5;color:var(--text);font-weight:600;">${m.label}</div>
+          ${note}
+        </div>
+        <div style="font-size:.68em;opacity:.5;text-align:right;line-height:1.4;">${esc(ts)}</div>
+      </div>`;
+    }).join('');
+
+    return `<div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:rgba(21,101,192,.03);border-bottom:1px solid var(--border);">
+        <div style="width:34px;height:34px;border-radius:50%;background:rgba(21,101,192,.1);border:1px solid rgba(21,101,192,.25);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:.65em;font-weight:700;color:var(--accent);flex-shrink:0;">${ini}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:.85em;font-weight:600;word-break:break-all;">${esc(email)}</div>
+          <div style="font-size:.68em;opacity:.45;margin-top:2px;">${resps.length} response${resps.length!==1?'s':''}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          ${g?`<span style="padding:3px 9px;border-radius:20px;font-size:.62em;font-family:'Cinzel',serif;font-weight:700;background:rgba(39,174,96,.09);border:1px solid rgba(39,174,96,.28);color:#1a7a46;">✅ ${g}</span>`:''}
+          ${a?`<span style="padding:3px 9px;border-radius:20px;font-size:.62em;font-family:'Cinzel',serif;font-weight:700;background:rgba(230,126,34,.09);border:1px solid rgba(230,126,34,.28);color:#a05a10;">⚠️ ${a}</span>`:''}
+          ${rd?`<span style="padding:3px 9px;border-radius:20px;font-size:.62em;font-family:'Cinzel',serif;font-weight:700;background:rgba(192,57,43,.09);border:1px solid rgba(192,57,43,.28);color:#922b21;">❌ ${rd}</span>`:''}
+        </div>
+      </div>
+      ${rows_html}
+    </div>`;
+  }).join('');
+}
+
 /* ==========================================================
    VIEWER FONT
 ========================================================== */
@@ -1758,6 +2134,11 @@ function switchTab(tab) {
   // Show labels panel only on Notes tab
   const labelsPanel = document.getElementById('labelsPanel');
   if (labelsPanel) labelsPanel.classList.toggle('hidden', tab !== 'notes');
+  // Expand right sidebar when on notes tab to show heading names
+  const sb = document.getElementById('rightSidebar');
+  if (sb) sb.classList.toggle('notes-expanded', tab === 'notes');
+  // Also update body padding to match
+  document.body.style.paddingRight = (tab === 'notes') ? '170px' : '90px';
   if (tab === 'protocol') loadProtocols();
   const newBtn    = document.getElementById('newBtn');
   const addProtBtn= document.getElementById('addProtocolBtn');
@@ -1983,13 +2364,34 @@ function toggleNotesSort() {
   renderFlatNotes();
 }
  
+/* ── HEADING LABELS (stored in localStorage since DB may not have label column) ─── */
+const LABEL_STORE_KEY = 'vc_heading_labels';
+
+function getAllHeadingLabels() {
+  try { return JSON.parse(localStorage.getItem(LABEL_STORE_KEY) || '{}'); } catch { return {}; }
+}
+function saveHeadingLabel(headingId, label) {
+  const store = getAllHeadingLabels();
+  if (label) store[headingId] = label;
+  else delete store[headingId];
+  try { localStorage.setItem(LABEL_STORE_KEY, JSON.stringify(store)); } catch {}
+}
+function getHeadingLabel(headingId) {
+  return getAllHeadingLabels()[headingId] || '';
+}
+
 async function loadHeadings() {
   const [{ data: heads }, { data: subs }, { data: subsubs }] = await Promise.all([
     db.from('note_headings').select('*').order('created_at', { ascending: true }),
     db.from('note_subheadings').select('*').order('created_at', { ascending: true }),
     db.from('note_subsubheadings').select('*').order('created_at', { ascending: true })
   ]);
-  allHeadingsFlat  = heads   || [];
+  // Merge locally-stored labels into headings (DB may not have label column)
+  const labelStore = getAllHeadingLabels();
+  allHeadingsFlat  = (heads || []).map(h => ({
+    ...h,
+    label: h.label || labelStore[h.id] || ''
+  }));
   allSubsFlat      = subs    || [];
   allSubSubsFlat   = subsubs || [];
   renderFlatNotes();
@@ -2141,6 +2543,46 @@ function closeNoteDetailModal() {
   document.getElementById('noteDetailModal').classList.remove('open');
   currentNdmItem = null;
 }
+
+async function copyNoteDetailBody() {
+  const el  = document.getElementById('ndmBody');
+  const btn = document.getElementById('ndmCopyBtn');
+  if (!el || !btn) return;
+  const raw = el.innerHTML || '';
+  const isEmpty = !raw.trim() || el.textContent.trim() === '(No content yet.)';
+  if (isEmpty) return;
+  const hasHtml = /<[a-z][\s\S]*>/i.test(raw);
+  const text = hasHtml ? htmlToPlainText(raw) : (el.textContent || '').trim();
+  if (!text) return;
+  const original = btn.innerHTML;
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.textContent = '✓ Copied!';
+    btn.style.borderColor = '#27ae60';
+    btn.style.color = '#27ae60';
+    btn.style.opacity = '1';
+  } catch {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+      document.body.appendChild(ta);
+      ta.select(); ta.setSelectionRange(0, ta.value.length);
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = '✓ Copied!';
+      btn.style.borderColor = '#27ae60';
+      btn.style.color = '#27ae60';
+      btn.style.opacity = '1';
+    } catch {}
+  }
+  setTimeout(() => {
+    btn.innerHTML = original;
+    btn.style.borderColor = 'var(--border)';
+    btn.style.color = 'var(--text)';
+    btn.style.opacity = '.65';
+  }, 2200);
+}
 function ndmEdit() {
   if(!currentNdmItem) return;
   const item = currentNdmItem;
@@ -2215,6 +2657,36 @@ async function deleteHeading(id) {
   await loadHeadings();
 }
  
+function populateLabelDatalist(currentVal) {
+  const dl = document.getElementById('labelSuggestions');
+  if (!dl) return;
+  const existingLabels = [...new Set(
+    allHeadingsFlat.map(h => h.label).filter(l => l && l.trim())
+  )].sort();
+  dl.innerHTML = existingLabels.map(l => `<option value="${esc(l)}">`).join('');
+  // Trigger hint for current value
+  updateLabelNewHint(currentVal, existingLabels);
+}
+
+function wireLabelHint() {
+  const inp = document.getElementById('mLabel');
+  if (!inp || inp._labelHintWired) return;
+  inp._labelHintWired = true;
+  inp.addEventListener('input', function() {
+    const existingLabels = [...new Set(
+      allHeadingsFlat.map(h => h.label).filter(l => l && l.trim())
+    )];
+    updateLabelNewHint(this.value.trim(), existingLabels);
+  });
+}
+
+function updateLabelNewHint(val, existingLabels) {
+  const hint = document.getElementById('mLabelNewHint');
+  if (!hint) return;
+  const isNew = val && !existingLabels.map(l => l.toLowerCase()).includes(val.toLowerCase());
+  hint.style.display = isNew ? 'block' : 'none';
+}
+
 function openNewHeadingModal() {
   modalCtx = { mode:'new-heading' };
   document.getElementById('modalTitle').textContent = 'New Heading';
@@ -2227,6 +2699,8 @@ function openNewHeadingModal() {
   // Show label field
   const lf = document.getElementById('ffLabel');
   if(lf){ lf.classList.remove('hidden'); document.getElementById('mLabel').value = ''; }
+  populateLabelDatalist('');
+  wireLabelHint();
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
@@ -2242,6 +2716,8 @@ function openEditHeadingModal(h) {
   document.getElementById('ffIcon').classList.add('hidden');
   const lf = document.getElementById('ffLabel');
   if(lf){ lf.classList.remove('hidden'); document.getElementById('mLabel').value = h.label || ''; }
+  populateLabelDatalist(h.label || '');
+  wireLabelHint();
   document.getElementById('modal').classList.add('open');
   setTimeout(() => document.getElementById('mTitle').focus(), 80);
 }
@@ -2612,18 +3088,22 @@ async function saveModal() {
       await loadUpdates();
  
     } else if (ctx.mode === 'new-heading') {
-      const labelVal = (document.getElementById('mLabel')||{}).value||'';
-      const { error } = await safeInsertBulk('note_headings', { title, body:bodyHtml, label:labelVal, created_by:editorName, created_at:now });
+      const labelVal = (document.getElementById('mLabel')||{}).value.trim()||'';
+      const { data: newRow, error } = await safeInsert('note_headings', { title, body:bodyHtml, created_by:editorName, created_at:now });
       if (error) throw error;
+      // Store label locally since 'label' column may not exist in DB schema
+      if (newRow && newRow.id) saveHeadingLabel(newRow.id, labelVal);
       invalidateSearchCache();
       await logActivity('Add', 'Notes', `Added heading: "${title}"`);
       await loadHeadings(); refreshAllNotifCounts();
       refreshLabelPanel();
  
     } else if (ctx.mode === 'edit-heading') {
-      const labelVal = (document.getElementById('mLabel')||{}).value||'';
-      const { error } = await safeUpdate('note_headings', { title, body:bodyHtml, label:labelVal, updated_by:editorName, updated_at:now }, 'id', ctx.item.id);
+      const labelVal = (document.getElementById('mLabel')||{}).value.trim()||'';
+      const { error } = await safeUpdate('note_headings', { title, body:bodyHtml, updated_by:editorName, updated_at:now }, 'id', ctx.item.id);
       if (error) throw error;
+      // Store label locally since 'label' column may not exist in DB schema
+      saveHeadingLabel(ctx.item.id, labelVal);
       invalidateSearchCache();
       await logActivity('Edit', 'Notes', `Edited heading: "${title}"`);
       await loadHeadings();
@@ -2731,6 +3211,11 @@ function closeModal() {
   document.getElementById('ffIcon').classList.add('hidden');
   document.getElementById('ffBody').classList.add('hidden');
   const lf = document.getElementById('ffLabel'); if(lf) lf.classList.add('hidden');
+  // Reset label datalist hint state
+  const inp = document.getElementById('mLabel');
+  if (inp) inp._labelHintWired = false;
+  const hint = document.getElementById('mLabelNewHint');
+  if (hint) hint.style.display = 'none';
   modalCtx = null;
   isSavingModal = false;
   const saveBtn = document.getElementById('modalSaveBtn');
@@ -3140,41 +3625,396 @@ async function removeEditor(id, name){
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
  
 /* ==========================================================
+   UPDATE GATE
+========================================================== */
+const UG_RESPONSE_KEY = 'ug_responses_'; // key prefix in sessionStorage (fallback only)
+let ugUpdates      = [];   // updates needing response this session
+let ugResponses    = {};   // { update_id: { choice, annotation, at, user } }
+const sessionAckedIds = new Set(); // in-memory suppression for current session
+
+const UG_CHOICES = {
+  green: { label:'Acknowledge & Understand',   desc:'I have read and understood this update.',             icon:'✔', colorClass:'green', statusText:'Acknowledged — recorded.' },
+  amber: { label:'Need More Clarification',    desc:'I need further explanation before I can confirm.',   icon:'?', colorClass:'amber', statusText:'Flagged for clarification — recorded.' },
+  red:   { label:'Not Able to Understand',     desc:'I am unable to understand this update at this time.',icon:'!', colorClass:'red',   statusText:'Marked as not understood — recorded.' },
+};
+
+async function getAckedUpdateIds() {
+  if (!userEmail) return new Set();
+  try {
+    const { data, error } = await db
+      .from('user_update_status')
+      .select('update_id')
+      .eq('user_email', userEmail);
+    if (error) throw error;
+    return new Set((data || []).map(r => r.update_id));
+  } catch(e) {
+    console.warn('[AckDB] getAckedUpdateIds failed, falling back to empty set:', e);
+    return new Set();
+  }
+}
+
+async function openUpdateGate() {
+  const gate = document.getElementById('updateGate');
+  gate.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Show loading state
+  document.getElementById('ugCards').innerHTML =
+    `<div style="text-align:center;padding:40px;font-family:'Cinzel',serif;font-size:.72em;letter-spacing:2px;opacity:.35;">Checking updates&#8230;</div>`;
+
+  // Fetch all updates and already-acknowledged IDs in parallel
+  const [{ data: allPosts }, ackedIds] = await Promise.all([
+    db.from('posts').select('*').order('created_at', { ascending: false }),
+    getAckedUpdateIds()
+  ]);
+
+  // Merge DB acked set with in-session acked set (covers fast re-logins)
+  sessionAckedIds.forEach(id => ackedIds.add(id));
+
+  // Only show updates this user hasn't responded to yet
+  ugUpdates = (allPosts || []).filter(u => !ackedIds.has(u.id));
+  ugResponses = {};
+
+  if (!ugUpdates.length) {
+    // All updates already acknowledged — go straight to dashboard
+    gate.classList.remove('open');
+    document.body.style.overflow = '';
+    enterDashboard();
+    return;
+  }
+
+  renderGateCards();
+  ugRefreshProgress();
+}
+
+function closeUpdateGate() {
+  document.getElementById('updateGate').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function ugContinue() {
+  const btn = document.getElementById('ugContinueBtn');
+  if (!btn.classList.contains('unlocked')) return;
+  closeUpdateGate();
+  enterDashboard();
+}
+
+// Save acknowledgement to user_update_status table (upsert — safe for re-submissions)
+async function saveAckToDB(updateId, resp, title) {
+  if (!userEmail || !resp || !resp.choice) return;
+  const statusMap = { green: 'acknowledged', amber: 'needs_clarification', red: 'not_understood' };
+  try {
+    const { error } = await db
+      .from('user_update_status')
+      .upsert({
+        user_email:   userEmail,
+        update_id:    updateId,
+        status:       statusMap[resp.choice],
+        annotation:   resp.annotation || null,
+        responded_at: resp.at || new Date().toISOString()
+      }, { onConflict: 'user_email,update_id' });
+    if (error) {
+      console.warn('[AckDB] upsert failed:', error.message, '| code:', error.code);
+    } else {
+      console.log('[AckDB] saved ack for update', updateId);
+      pushActivityLog(updateId, resp, title);
+    }
+  } catch(e) { console.warn('[AckDB] exception:', e); }
+}
+
+// Push human-readable event into activity_logs for editor visibility
+async function pushActivityLog(updateId, resp, title) {
+  if (!userEmail) return;
+  const labelMap = { green: 'Acknowledged & Understood', amber: 'Flagged for Clarification', red: 'Marked as Not Understood' };
+  const date = new Date().toLocaleDateString([], { day: 'numeric', month: 'long', year: 'numeric' });
+  const note = resp.annotation ? ` Note: "${resp.annotation}"` : '';
+  const description = `User ${userName} reviewed Update [${title}] on ${date}. Status: ${labelMap[resp.choice]}.${note}`;
+  try {
+    await db.from('activity_logs').insert([{
+      user_email:  userEmail,
+      action:      'Review',
+      section:     'Acknowledgements',
+      description: description,
+      created_at:  new Date().toISOString()
+    }]);
+  } catch(e) { console.warn('[ActivityLog] pushActivityLog failed (non-fatal):', e); }
+}
+
+function ugRefreshProgress() {
+  const total    = ugUpdates.length;
+  const responded = Object.keys(ugResponses).length;
+  const pct      = total > 0 ? Math.round((responded / total) * 100) : 100;
+  document.getElementById('ugProgressFill').style.width  = pct + '%';
+  document.getElementById('ugProgressLabel').textContent = `${responded} of ${total} responded`;
+
+  // Unlock only when ALL updates have a response
+  const allDone = responded >= total;
+  const btn = document.getElementById('ugContinueBtn');
+  btn.classList.toggle('unlocked', allDone);
+
+  const info = document.getElementById('ugFooterInfo');
+  if (allDone) {
+    const greens = Object.values(ugResponses).filter(r => r.choice === 'green').length;
+    const ambers = Object.values(ugResponses).filter(r => r.choice === 'amber').length;
+    const reds   = Object.values(ugResponses).filter(r => r.choice === 'red').length;
+    info.innerHTML = `<span style="color:#27ae60;font-weight:600;">${greens} understood</span> &nbsp;·&nbsp; <span style="color:#e67e22;font-weight:600;">${ambers} need clarification</span> &nbsp;·&nbsp; <span style="color:#c0392b;font-weight:600;">${reds} not understood</span>`;
+  } else {
+    info.textContent = `${total - responded} update${total - responded !== 1 ? 's' : ''} still require your response.`;
+  }
+}
+
+function renderGateCards() {
+  const container = document.getElementById('ugCards');
+  container.innerHTML = '';
+
+  ugUpdates.forEach((upd, idx) => {
+    const resp    = ugResponses[upd.id];
+    const chosen  = resp ? resp.choice : null;
+    const isReq   = true; // all updates require response in this system
+    const preview = (upd.content || '').replace(/<[^>]+>/g,' ').trim().substring(0, 80);
+    const ts      = upd.updated_at || upd.created_at;
+    const dateStr = ts ? new Date(ts).toLocaleDateString([], {day:'numeric',month:'short',year:'numeric'}) : '';
+
+    const card = document.createElement('div');
+    card.className = 'ug-card required-card' + (chosen ? ' acked-' + chosen : '');
+    card.id = 'ug-card-' + upd.id;
+
+    // Status badge
+    const hasEdit = upd.updated_at && upd.updated_at !== upd.created_at;
+    const statusBadge = hasEdit
+      ? `<span class="ug-badge ug-badge-upd">Updated</span>`
+      : `<span class="ug-badge ug-badge-new">New</span>`;
+
+    card.innerHTML = `
+      <div class="ug-card-header" onclick="ugToggleCard(${upd.id})">
+        <div class="ug-card-icon">&#128203;</div>
+        <div class="ug-card-meta">
+          <div class="ug-card-label">${esc(upd.title)}</div>
+          <div class="ug-card-label-sub">${esc(preview)}${preview.length >= 80 ? '…' : ''}</div>
+        </div>
+        <div class="ug-card-badges">
+          ${statusBadge}
+          <span class="ug-badge ug-badge-ver">${esc(dateStr)}</span>
+          <span class="ug-badge ug-badge-req">Required</span>
+          ${chosen ? `<span class="ug-badge" style="background:${chosen==='green'?'rgba(39,174,96,.09)':chosen==='amber'?'rgba(230,126,34,.09)':'rgba(192,57,43,.09)'};border:1px solid ${chosen==='green'?'rgba(39,174,96,.3)':chosen==='amber'?'rgba(230,126,34,.3)':'rgba(192,57,43,.3)'};color:${chosen==='green'?'#1e7a47':chosen==='amber'?'#a05a10':'#922b21'};">${UG_CHOICES[chosen].icon} ${chosen==='green'?'Understood':chosen==='amber'?'Clarification Needed':'Not Understood'}</span>` : ''}
+        </div>
+        <span class="ug-chevron">&#8250;</span>
+      </div>
+      <div class="ug-card-body" id="ug-body-${upd.id}">
+        <div class="ug-card-title">${esc(upd.title)}</div>
+        <div class="ug-card-content" id="ug-content-${upd.id}"></div>
+
+        <div class="ug-response-label">Select your response</div>
+        <div class="ug-response-opts">
+          ${['green','amber','red'].map(c => `
+          <button class="ug-resp-btn opt-${c}${chosen===c?' selected':''}" onclick="ugSelectChoice(${upd.id},'${c}')" id="ug-btn-${upd.id}-${c}">
+            <span class="resp-icon">${UG_CHOICES[c].icon}</span>
+            <span class="resp-text">
+              <div class="resp-title">${UG_CHOICES[c].label}</div>
+              <div class="resp-desc">${UG_CHOICES[c].desc}</div>
+            </span>
+          </button>`).join('')}
+        </div>
+
+        <div class="ug-resp-status ${chosen ? chosen + ' show' : ''}" id="ug-status-${upd.id}">
+          <span>${chosen ? UG_CHOICES[chosen].statusText : ''}</span>
+        </div>
+
+        <!-- Annotation -->
+        <div class="ug-annotation-wrap">
+          <div class="ug-annotation-label">Personal Note (optional)</div>
+          <textarea class="ug-annotation-input" id="ug-note-${upd.id}" placeholder="Add your personal remark, question, or concern about this update…" rows="2">${esc(resp ? resp.annotation || '' : '')}</textarea>
+          <div style="display:flex;align-items:center;">
+            <button class="ug-annotation-save" onclick="ugSaveAnnotation(${upd.id})">Save Note</button>
+            <span class="ug-annotation-saved" id="ug-saved-${upd.id}">&#10003; Saved</span>
+          </div>
+        </div>
+
+        <!-- Clarification flag (editor-only visible) -->
+        <div class="ug-flag-wrap" id="ug-flag-${upd.id}" style="${chosen === 'amber' || chosen === 'red' ? '' : 'display:none;'}">
+          &#9888; ${esc(userName)} flagged this update as &ldquo;${chosen === 'amber' ? 'Needs Clarification' : 'Not Understood'}&rdquo; — follow-up may be required.
+        </div>
+      </div>`;
+
+    // Set rich content
+    container.appendChild(card);
+    const contentEl = document.getElementById('ug-content-' + upd.id);
+    if (upd.content && /<[a-z][\s\S]*>/i.test(upd.content)) contentEl.innerHTML = upd.content;
+    else contentEl.textContent = upd.content || '(No content.)';
+  });
+
+  // Auto-expand first unanswered
+  const first = ugUpdates.find(u => !ugResponses[u.id]);
+  if (first) ugToggleCard(first.id);
+}
+
+function ugToggleCard(id) {
+  const card = document.getElementById('ug-card-' + id);
+  if (!card) return;
+  const isOpen = card.classList.contains('expanded');
+  // Collapse all
+  document.querySelectorAll('.ug-card.expanded').forEach(c => c.classList.remove('expanded'));
+  if (!isOpen) card.classList.add('expanded');
+}
+
+function ugSelectChoice(updateId, choice) {
+  const prev = ugResponses[updateId];
+  const annotation = prev ? (prev.annotation || '') : '';
+  const now = new Date().toISOString();
+
+  ugResponses[updateId] = { choice, annotation, at: now, user: userName };
+
+  // ── Suppress immediately in-session (before async DB write completes) ──
+  sessionAckedIds.add(updateId);
+
+  // ── Upsert to user_update_status + push activity log entry ──
+  const upd   = ugUpdates.find(u => String(u.id) === String(updateId));
+  const title = upd ? upd.title : 'Update #' + updateId;
+  saveAckToDB(updateId, ugResponses[updateId], title);
+
+  // Update button states
+  ['green','amber','red'].forEach(c => {
+    const btn = document.getElementById(`ug-btn-${updateId}-${c}`);
+    if (btn) btn.classList.toggle('selected', c === choice);
+  });
+
+  // Show status
+  const statusEl = document.getElementById('ug-status-' + updateId);
+  if (statusEl) {
+    statusEl.className = `ug-resp-status ${choice} show`;
+    statusEl.innerHTML = `<span>${UG_CHOICES[choice].statusText}</span>`;
+  }
+
+  // Card border class
+  const card = document.getElementById('ug-card-' + updateId);
+  if (card) {
+    card.classList.remove('acked-green','acked-amber','acked-red');
+    card.classList.add('acked-' + choice);
+  }
+
+  // Clarification flag
+  const flag = document.getElementById('ug-flag-' + updateId);
+  if (flag) {
+    flag.style.display = (choice === 'amber' || choice === 'red') ? '' : 'none';
+    flag.innerHTML = `&#9888; ${esc(userName)} flagged this update as &ldquo;${choice === 'amber' ? 'Needs Clarification' : 'Not Understood'}&rdquo; — follow-up may be required.`;
+  }
+
+  ugRefreshProgress();
+  ugUpdateCardBadge(updateId, choice);
+
+  // Auto-advance to next unanswered after short delay
+  setTimeout(() => {
+    const next = ugUpdates.find(u => !ugResponses[u.id]);
+    if (next) { ugToggleCard(next.id); document.getElementById('ug-card-'+next.id).scrollIntoView({behavior:'smooth',block:'center'}); }
+    else { document.getElementById('ugContinueBtn').scrollIntoView({behavior:'smooth',block:'center'}); }
+  }, 600);
+}
+
+function ugUpdateCardBadge(updateId, choice) {
+  // Rebuild header badges by re-rendering just the badges portion
+  const badgesEl = document.querySelector(`#ug-card-${updateId} .ug-card-badges`);
+  if (!badgesEl) return;
+  const upd = ugUpdates.find(u => u.id === updateId);
+  if (!upd) return;
+  const hasEdit = upd.updated_at && upd.updated_at !== upd.created_at;
+  const statusBadge = hasEdit ? `<span class="ug-badge ug-badge-upd">Updated</span>` : `<span class="ug-badge ug-badge-new">New</span>`;
+  const ts = upd.updated_at || upd.created_at;
+  const dateStr = ts ? new Date(ts).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'}) : '';
+  const choiceColor = choice==='green'?'rgba(39,174,96,.09)':choice==='amber'?'rgba(230,126,34,.09)':'rgba(192,57,43,.09)';
+  const choiceBorder = choice==='green'?'rgba(39,174,96,.3)':choice==='amber'?'rgba(230,126,34,.3)':'rgba(192,57,43,.3)';
+  const choiceText = choice==='green'?'#1e7a47':choice==='amber'?'#a05a10':'#922b21';
+  const choiceLabel = choice==='green'?'Understood':choice==='amber'?'Clarification Needed':'Not Understood';
+  badgesEl.innerHTML = `${statusBadge}<span class="ug-badge ug-badge-ver">${esc(dateStr)}</span><span class="ug-badge ug-badge-req">Required</span><span class="ug-badge" style="background:${choiceColor};border:1px solid ${choiceBorder};color:${choiceText};">${UG_CHOICES[choice].icon} ${choiceLabel}</span>`;
+}
+
+function ugSaveAnnotation(updateId) {
+  const ta = document.getElementById('ug-note-' + updateId);
+  if (!ta) return;
+  const annotation = ta.value.trim();
+  if (!ugResponses[updateId]) ugResponses[updateId] = { choice: null, annotation, at: new Date().toISOString(), user: userName };
+  else ugResponses[updateId].annotation = annotation;
+  try { sessionStorage.setItem(UG_RESPONSE_KEY + userEmail, JSON.stringify(ugResponses)); } catch {}
+  const saved = document.getElementById('ug-saved-' + updateId);
+  if (saved) { saved.classList.add('show'); setTimeout(() => saved.classList.remove('show'), 2200); }
+}
+
+/* ==========================================================
    LABEL FILTER PANEL
 ========================================================== */
 let activeLabelFilter = null;
- 
+
 function refreshLabelPanel() {
   const panel = document.getElementById('labelsPanel');
   if (!panel) return;
-  // Collect unique labels from headings
-  const labels = [...new Set(
-    allHeadingsFlat
-      .map(h => h.label)
-      .filter(l => l && l.trim())
+
+  const allLabels = [...new Set(
+    allHeadingsFlat.map(h => h.label).filter(l => l && l.trim())
   )].sort();
- 
-  // Also collect from flat notes list badge labels (subheadings use heading title as label)
-  const notesItems = getFlatNotesList ? getFlatNotesList() : [];
-  const noteLabels = [...new Set(notesItems.map(i => i.label).filter(l => l && l.trim() && l !== 'Heading'))].sort();
-  const allLabels = [...new Set([...labels, ...noteLabels])].sort();
- 
-  panel.innerHTML = '<div class="labels-panel-hdr">Labels</div>';
-  // All chip
-  const allChip = document.createElement('div');
-  allChip.className = 'label-filter-chip label-filter-all' + (activeLabelFilter === null ? ' active' : '');
-  allChip.textContent = 'All';
-  allChip.onclick = () => filterByLabel(null);
-  panel.appendChild(allChip);
- 
+  const allItems   = getFlatNotesList();
+  const totalCount = allItems.length;
+
+  function countForLabel(lbl) { return allItems.filter(i => i._heading?.label === lbl).length; }
+  function countForHeading(id){ return allItems.filter(i => i._heading?.id    === id  ).length; }
+
+  panel.innerHTML = '';
+
+  // ── LABELS section ──
+  const lblHdr = document.createElement('div');
+  lblHdr.className = 'labels-panel-hdr';
+  lblHdr.textContent = 'Labels';
+  panel.appendChild(lblHdr);
+
+  const allRow = document.createElement('div');
+  allRow.className = 'lp-all' + (activeLabelFilter === null ? ' active' : '');
+  allRow.innerHTML = `<span class="lp-all-label">All</span><span class="lp-all-count">${totalCount}</span>`;
+  allRow.onclick = () => filterByLabel(null);
+  panel.appendChild(allRow);
+
   allLabels.forEach(lbl => {
-    const chip = document.createElement('div');
-    chip.className = 'label-filter-chip' + (activeLabelFilter === lbl ? ' active' : '');
-    chip.textContent = lbl;
-    chip.title = lbl;
-    chip.onclick = () => filterByLabel(lbl);
-    panel.appendChild(chip);
+    const cnt  = countForLabel(lbl);
+    const item = document.createElement('div');
+    item.className = 'lp-item' + (activeLabelFilter === lbl ? ' active' : '');
+    item.title = lbl;
+    item.innerHTML = `<span class="lp-item-name">${esc(lbl)}</span><span class="lp-item-count">${cnt} note${cnt!==1?'s':''}</span>`;
+    item.onclick = () => filterByLabel(lbl);
+    panel.appendChild(item);
   });
+
+  // ── HEADINGS section ──
+  const div2 = document.createElement('div');
+  div2.className = 'lp-divider';
+  div2.style.margin = '10px 2px 6px';
+  panel.appendChild(div2);
+
+  const hdgHdr = document.createElement('div');
+  hdgHdr.className = 'labels-panel-hdr';
+  hdgHdr.textContent = 'Headings';
+  panel.appendChild(hdgHdr);
+
+  if (!allHeadingsFlat.length) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'font-size:.6em;opacity:.35;text-align:center;padding:8px 4px;font-family:Raleway,sans-serif;';
+    empty.textContent = 'No headings yet';
+    panel.appendChild(empty);
+  } else {
+    allHeadingsFlat.forEach(h => {
+      const cnt  = countForHeading(h.id);
+      const item = document.createElement('div');
+      item.className = 'lp-item lp-heading-nav';
+      item.title = h.title;
+      item.innerHTML = `
+        <div style="display:flex;align-items:center;gap:5px;">
+          <span style="font-size:.75em;opacity:.4;flex-shrink:0;">&#9656;</span>
+          <span class="lp-item-name" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(h.title)}</span>
+        </div>
+        <span class="lp-item-count" style="padding-left:16px;">${cnt} note${cnt!==1?'s':''}</span>`;
+      item.onclick = () => {
+        navToDashTab('notes');
+        setTimeout(() => openSubScreen(h), 120);
+      };
+      panel.appendChild(item);
+    });
+  }
 }
  
 function filterByLabel(label) {
@@ -3191,7 +4031,7 @@ function renderFlatNotesFiltered() {
   }
   const container = document.getElementById('notesContainer');
   if (!container) return;
-  const items = getFlatNotesList().filter(item => item.label === activeLabelFilter || item._heading?.label === activeLabelFilter);
+  const items = getFlatNotesList().filter(item => item._heading?.label === activeLabelFilter);
   if (!items.length) { container.innerHTML = `<div class="empty">No notes with label "${activeLabelFilter}".</div>`; return; }
   // Temporarily override allHeadingsFlat etc then render
   const _orig = getFlatNotesList;
